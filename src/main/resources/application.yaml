@@ -1,3 +1,9 @@
 spring:
   application:
     name: user-service
+
+database:
+  url: ${DB_URL}
+  username: ${DB_USER}
+  password: ${DB_PASSWORD}
+  schema: ${DB_SCHEMA}
