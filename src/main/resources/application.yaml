@@ -7,3 +7,6 @@ database:
   username: ${DB_USER}
   password: ${DB_PASSWORD}
   schema: ${DB_SCHEMA}
+
+storage:
+  location: ${STORAGE_LOCATION}
