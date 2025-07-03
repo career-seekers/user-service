@@ -3,10 +3,7 @@ spring:
     name: user-service
 
 database:
-  url: ${DB_URL}
-  username: ${DB_USER}
-  password: ${DB_PASSWORD}
-  schema: ${DB_SCHEMA}
-
-storage:
-  location: ${STORAGE_LOCATION}
+  url: ${US_DB_URL}
+  username: ${US_DB_USER}
+  password: ${US_DB_PASSWORD}
+  schema: ${US_DB_SCHEMA}
