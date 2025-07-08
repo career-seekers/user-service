@@ -10,6 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.careerseekers.userservice.io.converters.ConvertableToHttpResponse
 
 @Entity
 @Table(name = "tutor_documents")
@@ -31,4 +32,4 @@ data class TutorDocuments(
 
     @Column(nullable = false, unique = true)
     var consentToTutorPdpId: Long
-)
+) : ConvertableToHttpResponse<TutorDocuments>

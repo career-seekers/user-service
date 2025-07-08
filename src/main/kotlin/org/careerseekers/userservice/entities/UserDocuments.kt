@@ -13,6 +13,7 @@ import jakarta.persistence.Table
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import org.careerseekers.userservice.enums.ParentRoles
+import org.careerseekers.userservice.io.converters.ConvertableToHttpResponse
 
 @Entity
 @Table(name = "user_documents")
@@ -54,4 +55,4 @@ data class UserDocuments(
 
     @Column(nullable = false, unique = true)
     var consentToChildPdpId: Long,
-)
+) : ConvertableToHttpResponse<UserDocuments>

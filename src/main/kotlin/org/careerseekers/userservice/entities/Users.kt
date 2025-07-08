@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.careerseekers.userservice.enums.UsersRoles
+import org.careerseekers.userservice.io.converters.ConvertableToHttpResponse
 import java.util.Date
 
 @Entity
@@ -42,4 +43,4 @@ data class Users (
 
     @Column(nullable = false)
     var avatarId: Long
-)
+) : ConvertableToHttpResponse<Users>
