@@ -5,9 +5,15 @@ import org.springframework.transaction.annotation.Transactional
 
 interface CrudService<T, ID, CrDTO, UpDTO> : BasicApiService<T, ID> {
     fun getAll(): List<T> = repository.findAll()
-    fun getById(id: ID, throwable: Boolean = true, message: String = "Object with id $id not found."): T? {
-        val o = id!!.let { repository.findById(it) }
+    fun getById(id: ID?, throwable: Boolean = true, message: String = "Object with id $id not found."): T? {
+        if (id == null) {
+            if (throwable) {
+                throw NotFoundException("ID cannot be null.")
+            }
+            return null
+        }
 
+        val o = repository.findById(id)
         if (throwable && !o.isPresent) {
             throw NotFoundException(message)
         }
