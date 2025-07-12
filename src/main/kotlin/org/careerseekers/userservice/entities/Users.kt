@@ -41,6 +41,6 @@ data class Users (
     @Column(nullable = false)
     var role: UsersRoles,
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     var avatarId: Long
 ) : ConvertableToHttpResponse<Users>

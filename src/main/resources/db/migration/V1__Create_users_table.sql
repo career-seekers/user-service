@@ -9,7 +9,7 @@ CREATE TABLE users
     mobile_number VARCHAR(255)                            NOT NULL,
     password      VARCHAR(255)                            NOT NULL,
     role          SMALLINT                                NOT NULL,
-    avatar_id     BIGINT                                  NOT NULL,
+    avatar_id     BIGINT,
     CONSTRAINT pk_users PRIMARY KEY (id)
 );
 
