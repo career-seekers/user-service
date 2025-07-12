@@ -12,7 +12,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
-import org.careerseekers.userservice.enums.ParentRoles
 import org.careerseekers.userservice.io.converters.ConvertableToHttpResponse
 
 @Entity
@@ -51,7 +50,7 @@ data class UserDocuments(
     var additionalStudyingCertificateId: Long,
 
     @Column(nullable = false)
-    var parentRole: ParentRoles,
+    var parentRole: String,
 
     @Column(nullable = false, unique = true)
     var consentToChildPdpId: Long,
