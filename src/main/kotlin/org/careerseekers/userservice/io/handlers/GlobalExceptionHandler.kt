@@ -3,6 +3,7 @@ package org.careerseekers.userservice.io.handlers
 import io.jsonwebtoken.security.SignatureException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
+import org.careerseekers.userservice.exceptions.MobileNumberFormatException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.io.BasicErrorResponse
 import org.springframework.http.HttpStatus
@@ -43,6 +44,17 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
     }
 
+    @ExceptionHandler(MobileNumberFormatException::class)
+    fun handleMobileNumberFormatException(ex: MobileNumberFormatException): ResponseEntity<BasicErrorResponse> {
+        val errorResponse = BasicErrorResponse(
+            status = HttpStatus.BAD_REQUEST.value(),
+            message = ex.message
+        )
+
+        return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
+    }
+
+    // JWT Exception
     @ExceptionHandler(JwtAuthenticationException::class)
     fun handleJwtAuthenticationException(ex: JwtAuthenticationException): ResponseEntity<BasicErrorResponse> {
         val errorResponse = ex.message?.let {

@@ -24,7 +24,7 @@ data class Users (
     var lastName: String,
 
     @Column(nullable = false)
-    val patronymic: String,
+    var patronymic: String,
 
     @Column(nullable = true)
     var dateOfBirth: Date,
@@ -41,6 +41,6 @@ data class Users (
     @Column(nullable = false)
     var role: UsersRoles,
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     var avatarId: Long
 ) : ConvertableToHttpResponse<Users>
