@@ -2,8 +2,12 @@ spring:
   application:
     name: user-service
 
+
 database:
   url: ${US_DB_URL}
   username: ${US_DB_USER}
   password: ${US_DB_PASSWORD}
   schema: ${US_DB_SCHEMA}
+
+server:
+  port: ${SERVER_INTERNAL_PORT}
