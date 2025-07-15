@@ -3,6 +3,8 @@ package org.careerseekers.userservice.services
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
 import org.careerseekers.userservice.entities.Users
+import org.careerseekers.userservice.exceptions.DoubleRecordException
+import org.careerseekers.userservice.exceptions.MobileNumberFormatException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UsersMapper
 import org.careerseekers.userservice.repositories.UsersRepository
@@ -30,8 +32,8 @@ class UsersService(
 
     @Transactional
     override fun create(item: CreateUserDto): Users {
-        getByEmail(item.email)
-        getByMobileNumber(item.mobileNumber)
+        checkIfUserExistsByEmailOrMobile(item.email, item.mobileNumber)
+        checkMobileNumberValid(item.mobileNumber)
 
         val userToSave = usersMapper.usersFromCreateDto(
             item.copy(password = passwordEncoder.encode(item.password))
@@ -72,4 +74,20 @@ class UsersService(
         return "Users deleted successfully."
     }
 
+    private fun checkIfUserExistsByEmailOrMobile(email: String, mobile: String) {
+        if (getByEmail(email, false) != null) {
+            throw DoubleRecordException("User with email $email already exists")
+        }
+        if (getByMobileNumber(mobile, false) != null) {
+            throw DoubleRecordException("User with mobile number $mobile already exists")
+        }
+    }
+
+    private fun checkMobileNumberValid(mobile: String) {
+        val charsValid = mobile.all { it.isDigit() || it == '+'}
+
+        if (mobile.length != 12 || !charsValid) {
+                throw MobileNumberFormatException("Mobile number must be 12 characters long in format '+79991234567'")
+        }
+    }
 }
