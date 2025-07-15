@@ -4,11 +4,11 @@ import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.exceptions.DoubleRecordException
-import org.careerseekers.userservice.exceptions.MobileNumberFormatException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UsersMapper
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.interfaces.CrudService
+import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -80,14 +80,6 @@ class UsersService(
         }
         if (getByMobileNumber(mobile, false) != null) {
             throw DoubleRecordException("User with mobile number $mobile already exists")
-        }
-    }
-
-    private fun checkMobileNumberValid(mobile: String) {
-        val charsValid = mobile.all { it.isDigit() || it == '+'}
-
-        if (mobile.length != 12 || !charsValid) {
-                throw MobileNumberFormatException("Mobile number must be 12 characters long in format '+79991234567'")
         }
     }
 }
