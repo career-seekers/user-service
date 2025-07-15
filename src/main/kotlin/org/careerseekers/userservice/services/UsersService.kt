@@ -43,7 +43,15 @@ class UsersService(
 
     @Transactional
     override fun createAll(items: List<CreateUserDto>) {
-        items.forEach { create(it) }
+        items.forEach { checkIfUserExistsByEmailOrMobile(it.email, it.mobileNumber) }
+        items.forEach { checkMobileNumberValid(it.mobileNumber) }
+
+        val usersToSave = items.map {
+            usersMapper.usersFromCreateDto(
+                it.copy(password = passwordEncoder.encode(it.password))
+            )
+        }
+        repository.saveAll(usersToSave)
     }
 
     @Transactional
