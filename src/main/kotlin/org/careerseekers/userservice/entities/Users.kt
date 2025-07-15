@@ -24,7 +24,7 @@ data class Users (
     var lastName: String,
 
     @Column(nullable = false)
-    val patronymic: String,
+    var patronymic: String,
 
     @Column(nullable = true)
     var dateOfBirth: Date,
