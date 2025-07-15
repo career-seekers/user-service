@@ -53,7 +53,6 @@ class UsersService(
         item.firstName?.let { user.firstName = it }
         item.lastName?.let { user.lastName = it }
         item.patronymic?.let { user.patronymic = it }
-        item.password?.let { user.password = passwordEncoder.encode(it) }
 
         return "User updated successfully."
     }

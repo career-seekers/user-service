@@ -7,5 +7,4 @@ data class UpdateUserDto(
     val firstName: String?,
     val lastName: String?,
     val patronymic: String?,
-    val password: String?,
 ) : DtoClass
