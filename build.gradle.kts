@@ -31,9 +31,11 @@ repositories {
 dependencies {
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    testImplementation("io.projectreactor:reactor-test")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     // Spring security

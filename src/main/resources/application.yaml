@@ -2,7 +2,6 @@ spring:
   application:
     name: user-service
 
-
 database:
   url: ${US_DB_URL}
   username: ${US_DB_USER}
@@ -11,3 +10,7 @@ database:
 
 server:
   port: ${SERVER_INTERNAL_PORT}
+
+file-service:
+  uri: ${FILE_SERVICE_URI}
+  default-avatar-id: ${DEFAULT_AVATAR_ID}
