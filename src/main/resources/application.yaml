@@ -11,3 +11,6 @@ database:
 
 server:
   port: ${SERVER_INTERNAL_PORT}
+
+file-service:
+  uri: ${FILE_SERVICE_URI}
