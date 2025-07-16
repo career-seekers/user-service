@@ -25,9 +25,9 @@ class DocumentExistenceChecker(
                     val apiError = json.decodeFromString<BasicErrorResponse>(body)
 
                     if (apiError.status == 404) {
-                        Mono.error { NotFoundException("File not found") }
+                        Mono.error(NotFoundException("File not found"))
                     } else {
-                        Mono.error { BadRequestException(apiError.message) }
+                        Mono.error(BadRequestException(apiError.message))
                     }
                 }
             }
