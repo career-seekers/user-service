@@ -33,7 +33,7 @@ class DocumentExistenceChecker(
             }
             .bodyToMono(FileStructure::class.java)
             .filter { file -> fileType == null || file.fileType == fileType }
-            .switchIfEmpty(Mono.error { BadRequestException("The specified and current file types don't match") })
+            .switchIfEmpty(Mono.error(BadRequestException("The specified and current file types don't match")))
             .block()
     }
 }
