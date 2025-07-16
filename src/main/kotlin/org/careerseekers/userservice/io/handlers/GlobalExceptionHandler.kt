@@ -2,6 +2,7 @@ package org.careerseekers.userservice.io.handlers
 
 import io.jsonwebtoken.security.SignatureException
 import org.careerseekers.userservice.exceptions.BadRequestException
+import org.careerseekers.userservice.exceptions.ConnectionRefusedException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
 import org.careerseekers.userservice.exceptions.MobileNumberFormatException
@@ -15,6 +16,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
+
+    /**
+     * Basic exceptions handler
+     * @return ResponseEntity with status 500 and exception message
+     */
     @ExceptionHandler(Exception::class)
     fun handleAllExceptions(ex: Exception): ResponseEntity<BasicErrorResponse> {
         val errorResponse = BasicErrorResponse(
@@ -25,6 +31,10 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
+
+    /**
+     * Custom project exceptions handler
+     */
     @ExceptionHandler(NotFoundException::class)
     fun handleNotFoundException(ex: NotFoundException): ResponseEntity<BasicErrorResponse> {
         val errorResponse = BasicErrorResponse(
@@ -65,7 +75,10 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
     }
 
-    // JWT Exception
+
+    /**
+     * Jwt exceptions handler
+     */
     @ExceptionHandler(JwtAuthenticationException::class)
     fun handleJwtAuthenticationException(ex: JwtAuthenticationException): ResponseEntity<BasicErrorResponse> {
         val errorResponse = ex.message?.let {
@@ -100,5 +113,19 @@ class GlobalExceptionHandler {
         }
 
         return ResponseEntity(errorResponse, HttpStatus.FORBIDDEN)
+    }
+
+
+    /**
+     * WebClient exceptions handler
+     */
+    @ExceptionHandler(ConnectionRefusedException::class)
+    fun handleConnectionRefusedException(ex: ConnectionRefusedException): ResponseEntity<BasicErrorResponse> {
+        val errorResponse = BasicErrorResponse(
+            status = HttpStatus.SERVICE_UNAVAILABLE.value(),
+            message = ex.message
+        )
+
+        return ResponseEntity(errorResponse, HttpStatus.SERVICE_UNAVAILABLE)
     }
 }
