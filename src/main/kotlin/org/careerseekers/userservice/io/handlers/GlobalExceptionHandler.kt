@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.io.handlers
 
 import io.jsonwebtoken.security.SignatureException
+import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
 import org.careerseekers.userservice.exceptions.MobileNumberFormatException
@@ -46,6 +47,16 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(MobileNumberFormatException::class)
     fun handleMobileNumberFormatException(ex: MobileNumberFormatException): ResponseEntity<BasicErrorResponse> {
+        val errorResponse = BasicErrorResponse(
+            status = HttpStatus.BAD_REQUEST.value(),
+            message = ex.message
+        )
+
+        return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(BadRequestException::class)
+    fun handleBadRequestException(ex: BadRequestException): ResponseEntity<BasicErrorResponse> {
         val errorResponse = BasicErrorResponse(
             status = HttpStatus.BAD_REQUEST.value(),
             message = ex.message
