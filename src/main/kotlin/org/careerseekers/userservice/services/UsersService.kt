@@ -11,6 +11,7 @@ import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.interfaces.CrudService
 import org.careerseekers.userservice.utils.DocumentExistenceChecker
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,6 +23,9 @@ class UsersService(
     private val passwordEncoder: PasswordEncoder,
     private val documentExistenceChecker: DocumentExistenceChecker
 ) : CrudService<Users, Long, CreateUserDto, UpdateUserDto> {
+
+    @Value("\${file-service.default-avatar-id}")
+    private lateinit var defaultAvatarId: String
 
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
@@ -35,7 +39,7 @@ class UsersService(
 
     @Transactional
     override fun create(item: CreateUserDto): Users {
-        if (item.avatarId != null && item.avatarId != 0L) {
+        if (item.avatarId != null && item.avatarId != defaultAvatarId.toLongOrNull()) {
             documentExistenceChecker.checkFileExistence(item.avatarId, FileTypes.AVATAR)
         }
 
