@@ -47,7 +47,7 @@ class UsersService(
         checkMobileNumberValid(item.mobileNumber)
 
         val userToSave = usersMapper.usersFromCreateDto(
-            item.copy(password = passwordEncoder.encode(item.password))
+            item.copy(password = passwordEncoder.encode(item.password), avatarId = item.avatarId ?: defaultAvatarId.toLongOrNull()),
         )
         return repository.save(userToSave)
     }
