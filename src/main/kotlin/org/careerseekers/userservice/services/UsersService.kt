@@ -27,6 +27,8 @@ class UsersService(
     @Value("\${file-service.default-avatar-id}")
     private lateinit var defaultAvatarId: String
 
+    fun getAllByIds(ids: List<Long>): List<Users> = repository.findAllById(ids)
+
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
             ?: if (throwable) throw NotFoundException("User with email $email not found") else null
