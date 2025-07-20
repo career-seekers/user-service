@@ -7,9 +7,11 @@ import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.io.BasicErrorResponse
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
@@ -20,10 +22,17 @@ class DocumentsApiResolver(
     @Qualifier("file-service") private val httpClient: WebClient
 ) {
     fun loadDocument(url: String, file: MultipartFile): FileStructure? {
+        val resource = object : ByteArrayResource(file.bytes) {
+            override fun getFilename(): String? = file.originalFilename
+        }
+
+        val multipartData = LinkedMultiValueMap<String, Any>()
+        multipartData.add("file", resource)
+
         return httpClient.post()
             .uri("/file-service/v1/files/$url")
             .contentType(MediaType.MULTIPART_FORM_DATA)
-            .body(BodyInserters.fromMultipartData("file", file))
+            .body(BodyInserters.fromMultipartData(multipartData))
             .retrieve()
             .bodyToMono(FileStructure::class.java)
             .block()
