@@ -1,9 +1,10 @@
 package org.careerseekers.userservice.dto.docs
 
 import org.careerseekers.userservice.dto.DtoClass
+import org.careerseekers.userservice.entities.Users
 
 data class CreateUserDocsTransferDto(
-    val userId: Long,
+    val user: Users,
     var snilsNumber: String,
     var snilsId: Long?,
     var studyingPlace: String,

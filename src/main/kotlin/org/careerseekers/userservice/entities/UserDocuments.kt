@@ -24,7 +24,7 @@ data class UserDocuments(
     @JsonIgnoreProperties(value = ["password"])
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "user_id", nullable = false, unique = true)
-    val user: Users,
+    var user: Users,
 
     @Column(nullable = false, unique = true)
     var snilsNumber: String,

@@ -35,7 +35,7 @@ class UserDocumentsService(
 
     private fun createUserDocument(item: CreateUserDocsDto, user: Users): UserDocuments {
         val transferDto = CreateUserDocsTransferDto(
-            userId = user.id,
+            user = user,
             snilsNumber = item.snilsDto.snilsNumber,
             studyingPlace = item.studyingPlace,
             learningClass = item.learningClass,
