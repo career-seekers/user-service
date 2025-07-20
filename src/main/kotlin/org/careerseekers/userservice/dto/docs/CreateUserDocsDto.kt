@@ -1,16 +1,16 @@
 package org.careerseekers.userservice.dto.docs
 
 import org.careerseekers.userservice.dto.DtoClass
-import org.springframework.http.codec.multipart.FilePart
+import org.springframework.web.multipart.MultipartFile
 
 data class CreateUserDocsDto(
     val userId: Long,
     val snilsDto: SnilsDto,
     val studyingPlace: String,
-    val studyingCertificateFile: FilePart,
+    val studyingCertificateFile: MultipartFile,
     val learningClass: Short,
     val trainingGround: String,
-    val additionalStudyingCertificateFile: FilePart,
+    val additionalStudyingCertificateFile: MultipartFile,
     val parentRole: String,
-    val consentToChildPdpFile: FilePart,
+    val consentToChildPdpFile: MultipartFile,
 ) : DtoClass

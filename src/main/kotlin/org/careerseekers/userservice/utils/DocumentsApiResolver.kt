@@ -8,9 +8,9 @@ import org.careerseekers.userservice.io.BasicErrorResponse
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.MediaType
-import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono
 class DocumentsApiResolver(
     @Qualifier("file-service") private val httpClient: WebClient
 ) {
-    fun loadDocument(url: String, file: FilePart): FileStructure? {
+    fun loadDocument(url: String, file: MultipartFile): FileStructure? {
         return httpClient.post()
             .uri("/file-service/v1/files/$url")
             .contentType(MediaType.MULTIPART_FORM_DATA)

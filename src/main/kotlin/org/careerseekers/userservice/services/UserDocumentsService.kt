@@ -10,9 +10,9 @@ import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UserDocumentsMapper
 import org.careerseekers.userservice.repositories.UserDocsRepository
 import org.careerseekers.userservice.utils.DocumentsApiResolver
-import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 class UserDocumentsService(
@@ -134,7 +134,7 @@ class UserDocumentsService(
         return "Users documents deleted successfully."
     }
 
-    private fun loadDocId(url: String, file: FilePart?): Long? =
+    private fun loadDocId(url: String, file: MultipartFile?): Long? =
         file?.let { documentsApiResolver.loadDocument(url, it)?.id }
 
     private fun removeDocumentsFromDatabase(userDocs: UserDocuments) {
