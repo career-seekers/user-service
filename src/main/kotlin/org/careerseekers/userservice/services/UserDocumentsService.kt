@@ -11,7 +11,7 @@ import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UserDocumentsMapper
 import org.careerseekers.userservice.repositories.UserDocsRepository
 import org.careerseekers.userservice.utils.DocumentsApiResolver
-import org.careerseekers.userservice.utils.SnilsNumberValidator.validateSnils
+import org.careerseekers.userservice.utils.SnilsValidator
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -22,6 +22,7 @@ class UserDocumentsService(
     private val usersService: UsersService,
     private val documentsApiResolver: DocumentsApiResolver,
     private val userDocumentsMapper: UserDocumentsMapper,
+    private val snilsValidator: SnilsValidator,
 ) {
     fun getAll() = repository.findAll()
 
@@ -33,22 +34,15 @@ class UserDocumentsService(
         return if (!o.isPresent) null else o.get()
     }
 
-    fun getDocsByUserId(userId: Long): UserDocuments {
+    fun getDocsByUserId(userId: Long, throwable: Boolean = true): UserDocuments? {
         return usersService.getById(userId, message = "User with id $userId not found").let {
-            repository.findByUserId(it!!.id) ?: throw NotFoundException("Documents for user with if $userId not found")
-        }
-    }
-
-    fun checkSnilsValid(snilsNumber: String) {
-        validateSnils(snilsNumber)
-
-        repository.findBySnilsNumber(snilsNumber)?.let {
-            throw DoubleRecordException("Documents with snils number $snilsNumber already exists")
+            repository.findByUserId(it!!.id)
+                ?: if (throwable) throw NotFoundException("Documents for user with if $userId not found") else null
         }
     }
 
     private fun createUserDocument(item: CreateUserDocsDto, user: Users): UserDocuments {
-        checkSnilsValid(item.snilsDto.snilsNumber)
+        snilsValidator.checkSnilsValid(item.snilsDto.snilsNumber)
 
         val transferDto = CreateUserDocsTransferDto(
             user = user,
@@ -71,6 +65,10 @@ class UserDocumentsService(
     @Transactional
     fun create(item: CreateUserDocsDto): UserDocuments {
         val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
+        getDocsByUserId(
+            user.id,
+            throwable = false
+        )?.let { throw DoubleRecordException("This user already has documents. If you want to change it, use update method.") }
 
         val userDoc = createUserDocument(item, user)
 
