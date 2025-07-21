@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserDocsRepository : JpaRepository<UserDocuments, Long> {
-    fun findByUserId(userId: Long): UserDocuments
+    fun findByUserId(userId: Long): UserDocuments?
+    fun findBySnilsNumber(snilsNumber: String): UserDocuments?
 }

@@ -1,5 +1,8 @@
 package org.careerseekers.userservice.utils
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.careerseekers.userservice.dto.files.FileStructure
 import org.careerseekers.userservice.exceptions.BadRequestException
@@ -10,7 +13,8 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionSynchronization
+import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.BodyInserters
@@ -21,6 +25,21 @@ import reactor.core.publisher.Mono
 class DocumentsApiResolver(
     @Qualifier("file-service") private val httpClient: WebClient
 ) {
+    private val documentCleanupScope = CoroutineScope(Dispatchers.IO)
+
+    private fun deleteDocumentAsync(id: Long) =
+        documentCleanupScope.launch { deleteDocument(id) }
+
+    fun registerFileForRollback(docId: Long) {
+        TransactionSynchronizationManager.registerSynchronization(object : TransactionSynchronization {
+            override fun afterCompletion(status: Int) {
+                if (status == TransactionSynchronization.STATUS_ROLLED_BACK) {
+                    deleteDocumentAsync(docId)
+                }
+            }
+        })
+    }
+
     fun loadDocument(url: String, file: MultipartFile): FileStructure? {
         val resource = object : ByteArrayResource(file.bytes) {
             override fun getFilename(): String? = file.originalFilename
@@ -38,7 +57,6 @@ class DocumentsApiResolver(
             .block()
     }
 
-    @Transactional
     fun deleteDocument(id: Long) {
         httpClient.delete()
             .uri("/file-service/v1/files/$id")

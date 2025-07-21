@@ -6,6 +6,7 @@ import org.careerseekers.userservice.dto.docs.UpdateUserDocsDto
 import org.careerseekers.userservice.entities.UserDocuments
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.exceptions.BadRequestException
+import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UserDocumentsMapper
 import org.careerseekers.userservice.repositories.UserDocsRepository
@@ -26,14 +27,23 @@ class UserDocumentsService(
     fun getById(id: Long, throwable: Boolean = true): UserDocuments? {
         val o = repository.findById(id)
         if (throwable && !o.isPresent) {
-            throw NotFoundException("User document with id $id not found")
+            throw NotFoundException("User documents with id $id not found")
         }
         return if (!o.isPresent) null else o.get()
     }
 
-    fun getDocsByUserId(userId: Long): UserDocuments = repository.findByUserId(userId)
+    fun getDocsByUserId(userId: Long): UserDocuments =
+        repository.findByUserId(userId) ?: throw NotFoundException("User document with id $userId not found")
+
+    fun checkSnilsValid(snilsNumber: String) {
+        repository.findBySnilsNumber(snilsNumber)?.let {
+            throw DoubleRecordException("Documents with snils number $snilsNumber already exists")
+        }
+    }
 
     private fun createUserDocument(item: CreateUserDocsDto, user: Users): UserDocuments {
+        checkSnilsValid(item.snilsDto.snilsNumber)
+
         val transferDto = CreateUserDocsTransferDto(
             user = user,
             snilsNumber = item.snilsDto.snilsNumber,
@@ -135,7 +145,11 @@ class UserDocumentsService(
     }
 
     private fun loadDocId(url: String, file: MultipartFile?): Long? =
-        file?.let { documentsApiResolver.loadDocument(url, it)?.id }
+        file?.let {
+            val id = documentsApiResolver.loadDocument(url, it)?.id
+            id?.let { documentsApiResolver.registerFileForRollback(it) }
+            id
+        }
 
     private fun removeDocumentsFromDatabase(userDocs: UserDocuments) {
         listOf(
