@@ -11,6 +11,7 @@ import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UserDocumentsMapper
 import org.careerseekers.userservice.repositories.UserDocsRepository
 import org.careerseekers.userservice.utils.DocumentsApiResolver
+import org.careerseekers.userservice.utils.SnilsNumberValidator.validateSnils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -32,10 +33,15 @@ class UserDocumentsService(
         return if (!o.isPresent) null else o.get()
     }
 
-    fun getDocsByUserId(userId: Long): UserDocuments =
-        repository.findByUserId(userId) ?: throw NotFoundException("User document with id $userId not found")
+    fun getDocsByUserId(userId: Long): UserDocuments {
+        return usersService.getById(userId, message = "User with id $userId not found").let {
+            repository.findByUserId(it!!.id) ?: throw NotFoundException("Documents for user with if $userId not found")
+        }
+    }
 
     fun checkSnilsValid(snilsNumber: String) {
+        validateSnils(snilsNumber)
+
         repository.findBySnilsNumber(snilsNumber)?.let {
             throw DoubleRecordException("Documents with snils number $snilsNumber already exists")
         }
