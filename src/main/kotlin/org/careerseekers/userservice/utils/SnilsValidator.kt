@@ -3,7 +3,6 @@ package org.careerseekers.userservice.utils
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.repositories.UserDocsRepository
-import org.springframework.stereotype.Component
 
 
 /**
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component
  *
  * @param userDocsRepository The repository used to check for existing SNILS numbers.
  */
-@Component
+@Utility
 class SnilsValidator(private val userDocsRepository: UserDocsRepository) {
 
     /**

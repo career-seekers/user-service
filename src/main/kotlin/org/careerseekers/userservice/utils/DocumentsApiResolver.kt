@@ -12,7 +12,6 @@ import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.MediaType
-import org.springframework.stereotype.Component
 import org.springframework.transaction.support.TransactionSynchronization
 import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.util.LinkedMultiValueMap
@@ -21,7 +20,7 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
-@Component
+@Utility
 class DocumentsApiResolver(
     @Qualifier("file-service") private val httpClient: WebClient
 ) {

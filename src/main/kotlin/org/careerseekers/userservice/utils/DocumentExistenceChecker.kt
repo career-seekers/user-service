@@ -7,11 +7,10 @@ import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.io.BasicErrorResponse
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
-@Component
+@Utility
 class DocumentExistenceChecker(
     @Qualifier("file-service") private val httpClient: WebClient
 ) {
