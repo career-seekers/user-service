@@ -57,23 +57,27 @@ class DocumentsApiResolver(
             .block()
     }
 
-    fun deleteDocument(id: Long) {
-        httpClient.delete()
+    fun deleteDocument(id: Long, throwable: Boolean = true): BasicSuccessfulResponse<*>? {
+        return httpClient.delete()
             .uri("/file-service/v1/files/$id")
             .retrieve()
             .onStatus({ it.isError }) { resp ->
                 resp.bodyToMono(String::class.java).flatMap { body ->
                     val json = Json { ignoreUnknownKeys = true }
                     val apiError = json.decodeFromString<BasicErrorResponse>(body)
-
-                    if (apiError.status == 404) {
-                        Mono.error(NotFoundException(apiError.message))
+                    if (throwable) {
+                        if (apiError.status == 404) {
+                            Mono.error(NotFoundException(apiError.message))
+                        } else {
+                            Mono.error(BadRequestException(apiError.message + " " + apiError.status))
+                        }
                     } else {
-                        Mono.error(BadRequestException(apiError.message))
+                        Mono.empty()
                     }
                 }
             }
             .bodyToMono(BasicSuccessfulResponse::class.java)
             .block()
     }
+
 }
