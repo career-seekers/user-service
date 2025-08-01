@@ -9,7 +9,6 @@ import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
 import org.careerseekers.userservice.utils.JwtUtil
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,8 +19,6 @@ class AuthService(
     private val usersService: UsersService,
     private val passwordEncoder: PasswordEncoder,
 ) {
-    @Value("\${app.routes.path}")
-
     @Transactional
     fun register(data: RegisterUserDto): UserTokensDto {
         return usersService.create(CreateUserDto(
