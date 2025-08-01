@@ -5,7 +5,8 @@ import org.springframework.web.multipart.MultipartFile
 
 data class UpdateUserDocsDto(
     val id: Long,
-    val snilsDto: SnilsDto?,
+    val snilsNumber: String?,
+    val snilsFile: MultipartFile?,
     val studyingPlace: String?,
     val studyingCertificateFile: MultipartFile?,
     val learningClass: Short?,

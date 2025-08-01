@@ -8,6 +8,7 @@ import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
+import org.careerseekers.userservice.io.converters.extensions.checkNullable
 import org.careerseekers.userservice.mappers.UserDocumentsMapper
 import org.careerseekers.userservice.repositories.UserDocsRepository
 import org.careerseekers.userservice.utils.DocumentsApiResolver
@@ -78,17 +79,21 @@ class UserDocumentsService(
 
     @Transactional
     fun update(item: UpdateUserDocsDto): String {
-        getById(item.id).let { docs ->
-            usersService.getById(docs!!.user.id, message = "User with id ${docs.user.id} not found.")
+        getById(item.id)!!.let { docs ->
+            listOf(
+                item.snilsNumber,
+                item.snilsFile
+            ).checkNullable("Parameters snilsNumber and snilsFile can be only all null values or all non-null values.")
+            item.snilsNumber?.let { snilsValidator.checkSnilsValid(it) }
 
-            item.snilsDto?.let { snilsDto ->
+            item.snilsFile.let { snilsFile ->
                 val oldId = docs.snilsId
-                loadDocId("uploadSnils", snilsDto.snilsFile).let {
-                    docs.snilsId = it ?: throw BadRequestException("Snils ID could not be found.")
+                loadDocId("uploadSnils", item.snilsFile).let {
+                    docs.snilsId = it ?: throw BadRequestException("Something went wrong while uploading snils.")
                 }
+                docs.snilsNumber = item.snilsNumber!!
 
-                documentsApiResolver.deleteDocument(oldId)
-                docs.snilsNumber = snilsDto.snilsNumber
+                documentsApiResolver.deleteDocument(oldId, throwable = false)
             }
 
             item.studyingPlace?.let { docs.studyingPlace = it }
@@ -100,7 +105,7 @@ class UserDocumentsService(
                         it ?: throw BadRequestException("Studying certificate ID could not be found.")
                 }
 
-                documentsApiResolver.deleteDocument(oldId)
+                documentsApiResolver.deleteDocument(oldId, throwable = false)
             }
 
             item.learningClass?.let { docs.learningClass = it }
@@ -113,7 +118,7 @@ class UserDocumentsService(
                         it ?: throw BadRequestException("Additional studying certificate ID could not be found.")
                 }
 
-                documentsApiResolver.deleteDocument(oldId)
+                documentsApiResolver.deleteDocument(oldId, throwable = false)
             }
 
             item.parentRole?.let { docs.parentRole = it }
@@ -124,7 +129,7 @@ class UserDocumentsService(
                     docs.consentToChildPdpId = it ?: throw BadRequestException("Consent to child pdp ID not found.")
                 }
 
-                documentsApiResolver.deleteDocument(oldId)
+                documentsApiResolver.deleteDocument(oldId, throwable = false)
             }
         }
 
