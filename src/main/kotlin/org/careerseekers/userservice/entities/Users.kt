@@ -49,5 +49,5 @@ data class Users (
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnore
-    val documents: UserDocuments
+    val documents: UserDocuments?
 ) : ConvertableToHttpResponse<Users>

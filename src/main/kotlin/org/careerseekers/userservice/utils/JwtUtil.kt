@@ -16,6 +16,7 @@ import org.careerseekers.userservice.repositories.JwtTokensRepository
 import org.careerseekers.userservice.services.UsersService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.util.Date
@@ -88,7 +89,7 @@ class JwtUtil(
         return true
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun removeOldRefreshTokenByUUID(uuid: UUID) = jwtTokensRepository.deleteByUuid(uuid)
 
     fun getUserFromToken(token: String): Users? {

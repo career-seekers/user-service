@@ -22,7 +22,7 @@ class WebSecurityConfig(
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .authorizeHttpRequests { auth ->
-                auth.requestMatchers("/users-service/v1/auth/**").permitAll()
+                auth.requestMatchers("/users-service/*/auth/**").permitAll()
                 auth.anyRequest().authenticated()
             }
             .csrf { csrf -> csrf.disable() }
