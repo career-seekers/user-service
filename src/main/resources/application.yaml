@@ -1,6 +1,10 @@
 spring:
   application:
     name: user-service
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
 
 database:
   url: ${US_DB_URL}

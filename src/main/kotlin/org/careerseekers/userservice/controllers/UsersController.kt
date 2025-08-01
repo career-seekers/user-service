@@ -5,7 +5,7 @@ import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
-import org.careerseekers.userservice.io.converters.toHttpResponse
+import org.careerseekers.userservice.io.converters.extensions.toHttpResponse
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.UsersService
 import org.springframework.web.bind.annotation.DeleteMapping

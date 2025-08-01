@@ -84,6 +84,18 @@ dependencies {
     implementation("io.zipkin.reporter2:zipkin-reporter-brave")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
 
+    // Netty
+    val nettyVersion = "4.1.122.Final"
+
+    val osName = System.getProperty("os.name").lowercase()
+    val osArch = System.getProperty("os.arch").lowercase()
+
+    if (osName.contains("mac") && osArch == "aarch64") {
+        runtimeOnly("io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-aarch_64")
+    } else if (osName.contains("mac")) {
+        runtimeOnly("io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-x86_64")
+    }
+
 }
 
 kotlin {

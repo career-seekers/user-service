@@ -1,14 +1,13 @@
 package org.careerseekers.userservice.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
@@ -21,10 +20,10 @@ data class UserDocuments(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
 
-    @JsonIgnoreProperties(value = ["password"])
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
-    val user: Users,
+    @JsonIgnoreProperties(value = ["password"])
+    var user: Users,
 
     @Column(nullable = false, unique = true)
     var snilsNumber: String,

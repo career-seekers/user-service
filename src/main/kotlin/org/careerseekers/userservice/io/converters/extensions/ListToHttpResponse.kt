@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.io.converters
+package org.careerseekers.userservice.io.converters.extensions
 
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
 
