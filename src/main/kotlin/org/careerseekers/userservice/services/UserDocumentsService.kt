@@ -15,7 +15,6 @@ import org.careerseekers.userservice.utils.DocumentsApiResolver
 import org.careerseekers.userservice.utils.SnilsValidator
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
 
 @Service
 class UserDocumentsService(
@@ -52,13 +51,16 @@ class UserDocumentsService(
             learningClass = item.learningClass,
             trainingGround = item.trainingGround,
             parentRole = item.parentRole,
-            snilsId = loadDocId("uploadSnils", item.snilsDto.snilsFile),
-            studyingCertificateId = loadDocId("uploadStudyingCertificate", item.studyingCertificateFile),
-            additionalStudyingCertificateId = loadDocId(
+            snilsId = documentsApiResolver.loadDocId("uploadSnils", item.snilsDto.snilsFile),
+            studyingCertificateId = documentsApiResolver.loadDocId(
+                "uploadStudyingCertificate",
+                item.studyingCertificateFile
+            ),
+            additionalStudyingCertificateId = documentsApiResolver.loadDocId(
                 "uploadAdditionalStudyingCertificate",
                 item.additionalStudyingCertificateFile
             ),
-            consentToChildPdpId = loadDocId("uploadConsentToChildPDP", item.consentToChildPdpFile)
+            consentToChildPdpId = documentsApiResolver.loadDocId("uploadConsentToChildPDP", item.consentToChildPdpFile)
         )
         return userDocumentsMapper.userDocsFromDto(transferDto)
     }
@@ -88,7 +90,7 @@ class UserDocumentsService(
 
             item.snilsFile.let { snilsFile ->
                 val oldId = docs.snilsId
-                loadDocId("uploadSnils", item.snilsFile).let {
+                documentsApiResolver.loadDocId("uploadSnils", item.snilsFile).let {
                     docs.snilsId = it ?: throw BadRequestException("Something went wrong while uploading snils.")
                 }
                 docs.snilsNumber = item.snilsNumber!!
@@ -100,7 +102,7 @@ class UserDocumentsService(
 
             item.studyingCertificateFile?.let {
                 val oldId = docs.studyingCertificateId
-                loadDocId("uploadStudyingCertificate", it).let {
+                documentsApiResolver.loadDocId("uploadStudyingCertificate", it).let {
                     docs.studyingCertificateId =
                         it ?: throw BadRequestException("Studying certificate ID could not be found.")
                 }
@@ -113,7 +115,7 @@ class UserDocumentsService(
 
             item.additionalStudyingCertificateFile?.let {
                 val oldId = docs.additionalStudyingCertificateId
-                loadDocId("uploadAdditionalStudyingCertificate", it).let {
+                documentsApiResolver.loadDocId("uploadAdditionalStudyingCertificate", it).let {
                     docs.additionalStudyingCertificateId =
                         it ?: throw BadRequestException("Additional studying certificate ID could not be found.")
                 }
@@ -125,7 +127,7 @@ class UserDocumentsService(
 
             item.consentToChildPdpFile?.let {
                 val oldId = docs.consentToChildPdpId
-                loadDocId("uploadConsentToChildPDP", it).let {
+                documentsApiResolver.loadDocId("uploadConsentToChildPDP", it).let {
                     docs.consentToChildPdpId = it ?: throw BadRequestException("Consent to child pdp ID not found.")
                 }
 
@@ -152,13 +154,6 @@ class UserDocumentsService(
 
         return "Users documents deleted successfully."
     }
-
-    private fun loadDocId(url: String, file: MultipartFile?): Long? =
-        file?.let {
-            val id = documentsApiResolver.loadDocument(url, it)?.id
-            id?.let { documentsApiResolver.registerFileForRollback(it) }
-            id
-        }
 
     private fun removeDocumentsFromDatabase(userDocs: UserDocuments) {
         listOf(
