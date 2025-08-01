@@ -1,10 +1,13 @@
 package org.careerseekers.userservice.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.io.converters.ConvertableToHttpResponse
@@ -42,5 +45,9 @@ data class Users (
     var role: UsersRoles,
 
     @Column(nullable = true)
-    var avatarId: Long
+    var avatarId: Long,
+
+    @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    @JsonIgnore
+    val documents: UserDocuments
 ) : ConvertableToHttpResponse<Users>
