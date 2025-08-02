@@ -47,6 +47,9 @@ data class Users (
     @Column(nullable = true)
     var avatarId: Long,
 
+    @Column(nullable = false)
+    var verified: Boolean = false,
+
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnore
     val userDocuments: UserDocuments?,
