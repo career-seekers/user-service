@@ -29,7 +29,14 @@ class DocumentsApiResolver(
     private fun deleteDocumentAsync(id: Long) =
         documentCleanupScope.launch { deleteDocument(id) }
 
-    fun registerFileForRollback(docId: Long) {
+    fun loadDocId(url: String, file: MultipartFile?): Long? =
+        file?.let {
+            val id = loadDocument(url, it)?.id
+            id?.let { registerFileForRollback(it) }
+            id
+        }
+
+    private fun registerFileForRollback(docId: Long) {
         TransactionSynchronizationManager.registerSynchronization(object : TransactionSynchronization {
             override fun afterCompletion(status: Int) {
                 if (status == TransactionSynchronization.STATUS_ROLLED_BACK) {
@@ -39,7 +46,7 @@ class DocumentsApiResolver(
         })
     }
 
-    fun loadDocument(url: String, file: MultipartFile): FileStructure? {
+    private fun loadDocument(url: String, file: MultipartFile): FileStructure? {
         val resource = object : ByteArrayResource(file.bytes) {
             override fun getFilename(): String? = file.originalFilename
         }
