@@ -6,6 +6,8 @@ import org.careerseekers.userservice.dto.docs.CreateExpertDocsTransferDto
 import org.careerseekers.userservice.dto.docs.UpdateExpertDocsDto
 import org.careerseekers.userservice.entities.ExpertDocuments
 import org.careerseekers.userservice.entities.Users
+import org.careerseekers.userservice.enums.UsersRoles
+import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.ExpertDocumentsMapper
@@ -26,15 +28,21 @@ class ExpertDocumentsService(
     private val basicNotFoundMessage: String = "Expert documents not found."
 
     fun getDocsByUserId(userId: Long, throwable: Boolean = true): ExpertDocuments? {
-        return usersService.getById(userId, message = "User with id $userId not found").let {
-            repository.findByUserId(it!!.id)
-                ?: if (throwable) throw NotFoundException("Documents for user with if $userId not found") else null
+        return usersService.getById(userId, message = "User with id $userId not found").let { user ->
+            if (user!!.role == UsersRoles.EXPERT) {
+                repository.findByUserId(user.id)
+                    ?: if (throwable) throw NotFoundException("Documents for user with if $userId not found") else null
+            } else {
+                throw BadRequestException(
+                    "This user has role ${user.role}, not ${UsersRoles.EXPERT}. Please use another controller to check his documents."
+                )
+            }
         }
     }
 
     private fun createExpertDocument(item: CreateExpertDocsDto, user: Users): ExpertDocuments {
         val transferDto = CreateExpertDocsTransferDto(
-            userId = user.id,
+            user = user,
             institution = item.institution,
             post = item.post,
             consentToExpertPdpId = documentsApiResolver.loadDocId(
@@ -49,6 +57,13 @@ class ExpertDocumentsService(
     @Transactional
     fun create(item: CreateExpertDocsDto): ExpertDocuments {
         val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
+
+        if (user.role != UsersRoles.EXPERT) {
+            throw BadRequestException(
+                "This user has role ${user.role}, not ${UsersRoles.EXPERT}. Please use another controller to create his documents."
+            )
+        }
+
         getDocsByUserId(
             user.id,
             throwable = false
@@ -84,7 +99,6 @@ class ExpertDocumentsService(
         return "Expert documents deleted successfully."
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     override fun deleteAll(): String {
         super.deleteAll()
