@@ -15,7 +15,6 @@ import org.careerseekers.userservice.repositories.ExpertDocsRepository
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
 import org.careerseekers.userservice.utils.DocumentsApiResolver
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
 @Service
