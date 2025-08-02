@@ -5,6 +5,7 @@ import org.careerseekers.userservice.dto.docs.CreateUserDocsTransferDto
 import org.careerseekers.userservice.dto.docs.UpdateUserDocsDto
 import org.careerseekers.userservice.entities.UserDocuments
 import org.careerseekers.userservice.entities.Users
+import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
@@ -35,9 +36,15 @@ class UserDocumentsService(
     }
 
     fun getDocsByUserId(userId: Long, throwable: Boolean = true): UserDocuments? {
-        return usersService.getById(userId, message = "User with id $userId not found").let {
-            repository.findByUserId(it!!.id)
-                ?: if (throwable) throw NotFoundException("Documents for user with if $userId not found") else null
+        return usersService.getById(userId, message = "User with id $userId not found").let { user ->
+            if (user!!.role == UsersRoles.USER) {
+                repository.findByUserId(user.id)
+                    ?: if (throwable) throw NotFoundException("Documents for user with if $userId not found") else null
+            } else {
+                throw BadRequestException(
+                    "This user has role ${user.role}, not ${UsersRoles.USER}. Please use another controller to check his documents."
+                )
+            }
         }
     }
 
