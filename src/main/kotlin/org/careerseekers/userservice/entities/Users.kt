@@ -52,17 +52,17 @@ data class Users (
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnore
-    val userDocuments: UserDocuments?,
+    var userDocuments: UserDocuments?,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnore
-    val expertDocuments: ExpertDocuments?,
+    var expertDocuments: ExpertDocuments?,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnore
-    val tutorDocuments: TutorDocuments?,
+    var tutorDocuments: TutorDocuments?,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnore
-    val mentorDocuments: MentorDocuments?,
+    var mentorDocuments: MentorDocuments?,
 ) : ConvertableToHttpResponse<Users>
