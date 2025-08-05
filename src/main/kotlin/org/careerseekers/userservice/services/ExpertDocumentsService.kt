@@ -12,6 +12,7 @@ import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.ExpertDocumentsMapper
 import org.careerseekers.userservice.repositories.ExpertDocsRepository
+import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
 import org.careerseekers.userservice.utils.DocumentsApiResolver
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service
 @Service
 class ExpertDocumentsService(
     override val repository: ExpertDocsRepository,
+    private val usersRepository: UsersRepository,
     private val usersService: UsersService,
     private val documentsApiResolver: DocumentsApiResolver,
     private val expertDocumentsMapper: ExpertDocumentsMapper,
@@ -93,8 +95,11 @@ class ExpertDocumentsService(
     @Transactional
     override fun deleteById(id: Long): String {
         getById(id, message = basicNotFoundMessage)?.let {
-            documentsApiResolver.deleteDocument(it.consentToExpertPdpId, throwable = false)
+            it.user.expertDocuments = null
+            usersRepository.save(it.user)
+
             repository.delete(it)
+            documentsApiResolver.deleteDocument(it.consentToExpertPdpId, throwable = false)
         }
 
         return "Expert documents deleted successfully."
@@ -102,8 +107,7 @@ class ExpertDocumentsService(
 
     @Transactional
     override fun deleteAll(): String {
-        super.deleteAll()
-
+        getAll().forEach { deleteById(it.id) }
         return "All expert documents deleted successfully"
     }
 }

@@ -109,7 +109,6 @@ class MentorDocumentsService(
     @Transactional
     override fun deleteAll(): String {
         getAll().forEach { deleteById(it.id) }
-
         return "All mentors documents deleted successfully"
     }
 }

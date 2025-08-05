@@ -12,6 +12,9 @@ import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.io.converters.extensions.checkNullable
 import org.careerseekers.userservice.mappers.UserDocumentsMapper
 import org.careerseekers.userservice.repositories.UserDocsRepository
+import org.careerseekers.userservice.repositories.UsersRepository
+import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
+import org.careerseekers.userservice.services.interfaces.crud.IReadService
 import org.careerseekers.userservice.utils.DocumentsApiResolver
 import org.careerseekers.userservice.utils.SnilsValidator
 import org.springframework.stereotype.Service
@@ -19,13 +22,14 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserDocumentsService(
-    val repository: UserDocsRepository,
+    override val repository: UserDocsRepository,
+    private val usersRepository: UsersRepository,
     private val usersService: UsersService,
     private val documentsApiResolver: DocumentsApiResolver,
     private val userDocumentsMapper: UserDocumentsMapper,
     private val snilsValidator: SnilsValidator,
-) {
-    fun getAll() = repository.findAll()
+) : IReadService<UserDocuments, Long>, IDeleteService<UserDocuments, Long> {
+    override fun getAll() = repository.findAll()
 
     fun getById(id: Long, throwable: Boolean = true): UserDocuments? {
         val o = repository.findById(id)
@@ -146,19 +150,22 @@ class UserDocumentsService(
     }
 
     @Transactional
-    fun deleteById(id: Long): String {
+    override fun deleteById(id: Long): String {
         getById(id)?.let {
-            removeDocumentsFromDatabase(it)
+
+            it.user.userDocuments = null
+            usersRepository.save(it.user)
+
             repository.delete(it)
+            removeDocumentsFromDatabase(it)
         }
 
         return "User documents deleted successfully."
     }
 
     @Transactional
-    fun deleteAll(): String {
-        repository.deleteAll()
-
+    override fun deleteAll(): String {
+        getAll().forEach { deleteById(it.id) }
         return "Users documents deleted successfully."
     }
 
