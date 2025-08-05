@@ -80,7 +80,9 @@ class ExpertDocumentsService(
             item.consentToExpertPdp.let {
                 val oldId = docs.consentToExpertPdpId
 
-                documentsApiResolver.loadDocId("uploadConsentToExpertPDP", item.consentToExpertPdp)
+                documentsApiResolver.loadDocId("uploadConsentToExpertPDP", item.consentToExpertPdp)?.let {
+                    docs.consentToExpertPdpId = it
+                }
                 documentsApiResolver.deleteDocument(oldId, throwable = false)
             }
         }
