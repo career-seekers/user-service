@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile
 
 data class CreateMentorDocsDto(
     val userId: Long,
-    val institutions: String,
+    val institution: String,
     val post: String,
     val consentToMentorPdp: MultipartFile,
 ) : DtoClass

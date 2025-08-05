@@ -5,7 +5,7 @@ import org.careerseekers.userservice.entities.Users
 
 data class CreateMentorDocsTransferDto(
     val user: Users,
-    val institutions: String,
+    val institution: String,
     val post: String,
-    val consentToMentorPdpId: Long,
+    val consentToMentorPdpId: Long?,
 ) : DtoClass
