@@ -3,6 +3,7 @@ package org.careerseekers.userservice.controllers
 import org.careerseekers.userservice.controllers.interfaces.CrudController
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
+import org.careerseekers.userservice.dto.users.VerifyUserDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.careerseekers.userservice.io.converters.extensions.toHttpResponse
@@ -54,6 +55,10 @@ class UsersController(
     @PatchMapping("/")
     override fun update(@RequestBody item: UpdateUserDto): BasicSuccessfulResponse<String> =
         service.update(item).toHttpResponse()
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/verify")
+    fun verifyUser(@RequestBody item: VerifyUserDto) = service.verifyUser(item).toHttpResponse()
 
     @DeleteMapping("/{id}")
     override fun deleteById(@PathVariable id: Long): BasicSuccessfulResponse<String> =
