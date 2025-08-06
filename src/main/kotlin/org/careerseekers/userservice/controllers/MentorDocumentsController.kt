@@ -27,10 +27,10 @@ class MentorDocumentsController(
 ) : IReadController<MentorDocuments, Long>,
     IDeleteController<MentorDocuments, Long> {
     @GetMapping("/{id}")
-    override fun getById(@PathVariable id: Long) = service.getById(id)
+    override fun getById(@PathVariable id: Long) = service.getById(id)!!.toHttpResponse()
 
     @GetMapping("/")
-    override fun getAll() = service.getAll()
+    override fun getAll() = service.getAll().toHttpResponse()
 
     @GetMapping("getByUserId/{id}")
     fun getDocsByUserId(@PathVariable id: Long) = service.getDocsByUserId(id)
