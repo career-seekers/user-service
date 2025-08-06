@@ -6,5 +6,5 @@ interface IDeleteController<T, ID> {
     val service : IDeleteService<T, ID>
 
     fun deleteAll(): Any
-    fun deleteById(id : Long): Any
+    fun deleteById(id : ID): Any
 }
