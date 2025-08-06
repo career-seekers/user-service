@@ -80,7 +80,6 @@ class MentorDocumentsService(
             item.post?.let { docs.post = it }
 
             item.consentToMentorPdp?.let {
-                println(1)
                 val oldId = docs.consentToMentorPdpId
 
                 documentsApiResolver.loadDocId("uploadConsentToMentorPDP", item.consentToMentorPdp)?.let {
