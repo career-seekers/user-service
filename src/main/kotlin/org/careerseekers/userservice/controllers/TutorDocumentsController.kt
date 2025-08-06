@@ -28,10 +28,10 @@ class TutorDocumentsController(
     IDeleteController<TutorDocuments, Long> {
 
     @GetMapping("/")
-    override fun getAll(): List<TutorDocuments> = service.getAll()
+    override fun getAll() = service.getAll().toHttpResponse()
 
     @GetMapping("/{id}")
-    override fun getById(@PathVariable id: Long): TutorDocuments? = service.getById(id)
+    override fun getById(@PathVariable id: Long) = service.getById(id)!!.toHttpResponse()
 
     @GetMapping("getByUserId/{id}")
     fun getDocsByUserId(@PathVariable id: Long) = service.getDocsByUserId(id)
