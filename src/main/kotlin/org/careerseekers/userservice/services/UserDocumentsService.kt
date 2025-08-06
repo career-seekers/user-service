@@ -13,8 +13,10 @@ import org.careerseekers.userservice.io.converters.extensions.checkNullable
 import org.careerseekers.userservice.mappers.UserDocumentsMapper
 import org.careerseekers.userservice.repositories.UserDocsRepository
 import org.careerseekers.userservice.repositories.UsersRepository
+import org.careerseekers.userservice.services.interfaces.crud.ICreateService
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
+import org.careerseekers.userservice.services.interfaces.crud.IUpdateService
 import org.careerseekers.userservice.utils.DocumentsApiResolver
 import org.careerseekers.userservice.utils.SnilsValidator
 import org.springframework.stereotype.Service
@@ -28,7 +30,10 @@ class UserDocumentsService(
     private val documentsApiResolver: DocumentsApiResolver,
     private val userDocumentsMapper: UserDocumentsMapper,
     private val snilsValidator: SnilsValidator,
-) : IReadService<UserDocuments, Long>, IDeleteService<UserDocuments, Long> {
+) : IReadService<UserDocuments, Long>,
+    ICreateService<UserDocuments, Long, CreateUserDocsDto>,
+    IUpdateService<UserDocuments, Long, UpdateUserDocsDto>,
+    IDeleteService<UserDocuments, Long> {
     override fun getAll() = repository.findAll()
 
     fun getById(id: Long, throwable: Boolean = true): UserDocuments? {
@@ -77,7 +82,7 @@ class UserDocumentsService(
     }
 
     @Transactional
-    fun create(item: CreateUserDocsDto): UserDocuments {
+    override fun create(item: CreateUserDocsDto): UserDocuments {
         val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
         getDocsByUserId(
             user.id,
@@ -91,7 +96,7 @@ class UserDocumentsService(
 
 
     @Transactional
-    fun update(item: UpdateUserDocsDto): String {
+    override fun update(item: UpdateUserDocsDto): String {
         getById(item.id)!!.let { docs ->
             listOf(
                 item.snilsNumber,

@@ -1,5 +1,7 @@
 package org.careerseekers.userservice.controllers
 
+import org.careerseekers.userservice.controllers.interfaces.crud.IDeleteController
+import org.careerseekers.userservice.controllers.interfaces.crud.IReadController
 import org.careerseekers.userservice.dto.docs.CreateExpertDocsDto
 import org.careerseekers.userservice.dto.docs.UpdateExpertDocsDto
 import org.careerseekers.userservice.entities.ExpertDocuments
@@ -21,13 +23,14 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @RequestMapping("/users-service/v1/expert-docs")
 class ExpertDocumentsController(
-    private val service: ExpertDocumentsService
-) {
+    override val service: ExpertDocumentsService
+) : IReadController<ExpertDocuments, Long>,
+    IDeleteController<ExpertDocuments, Long> {
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Long) = service.getById(id)
+    override fun getById(@PathVariable id: Long) = service.getById(id)!!.toHttpResponse()
 
     @GetMapping("/")
-    fun getAll() = service.getAll()
+    override fun getAll() = service.getAll().toHttpResponse()
 
     @GetMapping("getByUserId/{id}")
     fun getDocsByUserId(@PathVariable id: Long) = service.getDocsByUserId(id)
@@ -67,12 +70,12 @@ class ExpertDocumentsController(
     }
 
     @DeleteMapping("/{id}")
-    fun deleteById(@PathVariable id: Long): BasicSuccessfulResponse<String> {
+    override fun deleteById(@PathVariable id: Long): BasicSuccessfulResponse<String> {
         val res = service.deleteById(id).toHttpResponse()
         return res
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/")
-    fun deleteAll() = service.deleteAll().toHttpResponse()
+    override fun deleteAll() = service.deleteAll().toHttpResponse()
 }

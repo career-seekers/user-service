@@ -12,8 +12,10 @@ import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.MentorsDocumentsMapper
 import org.careerseekers.userservice.repositories.MentorDocsRepository
 import org.careerseekers.userservice.repositories.UsersRepository
+import org.careerseekers.userservice.services.interfaces.crud.ICreateService
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
+import org.careerseekers.userservice.services.interfaces.crud.IUpdateService
 import org.careerseekers.userservice.utils.DocumentsApiResolver
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -26,7 +28,10 @@ class MentorDocumentsService(
     private val usersService: UsersService,
     private val documentsApiResolver: DocumentsApiResolver,
     private val mentorsDocumentsMapper: MentorsDocumentsMapper,
-) : IReadService<MentorDocuments, Long>, IDeleteService<MentorDocuments, Long> {
+) : IReadService<MentorDocuments, Long>,
+    ICreateService<MentorDocuments, Long, CreateMentorDocsDto>,
+    IUpdateService<MentorDocuments, Long, UpdateMentorDocsDto>,
+    IDeleteService<MentorDocuments, Long> {
     private val basicNotFoundMessage: String = "Mentor documents not found."
 
     fun getDocsByUserId(userId: Long, throwable: Boolean = true): MentorDocuments? {
@@ -57,7 +62,7 @@ class MentorDocumentsService(
     }
 
     @Transactional
-    fun create(item: CreateMentorDocsDto): MentorDocuments {
+    override fun create(item: CreateMentorDocsDto): MentorDocuments {
         val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
 
         if (user.role != UsersRoles.MENTOR) {
@@ -74,7 +79,7 @@ class MentorDocumentsService(
     }
 
     @Transactional
-    fun update(item: UpdateMentorDocsDto): String {
+    override fun update(item: UpdateMentorDocsDto): String {
         getById(item.id, message = basicNotFoundMessage)!!.let { docs ->
             item.institution?.let { docs.institution = it }
             item.post?.let { docs.post = it }

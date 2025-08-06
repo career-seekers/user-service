@@ -1,5 +1,7 @@
 package org.careerseekers.userservice.controllers
 
+import org.careerseekers.userservice.controllers.interfaces.crud.IDeleteController
+import org.careerseekers.userservice.controllers.interfaces.crud.IReadController
 import org.careerseekers.userservice.dto.docs.CreateUserDocsDto
 import org.careerseekers.userservice.dto.docs.SnilsDto
 import org.careerseekers.userservice.dto.docs.UpdateUserDocsDto
@@ -26,14 +28,15 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("users-service/v1/user-docs")
 class UserDocumentsController(
     val repository: UserDocsRepository,
-    val service: UserDocumentsService
-) {
+    override val service: UserDocumentsService
+) : IReadController<UserDocuments, Long>,
+    IDeleteController<UserDocuments, Long> {
 
     @GetMapping("/")
-    fun getAll() = service.getAll().toHttpResponse()
+    override fun getAll() = service.getAll().toHttpResponse()
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Long) =
+    override fun getById(@PathVariable id: Long) =
         service.getById(id)!!.toHttpResponse()
 
     @GetMapping("/getByUserId/{userId}")
@@ -83,7 +86,10 @@ class UserDocumentsController(
         @RequestPart("studyingCertificateFile", required = false) studyingCertificateFile: MultipartFile?,
         @RequestPart("learningClass", required = false) learningClass: String?,
         @RequestPart("trainingGround", required = false) trainingGround: String?,
-        @RequestPart("additionalStudyingCertificateFile", required = false) additionalStudyingCertificateFile: MultipartFile?,
+        @RequestPart(
+            "additionalStudyingCertificateFile",
+            required = false
+        ) additionalStudyingCertificateFile: MultipartFile?,
         @RequestPart("parentRole", required = false) parentRole: String?,
         @RequestPart("consentToChildPdpFile", required = false) consentToChildPdpFile: MultipartFile?,
     ): BasicSuccessfulResponse<String> {
@@ -104,9 +110,9 @@ class UserDocumentsController(
     }
 
     @DeleteMapping("/{id}")
-    fun deleteById(@PathVariable id: Long) = service.deleteById(id).toHttpResponse()
+    override fun deleteById(@PathVariable id: Long) = service.deleteById(id).toHttpResponse()
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/")
-    fun deleteAll() = service.deleteAll().toHttpResponse()
+    override fun deleteAll() = service.deleteAll().toHttpResponse()
 }

@@ -12,8 +12,10 @@ import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.TutorDocumentsMapper
 import org.careerseekers.userservice.repositories.TutorDocsRepository
 import org.careerseekers.userservice.repositories.UsersRepository
+import org.careerseekers.userservice.services.interfaces.crud.ICreateService
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
+import org.careerseekers.userservice.services.interfaces.crud.IUpdateService
 import org.careerseekers.userservice.utils.DocumentsApiResolver
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -27,6 +29,8 @@ class TutorDocumentsService(
     private val documentsApiResolver: DocumentsApiResolver,
     private val tutorDocumentsMapper: TutorDocumentsMapper,
 ) : IReadService<TutorDocuments, Long>,
+    ICreateService<TutorDocuments, Long, CreateTutorDocsDto>,
+    IUpdateService<TutorDocuments, Long, UpdateTutorDocsDto>,
     IDeleteService<TutorDocuments, Long> {
     private val basicNotFoundMessage: String = "Tutor documents not found."
 
@@ -58,7 +62,7 @@ class TutorDocumentsService(
     }
 
     @Transactional
-    fun create(item: CreateTutorDocsDto): TutorDocuments {
+    override fun create(item: CreateTutorDocsDto): TutorDocuments {
         val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
 
         if (user.role != UsersRoles.TUTOR) {
@@ -75,7 +79,7 @@ class TutorDocumentsService(
     }
 
     @Transactional
-    fun update(item: UpdateTutorDocsDto): String {
+    override fun update(item: UpdateTutorDocsDto): String {
         getById(item.id, message = basicNotFoundMessage)!!.let { docs ->
             item.institution?.let { docs.institution = it }
             item.post?.let { docs.post = it }
