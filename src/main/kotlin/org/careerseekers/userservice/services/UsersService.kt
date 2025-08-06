@@ -2,6 +2,7 @@ package org.careerseekers.userservice.services
 
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
+import org.careerseekers.userservice.dto.users.VerifyUserDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.FileTypes
 import org.careerseekers.userservice.exceptions.DoubleRecordException
@@ -76,6 +77,14 @@ class UsersService(
         item.patronymic?.let { user.patronymic = it }
 
         return "User updated successfully."
+    }
+
+    @Transactional
+    fun verifyUser(item: VerifyUserDto): String {
+        getById(item.userId, message = "User with id ${item.userId} does not exist.").let {
+            it?.verified = item.status
+        }
+        return "User verification updated successfully."
     }
 
     @Transactional
