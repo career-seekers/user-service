@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("users-service/v1/users")
 class UsersController(
     override val service: UsersService,
-    override val repository: UsersRepository
+    val repository: UsersRepository
 ) : CrudController<Users, Long, CreateUserDto, UpdateUserDto> {
 
     @GetMapping("/")
