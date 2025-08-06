@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface TutorDocsRepository : JpaRepository<TutorDocuments, Long>
+interface TutorDocsRepository : JpaRepository<TutorDocuments, Long> {
+    fun findByUserId(id: Long): TutorDocuments?
+}

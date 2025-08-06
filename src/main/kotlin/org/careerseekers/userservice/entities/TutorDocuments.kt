@@ -21,7 +21,7 @@ data class TutorDocuments(
     @JsonIgnoreProperties(value = ["password"])
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
-    val user: Users,
+    var user: Users,
 
     @Column(nullable = false)
     var institution: String,
