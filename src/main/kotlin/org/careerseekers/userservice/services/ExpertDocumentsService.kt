@@ -13,8 +13,10 @@ import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.ExpertDocumentsMapper
 import org.careerseekers.userservice.repositories.ExpertDocsRepository
 import org.careerseekers.userservice.repositories.UsersRepository
+import org.careerseekers.userservice.services.interfaces.crud.ICreateService
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
+import org.careerseekers.userservice.services.interfaces.crud.IUpdateService
 import org.careerseekers.userservice.utils.DocumentsApiResolver
 import org.springframework.stereotype.Service
 
@@ -25,7 +27,10 @@ class ExpertDocumentsService(
     private val usersService: UsersService,
     private val documentsApiResolver: DocumentsApiResolver,
     private val expertDocumentsMapper: ExpertDocumentsMapper,
-) : IReadService<ExpertDocuments, Long>, IDeleteService<ExpertDocuments, Long> {
+) : IReadService<ExpertDocuments, Long>,
+    ICreateService<ExpertDocuments, Long, CreateExpertDocsDto>,
+    IUpdateService<ExpertDocuments, Long, UpdateExpertDocsDto>,
+    IDeleteService<ExpertDocuments, Long> {
     private val basicNotFoundMessage: String = "Expert documents not found."
 
     fun getDocsByUserId(userId: Long, throwable: Boolean = true): ExpertDocuments? {
@@ -56,7 +61,7 @@ class ExpertDocumentsService(
     }
 
     @Transactional
-    fun create(item: CreateExpertDocsDto): ExpertDocuments {
+    override fun create(item: CreateExpertDocsDto): ExpertDocuments {
         val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
 
         if (user.role != UsersRoles.EXPERT) {
@@ -74,7 +79,7 @@ class ExpertDocumentsService(
     }
 
     @Transactional
-    fun update(item: UpdateExpertDocsDto): String {
+    override fun update(item: UpdateExpertDocsDto): String {
         getById(item.id, message = basicNotFoundMessage)!!.let { docs ->
             item.institution?.let { docs.institution = it }
             item.post?.let { docs.post = it }
