@@ -15,6 +15,10 @@ database:
 server:
   port: ${SERVER_INTERNAL_PORT}
 
+grpc:
+  server:
+    port: ${GRPC_SERVER_PORT}
+
 file-service:
   uri: ${FILE_SERVICE_URI}
   default-avatar-id: ${DEFAULT_AVATAR_ID}

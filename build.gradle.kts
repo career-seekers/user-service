@@ -1,9 +1,12 @@
+import com.google.protobuf.gradle.id
+
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("kapt") version "1.9.0"
     kotlin("plugin.jpa") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
     kotlin("plugin.serialization") version "2.1.20"
+    id("com.google.protobuf") version "0.9.4"
     id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("it.nicolasfarabegoli.conventional-commits") version "3.1.3"
@@ -52,6 +55,11 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     runtimeOnly("org.postgresql:postgresql")
 
+    // Redis
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
     // Mapper
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     kapt("org.mapstruct:mapstruct-processor:1.5.3.Final")
@@ -59,6 +67,13 @@ dependencies {
     // Kafka messaging
     implementation("org.springframework.kafka:spring-kafka")
     testImplementation("org.springframework.kafka:spring-kafka-test")
+
+    // gRPC messaging
+    implementation("net.devh:grpc-server-spring-boot-starter:3.1.0.RELEASE")
+    implementation("net.devh:grpc-client-spring-boot-starter:3.1.0.RELEASE")
+    implementation("com.google.protobuf:protobuf-java:4.28.2")
+    implementation("io.grpc:grpc-protobuf:1.57.2")
+    implementation("io.grpc:grpc-stub:1.57.2")
 
     //Kotlinx coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
@@ -73,6 +88,7 @@ dependencies {
 
     // Utilities
     implementation("one.stayfocused.spring:dotenv-spring-boot:1.0.0")
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
 
     // Tests
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -96,6 +112,20 @@ dependencies {
         runtimeOnly("io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-x86_64")
     }
 
+}
+
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:4.28.2" }
+    plugins {
+        id("grpc") { artifact = "io.grpc:protoc-gen-grpc-java:1.57.2" }
+    }
+    generateProtoTasks {
+        all().forEach {
+            it.plugins {
+                id("grpc")
+            }
+        }
+    }
 }
 
 kotlin {
