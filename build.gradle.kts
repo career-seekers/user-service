@@ -115,7 +115,7 @@ dependencies {
 }
 
 protobuf {
-    protoc { artifact = "com.google.protobuf:protoc:4.28.3" }
+    protoc { artifact = "com.google.protobuf:protoc:4.28.2" }
     plugins {
         id("grpc") { artifact = "io.grpc:protoc-gen-grpc-java:1.57.2" }
     }
