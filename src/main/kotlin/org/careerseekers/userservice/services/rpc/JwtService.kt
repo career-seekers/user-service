@@ -6,12 +6,15 @@ import com.careerseekers.grpc.jwt.JwtToken
 import com.careerseekers.grpc.jwt.JwtTokensList
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
+import org.careerseekers.userservice.cache.JwtCacheLoader
 import org.careerseekers.userservice.repositories.JwtTokensRepository
 
 @GrpcService
 class JwtService(
-    private val jwtTokensRepository: JwtTokensRepository
+    private val jwtTokensRepository: JwtTokensRepository,
+    private val jwtCacheLoader: JwtCacheLoader,
 ) : JwtServiceGrpc.JwtServiceImplBase() {
+
     override fun getAllJwtTokens(
         request: Empty, responseObserver: StreamObserver<JwtTokensList>
     ) {
@@ -34,5 +37,7 @@ class JwtService(
 
         responseObserver.onNext(response)
         responseObserver.onCompleted()
+
+        jwtCacheLoader.preloadCache()
     }
 }
