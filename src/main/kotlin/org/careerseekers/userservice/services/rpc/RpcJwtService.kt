@@ -10,7 +10,7 @@ import org.careerseekers.userservice.cache.JwtCacheLoader
 import org.careerseekers.userservice.repositories.JwtTokensRepository
 
 @GrpcService
-class JwtService(
+class RpcJwtService(
     private val jwtTokensRepository: JwtTokensRepository,
     private val jwtCacheLoader: JwtCacheLoader,
 ) : JwtServiceGrpc.JwtServiceImplBase() {
