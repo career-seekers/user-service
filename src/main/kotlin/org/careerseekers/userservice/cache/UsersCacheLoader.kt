@@ -1,7 +1,7 @@
 package org.careerseekers.userservice.cache
 
-import org.careerseekers.userservice.entities.JwtTokensStorage
-import org.careerseekers.userservice.repositories.JwtTokensRepository
+import org.careerseekers.userservice.entities.Users
+import org.careerseekers.userservice.services.UsersService
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.cache.CacheManager
 import org.springframework.context.event.EventListener
@@ -9,20 +9,23 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Component
 
 @Component
-class JwtCacheLoader(
-    override val redisTemplate: RedisTemplate<String, JwtTokensStorage>,
-    private val jwtTokensRepository: JwtTokensRepository,
-    cacheManager: CacheManager
-) : CacheLoader<JwtTokensStorage> {
-    override val cacheKey = "jwtTokens"
+class UsersCacheLoader(
+    override val redisTemplate: RedisTemplate<String, Users>,
+    private val usersService: UsersService,
+    cacheManager: CacheManager,
+) : CacheLoader<Users> {
+    override val cacheKey = "users"
     private val cache = cacheManager.getCache(cacheKey)
+
 
     @EventListener(ApplicationReadyEvent::class)
     override fun preloadCache() {
         cache?.clear() ?: return
 
-        jwtTokensRepository.findAll().forEach { token ->
-            cache.put(token.uuid.toString(), token)
-        }
+        usersService.getAll().forEach { user -> cache.put(user.id, user) }
+    }
+
+    fun loadUserToCache(user: Users) {
+        cache?.putIfAbsent(user.id, user)
     }
 }
