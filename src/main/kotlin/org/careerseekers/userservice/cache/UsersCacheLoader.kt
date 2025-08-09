@@ -26,6 +26,6 @@ class UsersCacheLoader(
     }
 
     override fun getItemFromCache(key: Any): Users? {
-        return cache?.get(key)?.let { it as Users }
+        return cache?.get(key)?.let { it as? Users }
     }
 }

@@ -31,6 +31,6 @@ class JwtCacheLoader(
     }
 
     override fun getItemFromCache(key: Any): JwtTokensStorage? {
-        return cache?.get(key)?.let { it as JwtTokensStorage }
+        return cache?.get(key)?.let { it as? JwtTokensStorage }
     }
 }
