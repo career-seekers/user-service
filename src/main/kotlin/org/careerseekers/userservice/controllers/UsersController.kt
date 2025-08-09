@@ -1,6 +1,5 @@
 package org.careerseekers.userservice.controllers
 
-import org.careerseekers.userservice.cache.UsersCacheLoader
 import org.careerseekers.userservice.controllers.interfaces.CrudController
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("users-service/v1/users")
 class UsersController(
     override val service: UsersService,
-    private val usersCacheLoader: UsersCacheLoader,
     val repository: UsersRepository
 ) : CrudController<Users, Long, CreateUserDto, UpdateUserDto> {
 
@@ -33,15 +31,11 @@ class UsersController(
         service.getAll().toHttpResponse()
 
     @GetMapping("/{id}")
-    override fun getById(@PathVariable id: Long): BasicSuccessfulResponse<Users> {
-        val user = service.getById(
+    override fun getById(@PathVariable id: Long): BasicSuccessfulResponse<Users> =
+        service.getById(
             id,
             message = "User with id $id does not exist."
-        )!!
-
-        usersCacheLoader.loadUserToCache(user)
-        return user.toHttpResponse()
-    }
+        )!!.toHttpResponse()
 
     @GetMapping("getByEmail/{email}")
     fun getByEmail(@PathVariable email: String): BasicSuccessfulResponse<Users> =
