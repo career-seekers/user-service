@@ -13,6 +13,7 @@ import org.careerseekers.userservice.services.interfaces.CrudService
 import org.careerseekers.userservice.utils.DocumentExistenceChecker
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -79,6 +80,7 @@ class UsersService(
     }
 
     @Transactional
+    @CacheEvict(cacheNames = ["users-service"], key = "#item.id")
     override fun update(item: UpdateUserDto): String {
         val user = usersService.getById(item.id, message = "User with id ${item.id} does not exist.")!!
 
@@ -90,6 +92,7 @@ class UsersService(
     }
 
     @Transactional
+    @CacheEvict(cacheNames = ["users-service"], key = "#item.userId")
     fun verifyUser(item: VerifyUserDto): String {
         usersService.getById(item.userId, message = "User with id ${item.userId} does not exist.").let {
             it?.verified = item.status
@@ -98,6 +101,7 @@ class UsersService(
     }
 
     @Transactional
+    @CacheEvict(cacheNames = ["users-service"], key = "#id")
     override fun deleteById(id: Long): String {
         usersService.getById(id, message = "User with id $id does not exist.")?.let {
             repository.deleteById(id)
@@ -107,6 +111,7 @@ class UsersService(
     }
 
     @Transactional
+    @CacheEvict(cacheNames = ["users-service"], allEntries = true)
     override fun deleteAll(): String {
         super.deleteAll()
 
