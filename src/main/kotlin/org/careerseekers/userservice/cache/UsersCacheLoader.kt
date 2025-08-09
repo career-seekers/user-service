@@ -25,7 +25,7 @@ class UsersCacheLoader(
         usersService.getAll().forEach { user -> cache.put(user.id, user) }
     }
 
-    fun loadUserToCache(user: Users) {
+    override fun loadItemToCache(user: Users) {
         cache?.putIfAbsent(user.id, user)
     }
 }

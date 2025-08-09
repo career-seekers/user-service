@@ -25,4 +25,8 @@ class JwtCacheLoader(
             cache.put(token.uuid.toString(), token)
         }
     }
+
+    override fun loadItemToCache(item: JwtTokensStorage) {
+        cache?.putIfAbsent(item.uuid.toString(), item)
+    }
 }
