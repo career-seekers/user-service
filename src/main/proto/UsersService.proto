@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package users;
+
+option java_multiple_files = true;
+option java_package = "com.careerseekers.grpc.users";
+option java_outer_classname = "JwtServiceProto";
+
+import "google/protobuf/timestamp.proto";
+
+service UsersService {
+  rpc GetById (UserId) returns (User);
+}
+
+message UserId {
+  int64 id = 1;
+}
+
+message User {
+  int64 id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string patronymic = 4;
+  google.protobuf.Timestamp dateOfBirth = 5;
+  string email = 6;
+  string mobileNumber = 7;
+  string role = 8;
+  bool verified = 9;
+}

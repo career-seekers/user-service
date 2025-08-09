@@ -13,6 +13,9 @@ import org.careerseekers.userservice.services.interfaces.CrudService
 import org.careerseekers.userservice.utils.DocumentExistenceChecker
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.context.annotation.Lazy
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,19 +25,27 @@ class UsersService(
     override val repository: UsersRepository,
     private val usersMapper: UsersMapper,
     private val passwordEncoder: PasswordEncoder,
-    private val documentExistenceChecker: DocumentExistenceChecker
+    private val documentExistenceChecker: DocumentExistenceChecker,
+    @Lazy private val usersService: UsersService,
 ) : CrudService<Users, Long, CreateUserDto, UpdateUserDto> {
 
     @Value("\${file-service.default-avatar-id}")
     private lateinit var defaultAvatarId: String
 
+    @Cacheable("users-service")
+    override fun getById(id: Long?, throwable: Boolean, message: String): Users? {
+        return super.getById(id, throwable, message)
+    }
+
     fun getAllByIds(ids: List<Long>): List<Users> = repository.findAllById(ids)
 
+    @Cacheable("users-service")
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
             ?: if (throwable) throw NotFoundException("User with email $email not found") else null
     }
 
+    @Cacheable("users-service")
     fun getByMobileNumber(mobileNumber: String, throwable: Boolean = true): Users? {
         return repository.getByMobileNumber(mobileNumber)
             ?: if (throwable) throw NotFoundException("User with mobile number $mobileNumber not found") else null
@@ -69,8 +80,9 @@ class UsersService(
     }
 
     @Transactional
+    @CacheEvict(cacheNames = ["users-service"], key = "#item.id")
     override fun update(item: UpdateUserDto): String {
-        val user = getById(item.id, message = "User with id ${item.id} does not exist.")!!
+        val user = usersService.getById(item.id, message = "User with id ${item.id} does not exist.")!!
 
         item.firstName?.let { user.firstName = it }
         item.lastName?.let { user.lastName = it }
@@ -80,16 +92,18 @@ class UsersService(
     }
 
     @Transactional
+    @CacheEvict(cacheNames = ["users-service"], key = "#item.userId")
     fun verifyUser(item: VerifyUserDto): String {
-        getById(item.userId, message = "User with id ${item.userId} does not exist.").let {
+        usersService.getById(item.userId, message = "User with id ${item.userId} does not exist.").let {
             it?.verified = item.status
         }
         return "User verification updated successfully."
     }
 
     @Transactional
+    @CacheEvict(cacheNames = ["users-service"], key = "#id")
     override fun deleteById(id: Long): String {
-        getById(id, message = "User with id $id does not exist.")?.let {
+        usersService.getById(id, message = "User with id $id does not exist.")?.let {
             repository.deleteById(id)
         }
 
@@ -97,6 +111,7 @@ class UsersService(
     }
 
     @Transactional
+    @CacheEvict(cacheNames = ["users-service"], allEntries = true)
     override fun deleteAll(): String {
         super.deleteAll()
 
@@ -104,10 +119,10 @@ class UsersService(
     }
 
     private fun checkIfUserExistsByEmailOrMobile(email: String, mobile: String) {
-        if (getByEmail(email, false) != null) {
+        if (usersService.getByEmail(email, false) != null) {
             throw DoubleRecordException("User with email $email already exists")
         }
-        if (getByMobileNumber(mobile, false) != null) {
+        if (usersService.getByMobileNumber(mobile, false) != null) {
             throw DoubleRecordException("User with mobile number $mobile already exists")
         }
     }

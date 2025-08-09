@@ -32,7 +32,10 @@ class UsersController(
 
     @GetMapping("/{id}")
     override fun getById(@PathVariable id: Long): BasicSuccessfulResponse<Users> =
-        service.getById(id, message = "User with id $id does not exist.")!!.toHttpResponse()
+        service.getById(
+            id,
+            message = "User with id $id does not exist."
+        )!!.toHttpResponse()
 
     @GetMapping("getByEmail/{email}")
     fun getByEmail(@PathVariable email: String): BasicSuccessfulResponse<Users> =
