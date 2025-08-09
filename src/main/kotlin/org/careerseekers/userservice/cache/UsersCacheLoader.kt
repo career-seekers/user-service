@@ -1,7 +1,6 @@
 package org.careerseekers.userservice.cache
 
 import org.careerseekers.userservice.entities.Users
-import org.careerseekers.userservice.services.UsersService
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.cache.CacheManager
 import org.springframework.context.event.EventListener
@@ -24,5 +23,9 @@ class UsersCacheLoader(
 
     override fun loadItemToCache(user: Users) {
         cache?.putIfAbsent(user.id, user)
+    }
+
+    override fun getItemFromCache(key: Any): Users? {
+        return cache?.get(key)?.let { it as Users }
     }
 }

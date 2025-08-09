@@ -15,4 +15,5 @@ interface CacheLoader<T> {
 
     fun preloadCache(): Any
     fun loadItemToCache(item: T): Any
+    fun getItemFromCache(key: Any): T?
 }

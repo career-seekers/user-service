@@ -29,4 +29,8 @@ class JwtCacheLoader(
     override fun loadItemToCache(item: JwtTokensStorage) {
         cache?.putIfAbsent(item.uuid.toString(), item)
     }
+
+    override fun getItemFromCache(key: Any): JwtTokensStorage? {
+        return cache?.get(key)?.let { it as JwtTokensStorage }
+    }
 }
