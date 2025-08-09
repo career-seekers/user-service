@@ -39,12 +39,5 @@ class JwtService(
         responseObserver.onCompleted()
 
         jwtCacheLoader.preloadCache()
-
-        val response = JwtTokensList.newBuilder()
-            .addAllTokens(grpcTokens)
-            .build()
-
-        responseObserver.onNext(response)
-        responseObserver.onCompleted()
     }
 }
