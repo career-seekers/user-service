@@ -6,6 +6,7 @@ import com.careerseekers.grpc.users.UsersServiceGrpc
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
 import org.careerseekers.userservice.cache.UsersCacheLoader
+import org.careerseekers.userservice.io.converters.extensions.toCache
 import org.careerseekers.userservice.io.converters.extensions.toTimestamp
 import org.careerseekers.userservice.services.UsersService
 
@@ -20,7 +21,7 @@ class RpcUsersService(
             request.id,
             message = "User with id ${request.id} not found."
         )!!.let { user ->
-            usersCacheLoader.loadItemToCache(user)
+            usersCacheLoader.loadItemToCache(user.toCache())
 
             User.newBuilder()
                 .setId(user.id)
