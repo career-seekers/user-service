@@ -31,6 +31,7 @@ class RpcUsersService(
                 .setDateOfBirth(user.dateOfBirth.toTimestamp())
                 .setEmail(user.email)
                 .setMobileNumber(user.mobileNumber)
+                .setPassword(user.password)
                 .setRole(user.role.toString())
                 .setVerified(user.verified)
                 .build()
