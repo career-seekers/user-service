@@ -14,7 +14,6 @@ import org.careerseekers.userservice.utils.DocumentExistenceChecker
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -32,20 +31,17 @@ class UsersService(
     @Value("\${file-service.default-avatar-id}")
     private lateinit var defaultAvatarId: String
 
-    @Cacheable("users-service")
     override fun getById(id: Long?, throwable: Boolean, message: String): Users? {
         return super.getById(id, throwable, message)
     }
 
     fun getAllByIds(ids: List<Long>): List<Users> = repository.findAllById(ids)
 
-    @Cacheable("users-service")
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
             ?: if (throwable) throw NotFoundException("User with email $email not found") else null
     }
 
-    @Cacheable("users-service")
     fun getByMobileNumber(mobileNumber: String, throwable: Boolean = true): Users? {
         return repository.getByMobileNumber(mobileNumber)
             ?: if (throwable) throw NotFoundException("User with mobile number $mobileNumber not found") else null
