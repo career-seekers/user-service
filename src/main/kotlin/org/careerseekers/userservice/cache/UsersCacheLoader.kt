@@ -1,6 +1,6 @@
 package org.careerseekers.userservice.cache
 
-import org.careerseekers.userservice.entities.Users
+import org.careerseekers.userservice.dto.UsersCacheDto
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.cache.CacheManager
 import org.springframework.context.event.EventListener
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class UsersCacheLoader(
-    override val redisTemplate: RedisTemplate<String, Users>,
+    override val redisTemplate: RedisTemplate<String, UsersCacheDto>,
     cacheManager: CacheManager,
-) : CacheLoader<Users> {
+) : CacheLoader<UsersCacheDto> {
     override val cacheKey = "users"
     private val cache = cacheManager.getCache(cacheKey)
 
@@ -21,11 +21,11 @@ class UsersCacheLoader(
         cache?.clear() ?: return
     }
 
-    override fun loadItemToCache(user: Users) {
+    override fun loadItemToCache(user: UsersCacheDto) {
         cache?.putIfAbsent(user.id, user)
     }
 
-    override fun getItemFromCache(key: Any): Users? {
-        return cache?.get(key)?.let { it as? Users }
+    override fun getItemFromCache(key: Any): UsersCacheDto? {
+        return cache?.get(key)?.let { it.get() as? UsersCacheDto }
     }
 }
