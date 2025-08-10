@@ -26,5 +26,6 @@ message User {
   string mobileNumber = 7;
   string password = 8;
   string role = 9;
-  bool verified = 10;
+  int64 avatarId = 10;
+  bool verified = 11;
 }

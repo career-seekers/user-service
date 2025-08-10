@@ -33,6 +33,7 @@ class RpcUsersService(
                 .setMobileNumber(user.mobileNumber)
                 .setPassword(user.password)
                 .setRole(user.role.toString())
+                .setAvatarId(user.avatarId)
                 .setVerified(user.verified)
                 .build()
         }
