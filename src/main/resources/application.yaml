@@ -18,6 +18,8 @@ server:
 grpc:
   server:
     port: ${GRPC_SERVER_PORT}
+    security:
+      enabled: false
 
 file-service:
   uri: ${FILE_SERVICE_URI}
