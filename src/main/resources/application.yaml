@@ -5,6 +5,18 @@ spring:
     multipart:
       max-file-size: 30MB
       max-request-size: 30MB
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVICE_URL}
+    consumer:
+      properties:
+        session:
+          timeout:
+            ms: 60000
+        reconnect:
+          backoff:
+            ms: 1000
+            max:
+              ms: 20000
 
 database:
   url: ${US_DB_URL}
