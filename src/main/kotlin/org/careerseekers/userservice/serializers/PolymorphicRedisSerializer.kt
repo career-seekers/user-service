@@ -4,6 +4,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import org.springframework.data.redis.serializer.RedisSerializer
 
+
 class PolymorphicRedisSerializer<Base : Any>(
     private val baseSerializer: KSerializer<Base>,
     private val json: Json
