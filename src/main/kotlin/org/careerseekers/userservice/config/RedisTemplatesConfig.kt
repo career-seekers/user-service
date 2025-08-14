@@ -2,7 +2,7 @@ package org.careerseekers.userservice.config
 
 import org.careerseekers.userservice.dto.CachesDto
 import org.careerseekers.userservice.dto.UsersCacheDto
-import org.careerseekers.userservice.dto.json
+import org.careerseekers.userservice.serializers.CustomSerializerModule.json
 import org.careerseekers.userservice.serializers.PolymorphicRedisSerializer
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean

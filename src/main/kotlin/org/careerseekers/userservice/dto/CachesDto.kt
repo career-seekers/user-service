@@ -3,9 +3,6 @@ package org.careerseekers.userservice.dto
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
 import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.serializers.DateSerializer
 import java.util.Date
@@ -30,15 +27,3 @@ data class UsersCacheDto(
     val avatarId: Long,
     val verified: Boolean,
 ) : CachesDto()
-
-val cacheModule = SerializersModule {
-    polymorphic(CachesDto::class) {
-        subclass(UsersCacheDto::class, UsersCacheDto.serializer())
-    }
-}
-
-val json = Json {
-    serializersModule = cacheModule
-    classDiscriminator = "type"
-    ignoreUnknownKeys = true
-}
