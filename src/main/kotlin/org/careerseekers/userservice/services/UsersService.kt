@@ -97,18 +97,20 @@ class UsersService(
         return "User updated successfully."
     }
 
-    fun changePasswordFirstStep(jwtToken: String) {
+    fun changePasswordFirstStep(jwtToken: String): String {
         emailSendingProducer.sendMessage(
             EmailSendingTaskDto(
                 jwtToken,
                 MailEventTypes.PASSWORD_RESET
             )
         )
+
+        return "Email sent successfully"
     }
 
     @Transactional
-    fun changePasswordSecondStep(item: ChangePasswordSecondStepDto): String {
-        val user = jwtUtil.getUserFromToken(item.jwtToken) ?: throw NotFoundException("User not found")
+    fun changePasswordSecondStep(item: ChangePasswordSecondStepDto, jwtToken: String): String {
+        val user = jwtUtil.getUserFromToken(jwtToken) ?: throw NotFoundException("User not found")
         val cacheItem = verificationCodesCacheClient.getItemFromCache(user.id)
             ?: throw NotFoundException("Cached verification code was not found.")
 
@@ -120,7 +122,7 @@ class UsersService(
                 throw BadRequestException("Incorrect verification code")
             } else {
                 emailSendingProducer.sendMessage(
-                    EmailSendingTaskDto(item.jwtToken, MailEventTypes.PASSWORD_RESET)
+                    EmailSendingTaskDto(jwtToken, MailEventTypes.PASSWORD_RESET)
                 )
                 throw BadRequestException("The maximum number of attempts has been reached. A new code has been sent to the mail")
             }
