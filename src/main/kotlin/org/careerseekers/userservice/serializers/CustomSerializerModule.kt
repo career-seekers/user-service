@@ -4,7 +4,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.careerseekers.userservice.dto.CachesDto
-import org.careerseekers.userservice.dto.EmailSendingTask
+import org.careerseekers.userservice.dto.EmailSendingTaskDto
 import org.careerseekers.userservice.dto.KafkaMessagesDto
 import org.careerseekers.userservice.dto.UsersCacheDto
 
@@ -14,7 +14,7 @@ object CustomSerializerModule {
             subclass(UsersCacheDto::class, UsersCacheDto.serializer())
         }
         polymorphic(KafkaMessagesDto::class) {
-            subclass(EmailSendingTask::class, EmailSendingTask.serializer())
+            subclass(EmailSendingTaskDto::class, EmailSendingTaskDto.serializer())
         }
     }
 
