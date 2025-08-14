@@ -35,8 +35,6 @@ class UsersService(
         return super.getById(id, throwable, message)
     }
 
-    fun getAllByIds(ids: List<Long>): List<Users> = repository.findAllById(ids)
-
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
             ?: if (throwable) throw NotFoundException("User with email $email not found") else null
@@ -76,7 +74,6 @@ class UsersService(
     }
 
     @Transactional
-    @CacheEvict(cacheNames = ["users-service"], key = "#item.id")
     override fun update(item: UpdateUserDto): String {
         val user = usersService.getById(item.id, message = "User with id ${item.id} does not exist.")!!
 
@@ -88,7 +85,6 @@ class UsersService(
     }
 
     @Transactional
-    @CacheEvict(cacheNames = ["users-service"], key = "#item.userId")
     fun verifyUser(item: VerifyUserDto): String {
         usersService.getById(item.userId, message = "User with id ${item.userId} does not exist.").let {
             it?.verified = item.status
@@ -97,7 +93,6 @@ class UsersService(
     }
 
     @Transactional
-    @CacheEvict(cacheNames = ["users-service"], key = "#id")
     override fun deleteById(id: Long): String {
         usersService.getById(id, message = "User with id $id does not exist.")?.let {
             repository.deleteById(id)
