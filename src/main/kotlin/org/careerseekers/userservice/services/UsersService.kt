@@ -130,6 +130,9 @@ class UsersService(
 
         user.password = passwordEncoder.encode(item.newPassword)
         repository.save(user)
+
+        verificationCodesCacheClient.deleteItemFromCache(user.id)
+
         return "User updated successfully."
     }
 
