@@ -1,16 +1,23 @@
 package org.careerseekers.userservice.services
 
+import org.careerseekers.userservice.cache.VerificationCodesCacheClient
+import org.careerseekers.userservice.dto.EmailSendingTaskDto
+import org.careerseekers.userservice.dto.users.ChangePasswordSecondStepDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
 import org.careerseekers.userservice.dto.users.VerifyUserDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.FileTypes
+import org.careerseekers.userservice.enums.MailEventTypes
+import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UsersMapper
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.interfaces.CrudService
+import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
 import org.careerseekers.userservice.utils.DocumentExistenceChecker
+import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CacheEvict
@@ -22,8 +29,11 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UsersService(
     override val repository: UsersRepository,
+    private val jwtUtil: JwtUtil,
     private val usersMapper: UsersMapper,
     private val passwordEncoder: PasswordEncoder,
+    private val emailSendingProducer: KafkaEmailSendingProducer,
+    private val verificationCodesCacheClient: VerificationCodesCacheClient,
     private val documentExistenceChecker: DocumentExistenceChecker,
     @Lazy private val usersService: UsersService,
 ) : CrudService<Users, Long, CreateUserDto, UpdateUserDto> {
@@ -34,8 +44,6 @@ class UsersService(
     override fun getById(id: Long?, throwable: Boolean, message: String): Users? {
         return super.getById(id, throwable, message)
     }
-
-    fun getAllByIds(ids: List<Long>): List<Users> = repository.findAllById(ids)
 
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
@@ -57,7 +65,10 @@ class UsersService(
         checkMobileNumberValid(item.mobileNumber)
 
         val userToSave = usersMapper.usersFromCreateDto(
-            item.copy(password = passwordEncoder.encode(item.password), avatarId = item.avatarId ?: defaultAvatarId.toLongOrNull()),
+            item.copy(
+                password = passwordEncoder.encode(item.password),
+                avatarId = item.avatarId ?: defaultAvatarId.toLongOrNull()
+            ),
         )
         return repository.save(userToSave)
     }
@@ -76,7 +87,6 @@ class UsersService(
     }
 
     @Transactional
-    @CacheEvict(cacheNames = ["users-service"], key = "#item.id")
     override fun update(item: UpdateUserDto): String {
         val user = usersService.getById(item.id, message = "User with id ${item.id} does not exist.")!!
 
@@ -87,8 +97,46 @@ class UsersService(
         return "User updated successfully."
     }
 
+    fun changePasswordFirstStep(jwtToken: String): String {
+        emailSendingProducer.sendMessage(
+            EmailSendingTaskDto(
+                jwtToken,
+                MailEventTypes.PASSWORD_RESET
+            )
+        )
+
+        return "Email sent successfully"
+    }
+
     @Transactional
-    @CacheEvict(cacheNames = ["users-service"], key = "#item.userId")
+    fun changePasswordSecondStep(item: ChangePasswordSecondStepDto, jwtToken: String): String {
+        val user = jwtUtil.getUserFromToken(jwtToken) ?: throw NotFoundException("User not found")
+        val cacheItem = verificationCodesCacheClient.getItemFromCache(user.id)
+            ?: throw NotFoundException("Cached verification code was not found.")
+
+        if (!passwordEncoder.matches(item.verificationCode, cacheItem.code)) {
+            verificationCodesCacheClient.deleteItemFromCache(user.id)
+            if (cacheItem.retries < 3) {
+                cacheItem.retries += 1
+                verificationCodesCacheClient.loadItemToCache(user.id, cacheItem)
+                throw BadRequestException("Incorrect verification code")
+            } else {
+                emailSendingProducer.sendMessage(
+                    EmailSendingTaskDto(jwtToken, MailEventTypes.PASSWORD_RESET)
+                )
+                throw BadRequestException("The maximum number of attempts has been reached. A new code has been sent to the mail")
+            }
+        }
+
+        user.password = passwordEncoder.encode(item.newPassword)
+        repository.save(user)
+
+        verificationCodesCacheClient.deleteItemFromCache(user.id)
+
+        return "User updated successfully."
+    }
+
+    @Transactional
     fun verifyUser(item: VerifyUserDto): String {
         usersService.getById(item.userId, message = "User with id ${item.userId} does not exist.").let {
             it?.verified = item.status
@@ -97,7 +145,6 @@ class UsersService(
     }
 
     @Transactional
-    @CacheEvict(cacheNames = ["users-service"], key = "#id")
     override fun deleteById(id: Long): String {
         usersService.getById(id, message = "User with id $id does not exist.")?.let {
             repository.deleteById(id)

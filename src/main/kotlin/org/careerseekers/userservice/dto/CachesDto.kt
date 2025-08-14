@@ -27,3 +27,10 @@ data class UsersCacheDto(
     val avatarId: Long,
     val verified: Boolean,
 ) : CachesDto()
+
+@Serializable
+@SerialName("VerificationCodeDto")
+data class VerificationCodeDto(
+    val code: String,
+    var retries: Int
+) : CachesDto()
