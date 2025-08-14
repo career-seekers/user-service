@@ -1,14 +1,17 @@
 package org.careerseekers.userservice.serializers
 
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.Json
 import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serializer
+import org.careerseekers.userservice.dto.KafkaMessagesDto
+import org.springframework.stereotype.Component
 
-class PolymorphicKafkaSerializer<Base : Any>(
-    private val baseSerializer: KSerializer<Base>,
-    private val json: Json
-) : Serializer<Base>, Deserializer<Base> {
+@Suppress("UNCHECKED_CAST")
+@Component
+class PolymorphicKafkaSerializer<Base : KafkaMessagesDto> : Serializer<Base>, Deserializer<Base> {
+
+    private val json = CustomSerializerModule.json
+    private val baseSerializer = KafkaMessagesDto.serializer() as KSerializer<Base>
 
     override fun configure(configs: MutableMap<String, *>?, isKey: Boolean) {}
 
