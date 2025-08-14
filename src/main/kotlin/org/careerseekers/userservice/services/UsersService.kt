@@ -129,7 +129,7 @@ class UsersService(
         }
 
         user.password = passwordEncoder.encode(item.newPassword)
-
+        repository.save(user)
         return "User updated successfully."
     }
 
