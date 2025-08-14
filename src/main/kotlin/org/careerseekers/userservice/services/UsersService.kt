@@ -1,16 +1,23 @@
 package org.careerseekers.userservice.services
 
+import org.careerseekers.userservice.cache.VerificationCodesCacheClient
+import org.careerseekers.userservice.dto.EmailSendingTaskDto
+import org.careerseekers.userservice.dto.users.ChangePasswordSecondStepDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
 import org.careerseekers.userservice.dto.users.VerifyUserDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.FileTypes
+import org.careerseekers.userservice.enums.MailEventTypes
+import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UsersMapper
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.interfaces.CrudService
+import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
 import org.careerseekers.userservice.utils.DocumentExistenceChecker
+import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CacheEvict
@@ -22,8 +29,11 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UsersService(
     override val repository: UsersRepository,
+    private val jwtUtil: JwtUtil,
     private val usersMapper: UsersMapper,
     private val passwordEncoder: PasswordEncoder,
+    private val emailSendingProducer: KafkaEmailSendingProducer,
+    private val verificationCodesCacheClient: VerificationCodesCacheClient,
     private val documentExistenceChecker: DocumentExistenceChecker,
     @Lazy private val usersService: UsersService,
 ) : CrudService<Users, Long, CreateUserDto, UpdateUserDto> {
@@ -55,7 +65,10 @@ class UsersService(
         checkMobileNumberValid(item.mobileNumber)
 
         val userToSave = usersMapper.usersFromCreateDto(
-            item.copy(password = passwordEncoder.encode(item.password), avatarId = item.avatarId ?: defaultAvatarId.toLongOrNull()),
+            item.copy(
+                password = passwordEncoder.encode(item.password),
+                avatarId = item.avatarId ?: defaultAvatarId.toLongOrNull()
+            ),
         )
         return repository.save(userToSave)
     }
@@ -80,6 +93,40 @@ class UsersService(
         item.firstName?.let { user.firstName = it }
         item.lastName?.let { user.lastName = it }
         item.patronymic?.let { user.patronymic = it }
+
+        return "User updated successfully."
+    }
+
+    fun changePasswordFirstStep(jwtToken: String) {
+        emailSendingProducer.sendMessage(
+            EmailSendingTaskDto(
+                jwtToken,
+                MailEventTypes.PASSWORD_RESET
+            )
+        )
+    }
+
+    @Transactional
+    fun changePasswordSecondStep(item: ChangePasswordSecondStepDto): String {
+        val user = jwtUtil.getUserFromToken(item.jwtToken) ?: throw NotFoundException("User not found")
+        val cacheItem = verificationCodesCacheClient.getItemFromCache(user.id)
+            ?: throw NotFoundException("Cached verification code was not found.")
+
+        if (!passwordEncoder.matches(item.verificationCode, cacheItem.code)) {
+            verificationCodesCacheClient.deleteItemFromCache(user.id)
+            if (cacheItem.retries < 3) {
+                cacheItem.retries += 1
+                verificationCodesCacheClient.loadItemToCache(user.id, cacheItem)
+                throw BadRequestException("Incorrect verification code")
+            } else {
+                emailSendingProducer.sendMessage(
+                    EmailSendingTaskDto(item.jwtToken, MailEventTypes.PASSWORD_RESET)
+                )
+                throw BadRequestException("The maximum number of attempts has been reached. A new code has been sent to the mail")
+            }
+        }
+
+        user.password = passwordEncoder.encode(item.newPassword)
 
         return "User updated successfully."
     }
