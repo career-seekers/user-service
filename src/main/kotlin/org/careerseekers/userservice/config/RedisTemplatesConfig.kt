@@ -2,7 +2,7 @@ package org.careerseekers.userservice.config
 
 import org.careerseekers.userservice.dto.CachesDto
 import org.careerseekers.userservice.dto.UsersCacheDto
-import org.careerseekers.userservice.dto.json
+import org.careerseekers.userservice.serializers.PolymorphicRedisSerializer
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,7 +11,9 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.StringRedisSerializer
 
 @Configuration
-class RedisTemplatesConfig {
+class RedisTemplatesConfig(
+    private val serializer: PolymorphicRedisSerializer<out CachesDto>
+) {
 
     @Bean
     @Qualifier("users")
@@ -20,8 +22,6 @@ class RedisTemplatesConfig {
     ): RedisTemplate<String, UsersCacheDto> {
         val template = RedisTemplate<String, UsersCacheDto>()
         template.connectionFactory = connectionFactory
-
-        val serializer = PolymorphicRedisSerializer(CachesDto.serializer(), json)
 
         template.keySerializer = StringRedisSerializer()
         template.valueSerializer = serializer

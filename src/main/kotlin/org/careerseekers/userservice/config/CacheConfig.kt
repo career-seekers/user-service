@@ -1,7 +1,7 @@
 package org.careerseekers.userservice.config
 
 import org.careerseekers.userservice.dto.CachesDto
-import org.careerseekers.userservice.dto.json
+import org.careerseekers.userservice.serializers.PolymorphicRedisSerializer
 import org.springframework.cache.CacheManager
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -12,11 +12,12 @@ import org.springframework.data.redis.serializer.RedisSerializationContext
 import java.time.Duration
 
 @Configuration
-class CacheConfig {
+class CacheConfig(
+    private val serializer: PolymorphicRedisSerializer<out CachesDto>
+) {
 
     @Bean
     fun cacheConfiguration(): RedisCacheConfiguration {
-        val serializer = PolymorphicRedisSerializer(CachesDto.serializer(), json)
 
         return RedisCacheConfiguration.defaultCacheConfig()
             .entryTtl(Duration.ofMinutes(30))
