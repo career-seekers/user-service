@@ -1,14 +1,16 @@
 package org.careerseekers.userservice.serializers
 
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.Json
+import org.careerseekers.userservice.dto.CachesDto
 import org.springframework.data.redis.serializer.RedisSerializer
+import org.springframework.stereotype.Component
 
+@Suppress("UNCHECKED_CAST")
+@Component
+class PolymorphicRedisSerializer<Base : CachesDto> : RedisSerializer<Base> {
 
-class PolymorphicRedisSerializer<Base : Any>(
-    private val baseSerializer: KSerializer<Base>,
-    private val json: Json
-) : RedisSerializer<Base> {
+    private val json = CustomSerializerModule.json
+    private val baseSerializer = CachesDto.serializer() as KSerializer<Base>
 
     override fun serialize(t: Base?): ByteArray? {
         if (t == null) return null
