@@ -23,6 +23,6 @@ class VerificationCodesCacheClient(
     }
 
     fun loadItemToCache(userId: Long, item: VerificationCodeDto) {
-        cache?.putIfAbsent(userId, item)
+        cache?.put(userId, item)
     }
 }
