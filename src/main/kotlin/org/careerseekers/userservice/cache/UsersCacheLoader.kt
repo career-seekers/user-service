@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 class UsersCacheLoader(
     override val redisTemplate: RedisTemplate<String, UsersCacheDto>,
     cacheManager: CacheManager,
-) : CacheLoader<UsersCacheDto>, CachePreloader {
+) : CacheLoader<UsersCacheDto>, CacheRetriever<UsersCacheDto>, CachePreloader {
     override val cacheKey = "users"
     private val cache = cacheManager.getCache(cacheKey)
 
