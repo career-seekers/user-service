@@ -4,7 +4,7 @@ package users;
 
 option java_multiple_files = true;
 option java_package = "com.careerseekers.grpc.users";
-option java_outer_classname = "JwtServiceProto";
+option java_outer_classname = "UsersServiceProto";
 
 import "google/protobuf/timestamp.proto";
 
