@@ -31,6 +31,7 @@ data class UsersCacheDto(
 @Serializable
 @SerialName("VerificationCodeDto")
 data class VerificationCodeDto(
+    val userId: Long,
     val code: String,
     var retries: Int
 ) : CachesDto()

@@ -118,7 +118,7 @@ class UsersService(
             verificationCodesCacheClient.deleteItemFromCache(user.id)
             if (cacheItem.retries < 3) {
                 cacheItem.retries += 1
-                verificationCodesCacheClient.loadItemToCache(user.id, cacheItem)
+                verificationCodesCacheClient.loadItemToCache(cacheItem)
                 throw BadRequestException("Incorrect verification code")
             } else {
                 emailSendingProducer.sendMessage(
