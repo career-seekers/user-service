@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 class UsersCacheLoader(
     override val redisTemplate: RedisTemplate<String, UsersCacheDto>,
     cacheManager: CacheManager,
-) : CacheLoader<UsersCacheDto> {
+) : CacheLoader<UsersCacheDto>, CachePreloader {
     override val cacheKey = "users"
     private val cache = cacheManager.getCache(cacheKey)
 
@@ -21,8 +21,8 @@ class UsersCacheLoader(
         cache?.clear() ?: return
     }
 
-    override fun loadItemToCache(user: UsersCacheDto) {
-        cache?.putIfAbsent(user.id, user)
+    override fun loadItemToCache(item: UsersCacheDto) {
+        cache?.putIfAbsent(item.id, item)
     }
 
     override fun getItemFromCache(key: Any): UsersCacheDto? {
