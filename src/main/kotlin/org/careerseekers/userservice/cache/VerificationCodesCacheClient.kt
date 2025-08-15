@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 class VerificationCodesCacheClient(
     override val redisTemplate: RedisTemplate<String, VerificationCodeDto>,
     cacheManager: CacheManager,
-) : CacheLoader<VerificationCodeDto> {
+) : CacheLoader<VerificationCodeDto>, CacheRetriever<VerificationCodeDto> {
     override val cacheKey = "verification_codes"
     private val cache = cacheManager.getCache(cacheKey)
 

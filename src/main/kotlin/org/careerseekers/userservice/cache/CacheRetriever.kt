@@ -2,7 +2,7 @@ package org.careerseekers.userservice.cache
 
 import org.springframework.data.redis.core.RedisTemplate
 
-interface CacheClient<T> {
+interface CacheRetriever<T> {
     val cacheKey: String
     val redisTemplate: RedisTemplate<String, T>
 
