@@ -35,7 +35,7 @@ class UsersService(
     private val emailSendingProducer: KafkaEmailSendingProducer,
     private val verificationCodesCacheClient: VerificationCodesCacheClient,
     private val documentExistenceChecker: DocumentExistenceChecker,
-    @Lazy private val usersService: UsersService,
+    @Lazy private val usersService: UsersService?,
 ) : CrudService<Users, Long, CreateUserDto, UpdateUserDto> {
 
     @Value("\${file-service.default-avatar-id}")
@@ -88,7 +88,7 @@ class UsersService(
 
     @Transactional
     override fun update(item: UpdateUserDto): String {
-        val user = usersService.getById(item.id, message = "User with id ${item.id} does not exist.")!!
+        val user = usersService?.getById(item.id, message = "User with id ${item.id} does not exist.")!!
 
         item.firstName?.let { user.firstName = it }
         item.lastName?.let { user.lastName = it }
@@ -138,7 +138,7 @@ class UsersService(
 
     @Transactional
     fun verifyUser(item: VerifyUserDto): String {
-        usersService.getById(item.userId, message = "User with id ${item.userId} does not exist.").let {
+        usersService?.getById(item.userId, message = "User with id ${item.userId} does not exist.").let {
             it?.verified = item.status
         }
         return "User verification updated successfully."
@@ -146,7 +146,7 @@ class UsersService(
 
     @Transactional
     override fun deleteById(id: Long): String {
-        usersService.getById(id, message = "User with id $id does not exist.")?.let {
+        usersService?.getById(id, message = "User with id $id does not exist.")?.let {
             repository.deleteById(id)
         }
 
@@ -162,10 +162,10 @@ class UsersService(
     }
 
     private fun checkIfUserExistsByEmailOrMobile(email: String, mobile: String) {
-        if (usersService.getByEmail(email, false) != null) {
+        if (usersService?.getByEmail(email, false) != null) {
             throw DoubleRecordException("User with email $email already exists")
         }
-        if (usersService.getByMobileNumber(mobile, false) != null) {
+        if (usersService?.getByMobileNumber(mobile, false) != null) {
             throw DoubleRecordException("User with mobile number $mobile already exists")
         }
     }
