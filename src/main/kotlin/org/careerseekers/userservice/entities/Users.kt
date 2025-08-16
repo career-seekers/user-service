@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.careerseekers.userservice.enums.UsersRoles
@@ -65,4 +67,12 @@ data class Users (
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnore
     var mentorDocuments: MentorDocuments?,
+
+    @OneToMany(mappedBy = "mentor", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @JsonIgnore
+    val mentees: List<UserToMentor> = mutableListOf(),
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @JsonIgnore
+    val mentorRelations: List<UserToMentor> = mutableListOf()
 ) : ConvertableToHttpResponse<Users>
