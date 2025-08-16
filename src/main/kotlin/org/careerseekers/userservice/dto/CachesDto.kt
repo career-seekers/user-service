@@ -35,3 +35,10 @@ data class VerificationCodeDto(
     val code: String,
     var retries: Int
 ) : CachesDto()
+
+@Serializable
+@SerialName("TemporaryPasswordDto")
+data class TemporaryPasswordDto(
+    val email: String,
+    val password: String
+)
