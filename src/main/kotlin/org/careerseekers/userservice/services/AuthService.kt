@@ -1,14 +1,16 @@
 package org.careerseekers.userservice.services
 
+import org.careerseekers.userservice.cache.TemporaryPasswordsCache
+import org.careerseekers.userservice.dto.TemporaryPasswordDto
 import org.careerseekers.userservice.dto.auth.LoginUserDto
 import org.careerseekers.userservice.dto.auth.RegisterUserDto
 import org.careerseekers.userservice.dto.auth.UpdateUserTokensDto
 import org.careerseekers.userservice.dto.jwt.CreateJwtToken
 import org.careerseekers.userservice.dto.jwt.UserTokensDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
-import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
 import org.careerseekers.userservice.utils.JwtUtil
+import org.careerseekers.userservice.utils.PasswordGenerator.generatePassword
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,6 +20,7 @@ class AuthService(
     private val jwtUtil: JwtUtil,
     private val usersService: UsersService,
     private val passwordEncoder: PasswordEncoder,
+    private val temporaryPasswordsCache: TemporaryPasswordsCache,
 ) {
     @Transactional
     fun register(data: RegisterUserDto): UserTokensDto {
@@ -28,8 +31,8 @@ class AuthService(
             dateOfBirth = data.dateOfBirth,
             email = data.email,
             mobileNumber = data.mobileNumber,
-            password = data.password,
-            role = data.role ?: UsersRoles.USER,
+            password = data.password ?: generatePassword(data.email),
+            role = data.role,
             avatarId = data.avatarId,
         )).let {
             jwtUtil.removeOldRefreshTokenByUUID(data.uuid)
@@ -65,5 +68,12 @@ class AuthService(
                 jwtUtil.generateRefreshToken(CreateJwtToken(this, data.uuid))
             )
         } ?: throw JwtAuthenticationException("Invalid refresh token")
+    }
+
+    private fun generatePassword(email: String): String {
+        val password = generatePassword()
+        temporaryPasswordsCache.loadItemToCache(TemporaryPasswordDto(email, password))
+
+        return passwordEncoder.encode(password)
     }
 }

@@ -12,8 +12,10 @@ data class RegisterUserDto(
     val dateOfBirth: Date,
     val email: String,
     val mobileNumber: String,
-    val password: String,
-    val role: UsersRoles? = UsersRoles.USER,
+    val password: String?,
+    val role: UsersRoles,
     val avatarId: Long?,
-    val uuid: UUID
+    val uuid: UUID,
+    val mentorEqualsUser: Boolean? = null,
+    val mentorId: Long? = null,
 ) : DtoClass
