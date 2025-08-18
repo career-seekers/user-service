@@ -7,6 +7,9 @@ import org.careerseekers.userservice.dto.CachesDto
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
 import org.careerseekers.userservice.dto.KafkaMessagesDto
 import org.careerseekers.userservice.dto.UsersCacheDto
+import org.careerseekers.userservice.dto.auth.RegisterUserDto
+import org.careerseekers.userservice.dto.auth.RegisterUserExternalDto
+import org.careerseekers.userservice.dto.auth.RegistrationDto
 
 object CustomSerializerModule {
     val customSerializerModule = SerializersModule {
@@ -15,6 +18,10 @@ object CustomSerializerModule {
         }
         polymorphic(KafkaMessagesDto::class) {
             subclass(EmailSendingTaskDto::class, EmailSendingTaskDto.serializer())
+        }
+        polymorphic(RegistrationDto::class) {
+            subclass(RegisterUserDto::class, RegisterUserDto.serializer())
+            subclass(RegisterUserExternalDto::class, RegisterUserExternalDto.serializer())
         }
     }
 
