@@ -10,17 +10,17 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "user_to_mentor")
-data class UserToMentor(
+@Table(name = "child_to_mentor")
+data class ChildToMentor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = true)
-    val user: Users?,
+    @JoinColumn(name = "child_id", nullable = false)
+    var child: Children,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mentor_id", nullable = true)
-    val mentor: Users?
+    var mentor: Users
 )

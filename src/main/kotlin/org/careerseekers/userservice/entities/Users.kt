@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -68,11 +67,6 @@ data class Users (
     @JsonIgnore
     var mentorDocuments: MentorDocuments?,
 
-    @OneToMany(mappedBy = "mentor", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    @JsonIgnore
-    val mentees: List<UserToMentor> = mutableListOf(),
-
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    @JsonIgnore
-    val mentorRelations: List<UserToMentor> = mutableListOf()
+    @OneToMany(mappedBy = "mentor", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var menteeChildren: MutableList<Children> = mutableListOf()
 ) : ConvertableToHttpResponse<Users>
