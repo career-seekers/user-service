@@ -7,6 +7,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.careerseekers.userservice.enums.UsersRoles
@@ -50,6 +51,13 @@ data class Users (
     @Column(nullable = false)
     var verified: Boolean = false,
 
+    @Column(nullable = false)
+    var isMentor: Boolean = false,
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var jwtTokens: MutableList<JwtTokensStorage>? = mutableListOf(),
+
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnore
     var userDocuments: UserDocuments?,
@@ -65,4 +73,12 @@ data class Users (
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnore
     var mentorDocuments: MentorDocuments?,
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "mentor", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var menteeChildren: MutableList<Children>? = mutableListOf(),
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var children: MutableList<Children>? = mutableListOf()
 ) : ConvertableToHttpResponse<Users>

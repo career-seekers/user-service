@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.config
 
 import org.careerseekers.userservice.dto.CachesDto
+import org.careerseekers.userservice.dto.TemporaryPasswordDto
 import org.careerseekers.userservice.dto.UsersCacheDto
 import org.careerseekers.userservice.dto.VerificationCodeDto
 import org.careerseekers.userservice.serializers.PolymorphicRedisSerializer
@@ -40,6 +41,24 @@ class RedisTemplatesConfig(
         connectionFactory: RedisConnectionFactory
     ): RedisTemplate<String, VerificationCodeDto> {
         val template = RedisTemplate<String, VerificationCodeDto>()
+        template.connectionFactory = connectionFactory
+
+        template.keySerializer = StringRedisSerializer()
+        template.valueSerializer = serializer
+
+        template.hashKeySerializer = StringRedisSerializer()
+        template.hashValueSerializer = serializer
+
+        template.afterPropertiesSet()
+        return template
+    }
+
+    @Bean
+    @Qualifier("temporaryPasswords")
+    fun temporaryPasswordsRedisTemplate(
+        connectionFactory: RedisConnectionFactory
+    ): RedisTemplate<String, TemporaryPasswordDto> {
+        val template = RedisTemplate<String, TemporaryPasswordDto>()
         template.connectionFactory = connectionFactory
 
         template.keySerializer = StringRedisSerializer()

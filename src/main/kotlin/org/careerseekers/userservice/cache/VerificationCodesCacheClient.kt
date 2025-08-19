@@ -23,6 +23,6 @@ class VerificationCodesCacheClient(
     }
 
     override fun loadItemToCache(item: VerificationCodeDto) {
-        cache?.put(item.userId, item)
+        cache?.put(item.userEmail, item)
     }
 }

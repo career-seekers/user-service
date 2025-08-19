@@ -1,7 +1,8 @@
 package org.careerseekers.userservice.controllers
 
 import org.careerseekers.userservice.dto.auth.LoginUserDto
-import org.careerseekers.userservice.dto.auth.RegisterUserDto
+import org.careerseekers.userservice.dto.auth.PreRegisterUserDto
+import org.careerseekers.userservice.dto.auth.RegistrationDto
 import org.careerseekers.userservice.dto.auth.UpdateUserTokensDto
 import org.careerseekers.userservice.services.AuthService
 import org.springframework.web.bind.annotation.PostMapping
@@ -14,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val authService: AuthService,
 ) {
+    @PostMapping("/preRegister")
+    fun preRegister(@RequestBody data: PreRegisterUserDto) = authService.preRegister(data)
+
     @PostMapping("/register")
-    fun register(@RequestBody data: RegisterUserDto) = authService.register(data).toHttpResponse()
+    fun register(@RequestBody data: RegistrationDto) = authService.register(data).toHttpResponse()
 
     @PostMapping("/login")
     fun login(@RequestBody data: LoginUserDto) = authService.login(data).toHttpResponse()
