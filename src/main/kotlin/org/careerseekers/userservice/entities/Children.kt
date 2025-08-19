@@ -32,5 +32,5 @@ data class Children(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mentor_id")
-    var mentor: Users? = null
+    var mentor: Users? = null,
 )

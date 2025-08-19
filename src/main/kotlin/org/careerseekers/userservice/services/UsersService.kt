@@ -146,8 +146,8 @@ class UsersService(
 
     @Transactional
     override fun deleteById(id: Long): String {
-        usersService?.getById(id, message = "User with id $id does not exist.")?.let {
-            repository.deleteById(id)
+        usersService?.getById(id, message = "User with id $id does not exist.")?.let { user ->
+            repository.delete(user)
         }
 
         return "User deleted successfully."
