@@ -9,7 +9,6 @@ import org.careerseekers.userservice.dto.users.VerifyUserDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.FileTypes
 import org.careerseekers.userservice.enums.MailEventTypes
-import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UsersMapper
@@ -17,6 +16,7 @@ import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.interfaces.CrudService
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
 import org.careerseekers.userservice.utils.DocumentExistenceChecker
+import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
 import org.springframework.beans.factory.annotation.Value
@@ -35,6 +35,7 @@ class UsersService(
     private val emailSendingProducer: KafkaEmailSendingProducer,
     private val verificationCodesCacheClient: VerificationCodesCacheClient,
     private val documentExistenceChecker: DocumentExistenceChecker,
+    private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
     @param:Lazy private val usersService: UsersService?,
 ) : CrudService<Users, Long, CreateUserDto, UpdateUserDto> {
 
@@ -111,22 +112,13 @@ class UsersService(
     @Transactional
     fun changePasswordSecondStep(item: ChangePasswordSecondStepDto, jwtToken: String): String {
         val user = jwtUtil.getUserFromToken(jwtToken) ?: throw NotFoundException("User not found")
-        val cacheItem = verificationCodesCacheClient.getItemFromCache(user.email)
-            ?: throw NotFoundException("Cached verification code was not found.")
 
-        if (!passwordEncoder.matches(item.verificationCode, cacheItem.code)) {
-            verificationCodesCacheClient.deleteItemFromCache(user.id)
-            if (cacheItem.retries < 3) {
-                cacheItem.retries += 1
-                verificationCodesCacheClient.loadItemToCache(cacheItem)
-                throw BadRequestException("Incorrect verification code")
-            } else {
-                emailSendingProducer.sendMessage(
-                    EmailSendingTaskDto(jwtToken, MailEventTypes.PASSWORD_RESET)
-                )
-                throw BadRequestException("The maximum number of attempts has been reached. A new code has been sent to the mail")
-            }
-        }
+        emailVerificationCodeVerifier.verify(
+            email = user.email,
+            verificationCode = item.verificationCode,
+            token = jwtToken,
+            mailEventTypes = MailEventTypes.PASSWORD_RESET,
+        )
 
         user.password = passwordEncoder.encode(item.newPassword)
         repository.save(user)
