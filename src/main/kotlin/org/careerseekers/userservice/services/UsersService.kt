@@ -35,7 +35,7 @@ class UsersService(
     private val emailSendingProducer: KafkaEmailSendingProducer,
     private val verificationCodesCacheClient: VerificationCodesCacheClient,
     private val documentExistenceChecker: DocumentExistenceChecker,
-    @Lazy private val usersService: UsersService?,
+    @param:Lazy private val usersService: UsersService?,
 ) : CrudService<Users, Long, CreateUserDto, UpdateUserDto> {
 
     @Value("\${file-service.default-avatar-id}")
