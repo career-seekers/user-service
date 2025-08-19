@@ -51,6 +51,9 @@ data class Users (
     @Column(nullable = false)
     var verified: Boolean = false,
 
+    @Column(nullable = false)
+    var isMentor: Boolean = false,
+
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnore
     var userDocuments: UserDocuments?,
