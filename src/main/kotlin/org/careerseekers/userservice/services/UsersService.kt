@@ -111,7 +111,7 @@ class UsersService(
     @Transactional
     fun changePasswordSecondStep(item: ChangePasswordSecondStepDto, jwtToken: String): String {
         val user = jwtUtil.getUserFromToken(jwtToken) ?: throw NotFoundException("User not found")
-        val cacheItem = verificationCodesCacheClient.getItemFromCache(user.id)
+        val cacheItem = verificationCodesCacheClient.getItemFromCache(user.email)
             ?: throw NotFoundException("Cached verification code was not found.")
 
         if (!passwordEncoder.matches(item.verificationCode, cacheItem.code)) {
