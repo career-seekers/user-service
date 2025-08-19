@@ -14,6 +14,7 @@ import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
+import org.careerseekers.userservice.services.processors.IUsersRegistrationProcessor
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.PasswordGenerator.generatePassword
@@ -27,6 +28,7 @@ class AuthService(
     private val usersService: UsersService,
     private val passwordEncoder: PasswordEncoder,
     private val temporaryPasswordsCache: TemporaryPasswordsCache,
+    private val registrationPostProcessors: List<IUsersRegistrationProcessor>,
     private val emailSendingProducer: KafkaEmailSendingProducer,
     private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
 ) {
@@ -40,9 +42,8 @@ class AuthService(
         }
 
         emailSendingProducer.sendMessage(EmailSendingTaskDto(
-            token = null,
+            email = item.email,
             eventType = MailEventTypes.PRE_REGISTRATION,
-            user = null
         ))
     }
 
@@ -72,6 +73,12 @@ class AuthService(
                 jwtUtil.generateAccessToken(CreateJwtToken(it, data.uuid)),
                 jwtUtil.generateRefreshToken(CreateJwtToken(it, data.uuid))
             )
+        }.also {
+            registrationPostProcessors.forEach { processor ->
+                if (processor.userRole == data.role) {
+                    processor.processRegistration(data)
+                }
+            }
         }
     }
 
