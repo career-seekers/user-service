@@ -1,10 +1,10 @@
-package org.careerseekers.userservice.services
+package org.careerseekers.userservice.services.processors
 
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
-import org.careerseekers.userservice.dto.users.CreateChildDto
 import org.careerseekers.userservice.dto.auth.RegisterUserDto
 import org.careerseekers.userservice.dto.auth.RegisterUserExternalDto
 import org.careerseekers.userservice.dto.auth.RegistrationDto
+import org.careerseekers.userservice.dto.users.CreateChildDto
 import org.careerseekers.userservice.dto.users.CreateMentorToChildDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.MailEventTypes
@@ -16,8 +16,7 @@ import org.careerseekers.userservice.mappers.ChildrenToMentorMapper
 import org.careerseekers.userservice.repositories.ChildToMentorRepository
 import org.careerseekers.userservice.repositories.ChildrenRepository
 import org.careerseekers.userservice.repositories.UsersRepository
-import org.careerseekers.userservice.services.interfaces.IUserNotificationProcessor
-import org.careerseekers.userservice.services.interfaces.IUsersRegistrationProcessor
+import org.careerseekers.userservice.services.UsersService
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
 import org.springframework.stereotype.Service
 
@@ -70,10 +69,12 @@ class UserRegistrationProcessor(
     }
 
     override fun notifyUser(user: Users) {
-        emailSendingProducer.sendMessage(EmailSendingTaskDto(
-            token = null,
-            eventType = MailEventTypes.MENTOR_AND_USER_REGISTRATION,
-            user = user.toCache(),
-        ))
+        emailSendingProducer.sendMessage(
+            EmailSendingTaskDto(
+                token = null,
+                eventType = MailEventTypes.MENTOR_AND_USER_REGISTRATION,
+                user = user.toCache(),
+            )
+        )
     }
 }
