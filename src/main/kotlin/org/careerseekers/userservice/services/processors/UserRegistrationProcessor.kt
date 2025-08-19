@@ -5,15 +5,12 @@ import org.careerseekers.userservice.dto.auth.RegisterUserDto
 import org.careerseekers.userservice.dto.auth.RegisterUserExternalDto
 import org.careerseekers.userservice.dto.auth.RegistrationDto
 import org.careerseekers.userservice.dto.users.CreateChildDto
-import org.careerseekers.userservice.dto.users.CreateMentorToChildDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.io.converters.extensions.toCache
 import org.careerseekers.userservice.mappers.ChildrenMapper
-import org.careerseekers.userservice.mappers.ChildrenToMentorMapper
-import org.careerseekers.userservice.repositories.ChildToMentorRepository
 import org.careerseekers.userservice.repositories.ChildrenRepository
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.UsersService
@@ -24,8 +21,6 @@ import org.springframework.stereotype.Service
 class UserRegistrationProcessor(
     private val childrenRepository: ChildrenRepository,
     private val childrenMapper: ChildrenMapper,
-    private val childToMentorRepository: ChildToMentorRepository,
-    private val childrenToMentorMapper: ChildrenToMentorMapper,
     private val usersService: UsersService,
     private val usersRepository: UsersRepository,
     private val emailSendingProducer: KafkaEmailSendingProducer,
@@ -47,7 +42,7 @@ class UserRegistrationProcessor(
         val user = usersService.getByEmail(item.email)!!
         val mentor = item.mentorId?.let { usersService.getById(it) }
 
-        val child = CreateChildDto(
+        CreateChildDto(
             lastName = item.lastName,
             firstName = item.firstName,
             patronymic = item.patronymic,
@@ -55,10 +50,6 @@ class UserRegistrationProcessor(
             mentor = mentor
         ).let(childrenMapper::childFromDto)
             .run(childrenRepository::save)
-
-        CreateMentorToChildDto(child = child, mentor = mentor)
-            .let(childrenToMentorMapper::entityFromDto)
-            .run(childToMentorRepository::save)
 
         if (item.mentorEqualsUser) {
             user.isMentor = true
