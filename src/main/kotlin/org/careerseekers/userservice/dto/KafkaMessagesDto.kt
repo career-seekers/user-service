@@ -12,7 +12,7 @@ sealed class KafkaMessagesDto : DtoClass
 @Serializable
 @SerialName("email_sending_task")
 class EmailSendingTaskDto(
-    val token: String?,
+    val token: String? = null,
     val eventType: MailEventTypes,
-    val user: UsersCacheDto?,
+    val user: UsersCacheDto? = null,
 ) : KafkaMessagesDto()
