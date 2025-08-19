@@ -3,7 +3,7 @@ package org.careerseekers.userservice.services
 import org.careerseekers.userservice.cache.TemporaryPasswordsCache
 import org.careerseekers.userservice.dto.TemporaryPasswordDto
 import org.careerseekers.userservice.dto.auth.LoginUserDto
-import org.careerseekers.userservice.dto.auth.RegisterUserDto
+import org.careerseekers.userservice.dto.auth.RegistrationDto
 import org.careerseekers.userservice.dto.auth.UpdateUserTokensDto
 import org.careerseekers.userservice.dto.jwt.CreateJwtToken
 import org.careerseekers.userservice.dto.jwt.UserTokensDto
@@ -23,18 +23,20 @@ class AuthService(
     private val temporaryPasswordsCache: TemporaryPasswordsCache,
 ) {
     @Transactional
-    fun register(data: RegisterUserDto): UserTokensDto {
-        return usersService.create(CreateUserDto(
-            firstName = data.firstName,
-            lastName = data.lastName,
-            patronymic = data.patronymic,
-            dateOfBirth = data.dateOfBirth,
-            email = data.email,
-            mobileNumber = data.mobileNumber,
-            password = data.password ?: generatePassword(data.email),
-            role = data.role,
-            avatarId = data.avatarId,
-        )).let {
+    fun register(data: RegistrationDto): UserTokensDto {
+        return usersService.create(
+            CreateUserDto(
+                firstName = data.firstName,
+                lastName = data.lastName,
+                patronymic = data.patronymic,
+                dateOfBirth = data.dateOfBirth,
+                email = data.email,
+                mobileNumber = data.mobileNumber,
+                password = data.password ?: generatePassword(data.email),
+                role = data.role,
+                avatarId = data.avatarId,
+            )
+        ).let {
             jwtUtil.removeOldRefreshTokenByUUID(data.uuid)
             UserTokensDto(
                 jwtUtil.generateAccessToken(CreateJwtToken(it, data.uuid)),
