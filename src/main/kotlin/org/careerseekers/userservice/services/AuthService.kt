@@ -1,14 +1,20 @@
 package org.careerseekers.userservice.services
 
 import org.careerseekers.userservice.cache.TemporaryPasswordsCache
+import org.careerseekers.userservice.dto.EmailSendingTaskDto
 import org.careerseekers.userservice.dto.TemporaryPasswordDto
 import org.careerseekers.userservice.dto.auth.LoginUserDto
+import org.careerseekers.userservice.dto.auth.PreRegisterUserDto
 import org.careerseekers.userservice.dto.auth.RegistrationDto
 import org.careerseekers.userservice.dto.auth.UpdateUserTokensDto
 import org.careerseekers.userservice.dto.jwt.CreateJwtToken
 import org.careerseekers.userservice.dto.jwt.UserTokensDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
+import org.careerseekers.userservice.enums.MailEventTypes
+import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
+import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
+import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.PasswordGenerator.generatePassword
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -21,9 +27,33 @@ class AuthService(
     private val usersService: UsersService,
     private val passwordEncoder: PasswordEncoder,
     private val temporaryPasswordsCache: TemporaryPasswordsCache,
+    private val emailSendingProducer: KafkaEmailSendingProducer,
+    private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
 ) {
+    fun preRegister(item: PreRegisterUserDto) {
+        usersService.getByEmail(item.email, throwable = false)?.let {
+            throw DoubleRecordException("User with email ${item.email} already exists")
+        }
+
+        usersService.getByMobileNumber(item.mobileNumber, throwable = false)?.let {
+            throw DoubleRecordException("User with mobile number ${item.mobileNumber} already exists")
+        }
+
+        emailSendingProducer.sendMessage(EmailSendingTaskDto(
+            token = null,
+            eventType = MailEventTypes.PRE_REGISTRATION,
+            user = null
+        ))
+    }
+
     @Transactional
     fun register(data: RegistrationDto): UserTokensDto {
+        emailVerificationCodeVerifier.verify(
+            email = data.email,
+            verificationCode = data.verificationCode,
+            mailEventTypes = MailEventTypes.PRE_REGISTRATION,
+        )
+
         return usersService.create(
             CreateUserDto(
                 firstName = data.firstName,

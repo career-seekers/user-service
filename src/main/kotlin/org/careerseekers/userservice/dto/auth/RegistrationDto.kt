@@ -13,6 +13,7 @@ import java.util.UUID
 @Serializable
 @Polymorphic
 sealed interface RegistrationDto : DtoClass {
+    val verificationCode: String
     val firstName: String
     val lastName: String
     val patronymic: String
@@ -30,6 +31,7 @@ sealed interface RegistrationDto : DtoClass {
 @Serializable
 @SerialName("RegisterUserDto")
 data class RegisterUserDto(
+    override val verificationCode: String,
     override val firstName: String,
     override val lastName: String,
     override val patronymic: String,
@@ -47,6 +49,7 @@ data class RegisterUserDto(
 @Serializable
 @SerialName("RegisterUserExternalDto")
 data class RegisterUserExternalDto(
+    override val verificationCode: String,
     override val firstName: String,
     override val lastName: String,
     override val patronymic: String,
