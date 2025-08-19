@@ -29,10 +29,10 @@ class UserRegistrationProcessor(
     private val usersService: UsersService,
     private val usersRepository: UsersRepository,
     private val emailSendingProducer: KafkaEmailSendingProducer,
-) : IUsersRegistrationProcessor<RegistrationDto>, IUserNotificationProcessor {
+) : IUsersRegistrationProcessor, IUserNotificationProcessor {
     override val userRole = UsersRoles.USER
 
-    override fun processRegistration(item: RegistrationDto) {
+    override fun <T : RegistrationDto> processRegistration(item: T) {
         when (item) {
             is RegisterUserDto -> processUserRegistration()
             is RegisterUserExternalDto -> processUserWithChildRegistration(item)

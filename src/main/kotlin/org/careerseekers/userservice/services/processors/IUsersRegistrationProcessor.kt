@@ -1,9 +1,10 @@
 package org.careerseekers.userservice.services.processors
 
+import org.careerseekers.userservice.dto.auth.RegistrationDto
 import org.careerseekers.userservice.enums.UsersRoles
 
-interface IUsersRegistrationProcessor<T> {
+interface IUsersRegistrationProcessor {
     val userRole: UsersRoles
 
-    fun processRegistration(item: T)
+    fun <T : RegistrationDto> processRegistration(item: T)
 }
