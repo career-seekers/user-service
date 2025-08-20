@@ -43,9 +43,9 @@ class UserRegistrationProcessor(
         val mentor = item.mentorId?.let { usersService.getById(it) }
 
         CreateChildDto(
-            lastName = item.lastName,
-            firstName = item.firstName,
-            patronymic = item.patronymic,
+            lastName = item.childLastName,
+            firstName = item.childFirstName,
+            patronymic = item.childPatronymic,
             user = user,
             mentor = mentor
         ).let(childrenMapper::childFromDto)
