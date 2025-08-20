@@ -28,4 +28,5 @@ message User {
   string role = 9;
   int64 avatarId = 10;
   bool verified = 11;
+  bool isMentor = 12;
 }

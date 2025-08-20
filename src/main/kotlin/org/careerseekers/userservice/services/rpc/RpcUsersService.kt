@@ -35,6 +35,7 @@ class RpcUsersService(
                 .setRole(user.role.toString())
                 .setAvatarId(user.avatarId)
                 .setVerified(user.verified)
+                .setIsMentor(user.isMentor)
                 .build()
         }
 
