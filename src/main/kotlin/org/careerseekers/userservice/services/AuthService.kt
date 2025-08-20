@@ -13,6 +13,7 @@ import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
+import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
 import org.careerseekers.userservice.services.processors.IUsersRegistrationProcessor
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
@@ -32,7 +33,7 @@ class AuthService(
     private val emailSendingProducer: KafkaEmailSendingProducer,
     private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
 ) {
-    fun preRegister(item: PreRegisterUserDto) {
+    fun preRegister(item: PreRegisterUserDto): BasicSuccessfulResponse<String> {
         usersService.getByEmail(item.email, throwable = false)?.let {
             throw DoubleRecordException("User with email ${item.email} already exists")
         }
@@ -45,6 +46,8 @@ class AuthService(
             email = item.email,
             eventType = MailEventTypes.PRE_REGISTRATION,
         ))
+
+        return BasicSuccessfulResponse("Verification code sent to successfully")
     }
 
     @Transactional
