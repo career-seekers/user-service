@@ -101,8 +101,8 @@ class UsersService(
     fun changePasswordFirstStep(jwtToken: String): String {
         emailSendingProducer.sendMessage(
             EmailSendingTaskDto(
-                jwtToken,
-                MailEventTypes.PASSWORD_RESET
+                token = jwtToken,
+                eventType = MailEventTypes.PASSWORD_RESET
             )
         )
 

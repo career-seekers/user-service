@@ -34,7 +34,10 @@ class EmailVerificationCodeVerifier(
                 throw BadRequestException("Incorrect verification code")
             } else {
                 emailSendingProducer.sendMessage(
-                    EmailSendingTaskDto(token, mailEventTypes, user)
+                    EmailSendingTaskDto(
+                        token = token,
+                        eventType = mailEventTypes,
+                        user = user)
                 )
                 throw BadRequestException("The maximum number of attempts has been reached. A new code has been sent to the mail")
             }
