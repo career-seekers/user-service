@@ -66,5 +66,7 @@ data class UserWithChildRegistrationDto(
     val childFirstName: String,
     val childLastName: String,
     val childPatronymic: String,
+    @Serializable(with = DateSerializer::class)
+    val childDateOfBirth: Date,
     val mentorId: Long? = null,
 ) : RegistrationDto

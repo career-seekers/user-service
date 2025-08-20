@@ -42,10 +42,11 @@ class UserRegistrationProcessor(
         val user = usersService.getByEmail(item.email)!!
         val mentor = item.mentorId?.let { usersService.getById(it) }
 
-        CreateChildDto(
+        val child = CreateChildDto(
             lastName = item.childLastName,
             firstName = item.childFirstName,
             patronymic = item.childPatronymic,
+            dateOfBirth = item.childDateOfBirth,
             user = user,
             mentor = mentor
         ).let(childrenMapper::childFromDto)
@@ -53,7 +54,10 @@ class UserRegistrationProcessor(
 
         if (item.mentorEqualsUser) {
             user.isMentor = true
+            child.mentor = user
+
             usersRepository.save(user)
+            childrenRepository.save(child)
 
             notifyUser(user)
         }
