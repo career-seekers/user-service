@@ -29,8 +29,8 @@ sealed interface RegistrationDto : DtoClass {
 }
 
 @Serializable
-@SerialName("RegisterUserDto")
-data class RegisterUserDto(
+@SerialName("UserRegistrationDto")
+data class UserRegistrationDto(
     override val verificationCode: String,
     override val firstName: String,
     override val lastName: String,
@@ -47,8 +47,8 @@ data class RegisterUserDto(
 ) : RegistrationDto
 
 @Serializable
-@SerialName("RegisterUserExternalDto")
-data class RegisterUserExternalDto(
+@SerialName("UserWithChildRegistrationDto")
+data class UserWithChildRegistrationDto(
     override val verificationCode: String,
     override val firstName: String,
     override val lastName: String,
