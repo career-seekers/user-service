@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import java.sql.Date
 
 @Entity
 @Table(name = "children")
@@ -25,6 +26,9 @@ data class Children(
 
     @Column(nullable = false)
     var patronymic: String,
+
+    @Column(nullable = false)
+    var dateOfBirth: Date,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
