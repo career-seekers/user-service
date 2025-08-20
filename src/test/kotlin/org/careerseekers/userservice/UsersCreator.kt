@@ -1,37 +1,17 @@
 package org.careerseekers.userservice
 
+import MocksGenerator.randomBoolean
+import MocksGenerator.randomDateOfBirth
+import MocksGenerator.randomEmail
+import MocksGenerator.randomString
+import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.UsersRoles
-import java.time.LocalDate
-import java.time.ZoneId
-import java.util.Date
 import kotlin.random.Random
 
 object UsersCreator {
     private val roles =
         listOf(UsersRoles.USER, UsersRoles.EXPERT, UsersRoles.MENTOR, UsersRoles.TUTOR, UsersRoles.ADMIN)
-
-    private fun randomString(length: Int): String {
-        val charset = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        return (1..length)
-            .map { charset.random() }
-            .joinToString("")
-    }
-
-    private fun randomEmail(): String {
-        return "${randomString(8)}@example.com"
-    }
-
-    private fun randomDateOfBirth(): Date {
-        val start = LocalDate.of(1950, 1, 1)
-        val end = LocalDate.of(2005, 12, 31)
-        val days = start.until(end).days
-        val localDate = start.plusDays(Random.nextInt(days).toLong())
-
-        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
-    }
-
-    private fun randomBoolean(): Boolean = Random.nextBoolean()
 
     fun createUser(): Users {
         return Users(
@@ -54,6 +34,21 @@ object UsersCreator {
             mentorDocuments = null,     
             menteeChildren = null,      
             children = null             
+        )
+    }
+
+    fun createUserDto(): CreateUserDto {
+        val user = createUser()
+        return CreateUserDto(
+            firstName = user.firstName,
+            lastName = user.lastName,
+            patronymic = user.patronymic,
+            dateOfBirth = user.dateOfBirth,
+            email = user.email,
+            mobileNumber = user.mobileNumber,
+            password = user.password,
+            role = user.role,
+            avatarId = user.avatarId
         )
     }
 }
