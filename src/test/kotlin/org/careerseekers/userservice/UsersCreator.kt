@@ -37,8 +37,7 @@ object UsersCreator {
         )
     }
 
-    fun createUserDto(): CreateUserDto {
-        val user = createUser()
+    fun createUserDto(user: Users = createUser()): CreateUserDto {
         return CreateUserDto(
             firstName = user.firstName,
             lastName = user.lastName,
