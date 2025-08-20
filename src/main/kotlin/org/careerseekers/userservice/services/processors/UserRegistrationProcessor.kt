@@ -1,8 +1,8 @@
 package org.careerseekers.userservice.services.processors
 
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
-import org.careerseekers.userservice.dto.auth.RegisterUserDto
-import org.careerseekers.userservice.dto.auth.RegisterUserExternalDto
+import org.careerseekers.userservice.dto.auth.UserRegistrationDto
+import org.careerseekers.userservice.dto.auth.UserWithChildRegistrationDto
 import org.careerseekers.userservice.dto.auth.RegistrationDto
 import org.careerseekers.userservice.dto.users.CreateChildDto
 import org.careerseekers.userservice.entities.Users
@@ -29,8 +29,8 @@ class UserRegistrationProcessor(
 
     override fun <T : RegistrationDto> processRegistration(item: T) {
         when (item) {
-            is RegisterUserDto -> processUserRegistration()
-            is RegisterUserExternalDto -> processUserWithChildRegistration(item)
+            is UserRegistrationDto -> processUserRegistration()
+            is UserWithChildRegistrationDto -> processUserWithChildRegistration(item)
         }
     }
 
@@ -38,14 +38,15 @@ class UserRegistrationProcessor(
         throw BadRequestException("Invalid data package for user registration")
 
 
-    private fun processUserWithChildRegistration(item: RegisterUserExternalDto) {
+    private fun processUserWithChildRegistration(item: UserWithChildRegistrationDto) {
         val user = usersService.getByEmail(item.email)!!
         val mentor = item.mentorId?.let { usersService.getById(it) }
 
-        CreateChildDto(
+        val child = CreateChildDto(
             lastName = item.childLastName,
             firstName = item.childFirstName,
             patronymic = item.childPatronymic,
+            dateOfBirth = item.childDateOfBirth,
             user = user,
             mentor = mentor
         ).let(childrenMapper::childFromDto)
@@ -53,7 +54,10 @@ class UserRegistrationProcessor(
 
         if (item.mentorEqualsUser) {
             user.isMentor = true
+            child.mentor = user
+
             usersRepository.save(user)
+            childrenRepository.save(child)
 
             notifyUser(user)
         }

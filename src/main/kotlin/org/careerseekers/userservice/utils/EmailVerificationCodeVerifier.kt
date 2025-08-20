@@ -35,6 +35,7 @@ class EmailVerificationCodeVerifier(
             } else {
                 emailSendingProducer.sendMessage(
                     EmailSendingTaskDto(
+                        email = email,
                         token = token,
                         eventType = mailEventTypes,
                         user = user)

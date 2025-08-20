@@ -29,8 +29,8 @@ sealed interface RegistrationDto : DtoClass {
 }
 
 @Serializable
-@SerialName("RegisterUserDto")
-data class RegisterUserDto(
+@SerialName("UserRegistrationDto")
+data class UserRegistrationDto(
     override val verificationCode: String,
     override val firstName: String,
     override val lastName: String,
@@ -39,7 +39,7 @@ data class RegisterUserDto(
     override val dateOfBirth: Date,
     override val email: String,
     override val mobileNumber: String,
-    override val password: String?,
+    override val password: String? = null,
     override val role: UsersRoles,
     override val avatarId: Long?,
     @Serializable(with = UUIDSerializer::class)
@@ -47,8 +47,8 @@ data class RegisterUserDto(
 ) : RegistrationDto
 
 @Serializable
-@SerialName("RegisterUserExternalDto")
-data class RegisterUserExternalDto(
+@SerialName("UserWithChildRegistrationDto")
+data class UserWithChildRegistrationDto(
     override val verificationCode: String,
     override val firstName: String,
     override val lastName: String,
@@ -57,7 +57,7 @@ data class RegisterUserExternalDto(
     override val dateOfBirth: Date,
     override val email: String,
     override val mobileNumber: String,
-    override val password: String?,
+    override val password: String? = null,
     override val role: UsersRoles,
     override val avatarId: Long?,
     @Serializable(with = UUIDSerializer::class)
@@ -66,5 +66,7 @@ data class RegisterUserExternalDto(
     val childFirstName: String,
     val childLastName: String,
     val childPatronymic: String,
+    @Serializable(with = DateSerializer::class)
+    val childDateOfBirth: Date,
     val mentorId: Long? = null,
 ) : RegistrationDto
