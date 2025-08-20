@@ -42,10 +42,6 @@ class UsersService(
     @Value("\${file-service.default-avatar-id}")
     private lateinit var defaultAvatarId: String
 
-    override fun getById(id: Long?, throwable: Boolean, message: String): Users? {
-        return super.getById(id, throwable, message)
-    }
-
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
             ?: if (throwable) throw NotFoundException("User with email $email not found") else null
