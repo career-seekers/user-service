@@ -33,7 +33,7 @@ class UsersServiceDeleteTests : UsersServiceMocks() {
         }
 
         @Test
-        fun `deleteById should return NotFoundException if user does not exists`() {
+        fun `deleteById should return NotFoundException if user does not exist`() {
             val user = createUser()
 
             every { usersServiceMock.getById(user.id, any(), any()) } throws NotFoundException("User with id ${user.id} does not exist.")
