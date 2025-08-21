@@ -5,52 +5,22 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.just
-import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.assertj.core.api.Assertions.assertThat
 import org.careerseekers.userservice.UsersCreator.createUser
-import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.dto.users.ChangePasswordSecondStepDto
 import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.NotFoundException
-import org.careerseekers.userservice.mappers.UsersMapper
-import org.careerseekers.userservice.repositories.UsersRepository
-import org.careerseekers.userservice.services.UsersService
-import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
-import org.careerseekers.userservice.utils.DocumentExistenceChecker
-import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
-import org.careerseekers.userservice.utils.JwtUtil
+import org.careerseekers.userservice.mocks.UsersServiceMocks
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.security.crypto.password.PasswordEncoder
 
 @ExtendWith(MockKExtension::class)
-class UsersServicePasswordChangingTests {
-    private val repository = mockk<UsersRepository>()
-    private val jwtUtil = mockk<JwtUtil>()
-    private val usersMapper = mockk<UsersMapper>()
-    private val passwordEncoder = mockk<PasswordEncoder>()
-    private val emailSendingProducer = mockk<KafkaEmailSendingProducer>()
-    private val verificationCodesCacheClient = mockk<VerificationCodesCacheClient>()
-    private val documentExistenceChecker = mockk<DocumentExistenceChecker>()
-    private val emailVerificationCodeVerifier = mockk<EmailVerificationCodeVerifier>()
-
-    private val usersServiceMock = mockk<UsersService>(relaxed = true)
-    private val serviceUnderTest = UsersService(
-        repository,
-        jwtUtil,
-        usersMapper,
-        passwordEncoder,
-        emailSendingProducer,
-        verificationCodesCacheClient,
-        documentExistenceChecker,
-        emailVerificationCodeVerifier,
-        usersServiceMock
-    )
+class UsersServicePasswordChangingTests : UsersServiceMocks() {
 
     @Nested
     inner class ChangePasswordFirstStep {

@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
 class UsersService(
     override val repository: UsersRepository,
     private val jwtUtil: JwtUtil,
@@ -43,19 +44,16 @@ class UsersService(
     @Value("\${file-service.default-avatar-id}")
     private lateinit var defaultAvatarId: String
 
-    @Tested(testedBy = "scobca", createdOn = "20.08.2025", reviewStatus = ReviewStatus.APPROVED)
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
             ?: if (throwable) throw NotFoundException("User with email $email not found") else null
     }
 
-    @Tested(testedBy = "scobca", createdOn = "20.08.2025", reviewStatus = ReviewStatus.APPROVED)
     fun getByMobileNumber(mobileNumber: String, throwable: Boolean = true): Users? {
         return repository.getByMobileNumber(mobileNumber)
             ?: if (throwable) throw NotFoundException("User with mobile number $mobileNumber not found") else null
     }
 
-    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     override fun create(item: CreateUserDto): Users {
         if (item.avatarId != null && item.avatarId != defaultAvatarId.toLongOrNull()) {
@@ -87,7 +85,6 @@ class UsersService(
         repository.saveAll(usersToSave)
     }
 
-    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     override fun update(item: UpdateUserDto): String {
         val user = usersService?.getById(item.id, message = "User with id ${item.id} does not exist.")!!
@@ -99,7 +96,6 @@ class UsersService(
         return "User updated successfully."
     }
 
-    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     fun changePasswordFirstStep(jwtToken: String): String {
         emailSendingProducer.sendMessage(
             EmailSendingTaskDto(
@@ -111,7 +107,6 @@ class UsersService(
         return "Email sent successfully"
     }
 
-    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     fun changePasswordSecondStep(item: ChangePasswordSecondStepDto, jwtToken: String): String {
         val user = jwtUtil.getUserFromToken(jwtToken) ?: throw NotFoundException("User not found")
@@ -131,7 +126,6 @@ class UsersService(
         return "User updated successfully."
     }
 
-    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     fun verifyUser(item: VerifyUserDto): String {
         usersService?.getById(item.userId, message = "User with id ${item.userId} does not exist.").let {
@@ -140,7 +134,6 @@ class UsersService(
         return "User verification updated successfully."
     }
 
-    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     override fun deleteById(id: Long): String {
         usersService?.getById(id, message = "User with id $id does not exist.")?.let { user ->
@@ -150,7 +143,6 @@ class UsersService(
         return "User deleted successfully."
     }
 
-    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     override fun deleteAll(): String {
         super.deleteAll()
