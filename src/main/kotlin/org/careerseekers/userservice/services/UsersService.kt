@@ -22,7 +22,6 @@ import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
 import org.careerseekers.userservice.utils.Tested
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cache.annotation.CacheEvict
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -150,7 +149,6 @@ class UsersService(
     }
 
     @Transactional
-    @CacheEvict(cacheNames = ["users-service"], allEntries = true)
     override fun deleteAll(): String {
         super.deleteAll()
 
