@@ -140,6 +140,7 @@ class UsersService(
         return "User verification updated successfully."
     }
 
+    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     override fun deleteById(id: Long): String {
         usersService?.getById(id, message = "User with id $id does not exist.")?.let { user ->
