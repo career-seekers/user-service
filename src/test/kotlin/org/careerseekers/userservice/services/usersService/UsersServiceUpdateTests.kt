@@ -16,14 +16,13 @@ import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingP
 import org.careerseekers.userservice.utils.DocumentExistenceChecker
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @ExtendWith(MockKExtension::class)
-class UsersServiceUpdateTest {
+class UsersServiceUpdateTests {
 
     private val repository = mockk<UsersRepository>()
     private val jwtUtil = mockk<JwtUtil>()
@@ -46,9 +45,6 @@ class UsersServiceUpdateTest {
         emailVerificationCodeVerifier,
         usersServiceMock
     )
-
-    @BeforeEach
-    fun setUp() {}
 
     @Test
     fun `update should update only provided fields`() {
