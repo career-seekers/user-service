@@ -94,7 +94,7 @@ class JwtUtil(
 
     fun getUserFromToken(token: String): Users? {
         val claims = getClaims(token)
-        val user = usersService.getById((claims?.get("id") as Int).toLong())
+        val user = usersService.getById((claims?.get("id") as Int).toLong(), throwable = false)
 
         return user
     }
