@@ -121,7 +121,7 @@ class AuthServiceUpdateTokensTests : AuthServiceMocks() {
         }
 
         @Test
-        fun `updateTokens should return NotFoundException id user from token not found`() {
+        fun `updateTokens should return NotFoundException if user from token not found`() {
             every { jwtUtil.verifyToken(dto.accessToken, throwTimeLimit = eq(false)) } returns true
             every { jwtUtil.verifyToken(dto.refreshToken, uuid = dto.uuid) } returns true
             every { jwtUtil.removeOldRefreshTokenByUUID(dto.uuid) } returns Unit
