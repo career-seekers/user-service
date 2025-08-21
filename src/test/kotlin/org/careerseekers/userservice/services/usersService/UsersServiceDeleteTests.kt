@@ -79,4 +79,19 @@ class UsersServiceDeleteTests {
             verify(exactly = 1) { usersServiceMock.getById(user.id, any(), any()) }
         }
     }
+
+    @Nested
+    inner class DeleteAllTests {
+
+        @Test
+        fun `deleteAll should delete all users`() {
+            every { repository.deleteAll() } returns Unit
+
+            val result = serviceUnderTest.deleteAll()
+
+            assertThat(result).isEqualTo("Users deleted successfully.")
+
+            verify(exactly = 1) { repository.deleteAll() }
+        }
+    }
 }

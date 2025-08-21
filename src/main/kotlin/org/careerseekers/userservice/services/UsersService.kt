@@ -150,6 +150,7 @@ class UsersService(
         return "User deleted successfully."
     }
 
+    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     override fun deleteAll(): String {
         super.deleteAll()
