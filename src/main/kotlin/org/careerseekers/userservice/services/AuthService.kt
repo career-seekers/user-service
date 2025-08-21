@@ -11,6 +11,7 @@ import org.careerseekers.userservice.dto.jwt.CreateJwtToken
 import org.careerseekers.userservice.dto.jwt.UserTokensDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.enums.MailEventTypes
+import org.careerseekers.userservice.enums.ReviewStatus
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
@@ -19,11 +20,13 @@ import org.careerseekers.userservice.services.processors.IUsersRegistrationProce
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.PasswordGenerator.generatePassword
+import org.careerseekers.userservice.utils.Tested
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Tested(testedBy = "scobca", createdOn = "22.08.2025", reviewStatus = ReviewStatus.APPROVED)
 class AuthService(
     private val jwtUtil: JwtUtil,
     private val usersService: UsersService,
