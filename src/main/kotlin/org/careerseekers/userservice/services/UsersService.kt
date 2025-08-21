@@ -56,7 +56,7 @@ class UsersService(
             ?: if (throwable) throw NotFoundException("User with mobile number $mobileNumber not found") else null
     }
 
-    @Tested(testedBy = "scobca", createdOn = "20.08.2025", reviewStatus = ReviewStatus.APPROVED)
+    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     override fun create(item: CreateUserDto): Users {
         if (item.avatarId != null && item.avatarId != defaultAvatarId.toLongOrNull()) {
@@ -88,7 +88,7 @@ class UsersService(
         repository.saveAll(usersToSave)
     }
 
-    @Tested(testedBy = "scobca", createdOn = "20.08.2025", reviewStatus = ReviewStatus.APPROVED)
+    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     override fun update(item: UpdateUserDto): String {
         val user = usersService?.getById(item.id, message = "User with id ${item.id} does not exist.")!!
@@ -100,6 +100,7 @@ class UsersService(
         return "User updated successfully."
     }
 
+    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     fun changePasswordFirstStep(jwtToken: String): String {
         emailSendingProducer.sendMessage(
             EmailSendingTaskDto(
@@ -111,6 +112,7 @@ class UsersService(
         return "Email sent successfully"
     }
 
+    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     fun changePasswordSecondStep(item: ChangePasswordSecondStepDto, jwtToken: String): String {
         val user = jwtUtil.getUserFromToken(jwtToken) ?: throw NotFoundException("User not found")
