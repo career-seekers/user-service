@@ -131,6 +131,7 @@ class UsersService(
         return "User updated successfully."
     }
 
+    @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     fun verifyUser(item: VerifyUserDto): String {
         usersService?.getById(item.userId, message = "User with id ${item.userId} does not exist.").let {
