@@ -3,7 +3,7 @@ package org.careerseekers.userservice.utils
 import org.careerseekers.userservice.enums.ReviewStatus
 
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 annotation class Tested(
     val testedBy: String = "",
     val createdOn: String = "",
