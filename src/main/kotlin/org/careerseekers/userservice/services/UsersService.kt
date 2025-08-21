@@ -9,6 +9,7 @@ import org.careerseekers.userservice.dto.users.VerifyUserDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.FileTypes
 import org.careerseekers.userservice.enums.MailEventTypes
+import org.careerseekers.userservice.enums.ReviewStatus
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UsersMapper
@@ -19,14 +20,15 @@ import org.careerseekers.userservice.utils.DocumentExistenceChecker
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
+import org.careerseekers.userservice.utils.Tested
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cache.annotation.CacheEvict
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
 class UsersService(
     override val repository: UsersRepository,
     private val jwtUtil: JwtUtil,
@@ -41,10 +43,6 @@ class UsersService(
 
     @Value("\${file-service.default-avatar-id}")
     private lateinit var defaultAvatarId: String
-
-    override fun getById(id: Long?, throwable: Boolean, message: String): Users? {
-        return super.getById(id, throwable, message)
-    }
 
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
@@ -146,7 +144,6 @@ class UsersService(
     }
 
     @Transactional
-    @CacheEvict(cacheNames = ["users-service"], allEntries = true)
     override fun deleteAll(): String {
         super.deleteAll()
 

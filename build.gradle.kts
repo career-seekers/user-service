@@ -12,10 +12,6 @@ plugins {
     id("it.nicolasfarabegoli.conventional-commits") version "3.1.3"
 }
 
-val mockitoAgent: Configuration by configurations.creating {
-    isTransitive = false
-}
-
 group = "org.careerseekers"
 version = "0.0.1-SNAPSHOT"
 
@@ -97,9 +93,8 @@ dependencies {
     // Tests
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    mockitoAgent("org.mockito:mockito-core")
+    testImplementation("io.mockk:mockk-agent-jvm:1.13.7")
+    testImplementation("io.mockk:mockk:1.13.7")
 
     // Metrics
     implementation("io.micrometer:micrometer-tracing-bridge-brave")
@@ -148,9 +143,9 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    jvmArgs("-javaagent:${mockitoAgent.asPath}")
-    jvmArgs("-Xshare:off")
+    jvmArgs("-XX:+EnableDynamicAgentLoading")
 }
+
 conventionalCommits {
     warningIfNoGitRoot = true
     types += listOf("build", "chore", "docs", "feat", "fix", "refactor", "style", "test")

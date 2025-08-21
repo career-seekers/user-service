@@ -4,7 +4,7 @@ import org.careerseekers.userservice.dto.DtoClass
 
 data class UpdateUserDto(
     val id: Long,
-    val firstName: String?,
-    val lastName: String?,
-    val patronymic: String?,
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val patronymic: String? = null,
 ) : DtoClass
