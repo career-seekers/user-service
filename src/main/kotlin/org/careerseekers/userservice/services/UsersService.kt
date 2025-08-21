@@ -9,6 +9,7 @@ import org.careerseekers.userservice.dto.users.VerifyUserDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.FileTypes
 import org.careerseekers.userservice.enums.MailEventTypes
+import org.careerseekers.userservice.enums.ReviewStatus
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UsersMapper
@@ -19,6 +20,7 @@ import org.careerseekers.userservice.utils.DocumentExistenceChecker
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
+import org.careerseekers.userservice.utils.Tested
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.context.annotation.Lazy
@@ -42,16 +44,19 @@ class UsersService(
     @Value("\${file-service.default-avatar-id}")
     private lateinit var defaultAvatarId: String
 
+    @Tested(testedBy = "scobca", createdOn = "20.08.2025", reviewStatus = ReviewStatus.APPROVED)
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
             ?: if (throwable) throw NotFoundException("User with email $email not found") else null
     }
 
+    @Tested(testedBy = "scobca", createdOn = "20.08.2025", reviewStatus = ReviewStatus.APPROVED)
     fun getByMobileNumber(mobileNumber: String, throwable: Boolean = true): Users? {
         return repository.getByMobileNumber(mobileNumber)
             ?: if (throwable) throw NotFoundException("User with mobile number $mobileNumber not found") else null
     }
 
+    @Tested(testedBy = "scobca", createdOn = "20.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     override fun create(item: CreateUserDto): Users {
         if (item.avatarId != null && item.avatarId != defaultAvatarId.toLongOrNull()) {
@@ -83,6 +88,7 @@ class UsersService(
         repository.saveAll(usersToSave)
     }
 
+    @Tested(testedBy = "scobca", createdOn = "20.08.2025", reviewStatus = ReviewStatus.APPROVED)
     @Transactional
     override fun update(item: UpdateUserDto): String {
         val user = usersService?.getById(item.id, message = "User with id ${item.id} does not exist.")!!
