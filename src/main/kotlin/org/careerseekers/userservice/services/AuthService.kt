@@ -87,15 +87,15 @@ class AuthService(
 
     @Transactional
     fun login(data: LoginUserDto): UserTokensDto {
-        return usersService.getByEmail(data.email).let {
+        return usersService.getByEmail(data.email, throwable = false)?.let {
             jwtUtil.removeOldRefreshTokenByUUID(data.uuid)
-            if (passwordEncoder.matches(data.password, it!!.password)) {
+            if (passwordEncoder.matches(data.password, it.password)) {
                 UserTokensDto(
                     jwtUtil.generateAccessToken(CreateJwtToken(it, data.uuid)),
                     jwtUtil.generateRefreshToken(CreateJwtToken(it, data.uuid))
                 )
             } else throw JwtAuthenticationException("Wrong email or password")
-        }
+        } ?: throw JwtAuthenticationException("Wrong email or password")
     }
 
     @Transactional
