@@ -115,7 +115,7 @@ class UserDocumentsServiceGetTests : UserDocumentsServiceMocks() {
                 serviceUnderTest.getDocsByUserId(user.id)
             }
 
-            assertThat(exception.message).isEqualTo("Documents for user with if ${user.id} not found")
+            assertThat(exception.message).isEqualTo("Documents for user with id ${user.id} not found")
 
             verify { usersService.getById(user.id, any(), any()) }
             verify { repository.findByUserId(user.id) }
