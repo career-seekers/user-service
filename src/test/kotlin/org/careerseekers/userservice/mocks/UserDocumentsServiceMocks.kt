@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.mocks
 
 import io.mockk.mockk
+import io.mockk.spyk
 import org.careerseekers.userservice.mappers.UserDocumentsMapper
 import org.careerseekers.userservice.repositories.UserDocsRepository
 import org.careerseekers.userservice.repositories.UsersRepository
@@ -17,13 +18,12 @@ open class UserDocumentsServiceMocks {
     protected val userDocumentsMapper = mockk<UserDocumentsMapper>()
     protected val snilsValidator = mockk<SnilsValidator>()
 
-    protected val userDocumentsServiceMock = mockk<UserDocumentsService>(relaxed = true)
-    protected val serviceUnderTest = UserDocumentsService(
+    protected val serviceUnderTest = spyk(UserDocumentsService(
         repository = repository,
         usersRepository = usersRepository,
         usersService = usersService,
         documentsApiResolver = documentsApiResolver,
         userDocumentsMapper = userDocumentsMapper,
         snilsValidator = snilsValidator
-    )
+    ), recordPrivateCalls = true)
 }
