@@ -1,8 +1,11 @@
 package org.careerseekers.userservice.mocks.generators
 
 import MocksGenerator.randomString
+import org.careerseekers.userservice.dto.docs.CreateUserDocsDto
+import org.careerseekers.userservice.dto.docs.SnilsDto
 import org.careerseekers.userservice.entities.UserDocuments
 import org.careerseekers.userservice.entities.Users
+import org.careerseekers.userservice.mocks.generators.MultipartFileGenerator.createMultipartFile
 import kotlin.random.Random
 
 object DocumentsGenerator {
@@ -19,5 +22,20 @@ object DocumentsGenerator {
         additionalStudyingCertificateId = Random.nextLong(1, 1000),
         parentRole = randomString(20),
         consentToChildPdpId = Random.nextLong(1, 1000)
+    )
+
+    fun createUserDocsDto(user: Users) = CreateUserDocsDto(
+        userId = user.id,
+        snilsDto = SnilsDto(
+            snilsNumber = randomString(12),
+            snilsFile = createMultipartFile(),
+        ),
+        studyingPlace = randomString(20),
+        studyingCertificateFile = createMultipartFile(),
+        learningClass = Random.nextLong(1, 11).toShort(),
+        trainingGround = randomString(20),
+        additionalStudyingCertificateFile = createMultipartFile(),
+        parentRole = randomString(20),
+        consentToChildPdpFile = createMultipartFile(),
     )
 }
