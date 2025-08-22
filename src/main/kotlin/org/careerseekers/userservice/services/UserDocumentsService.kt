@@ -104,7 +104,7 @@ class UserDocumentsService(
             ).checkNullable("Parameters snilsNumber and snilsFile can be only all null values or all non-null values.")
             item.snilsNumber?.let { snilsValidator.checkSnilsValid(it) }
 
-            item.snilsFile.let { snilsFile ->
+            item.snilsFile.let {
                 val oldId = docs.snilsId
                 documentsApiResolver.loadDocId("uploadSnils", item.snilsFile).let {
                     docs.snilsId = it ?: throw BadRequestException("Something went wrong while uploading snils.")
