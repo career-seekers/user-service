@@ -4,6 +4,8 @@ import io.mockk.every
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.careerseekers.userservice.entities.UserDocuments
+import org.careerseekers.userservice.enums.UsersRoles
+import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mocks.UserDocumentsServiceMocks
 import org.careerseekers.userservice.mocks.generators.DocumentsGenerator.createUserDocs
@@ -47,7 +49,7 @@ class UserDocumentsServiceGetTests : UserDocumentsServiceMocks() {
     inner class GetByIdTests {
 
         @Test
-        fun `GetById should return user document by id`() {
+        fun `Should return user document by id`() {
             val documents = createUserDocs(createUser())
 
             every { repository.findById(documents.id) } returns Optional.of(documents)
@@ -80,6 +82,96 @@ class UserDocumentsServiceGetTests : UserDocumentsServiceMocks() {
 
             assertThat(result).isNull()
             verify { repository.findById(any()) }
+        }
+    }
+
+    @Nested
+    inner class GetDocsByUserIdTests {
+
+        @Test
+        fun `Should return user documents by user id`() {
+            val user = createUser().copy(role = UsersRoles.USER)
+            val documents = createUserDocs(user)
+
+            every { usersService.getById(user.id, any(), any()) } returns user
+            every { repository.findByUserId(user.id) } returns documents
+
+            val result = serviceUnderTest.getDocsByUserId(user.id)
+
+            assertThat(result).isEqualTo(documents)
+
+            verify { usersService.getById(user.id, any(), any()) }
+            verify { repository.findByUserId(user.id) }
+        }
+
+        @Test
+        fun `Should throw NotFoundException when documents not found and throwable = true`() {
+            val user = createUser().copy(role = UsersRoles.USER)
+
+            every { usersService.getById(user.id, any(), any()) } returns user
+            every { repository.findByUserId(user.id) } returns null
+
+            val exception = assertFailsWith<NotFoundException> {
+                serviceUnderTest.getDocsByUserId(user.id)
+            }
+
+            assertThat(exception.message).isEqualTo("Documents for user with if ${user.id} not found")
+
+            verify { usersService.getById(user.id, any(), any()) }
+            verify { repository.findByUserId(user.id) }
+        }
+
+        @Test
+        fun `Should return null when documents not found and throwable = false`() {
+            val user = createUser().copy(role = UsersRoles.USER)
+
+            every { usersService.getById(user.id, any(), any()) } returns user
+            every { repository.findByUserId(user.id) } returns null
+
+            val result = serviceUnderTest.getDocsByUserId(user.id, throwable = false)
+
+            assertThat(result).isNull()
+
+            verify { usersService.getById(user.id, any(), any()) }
+            verify { repository.findByUserId(user.id) }
+        }
+
+        @Test
+        fun `Should return NotFoundException when user not found`() {
+            val user = createUser().copy(role = UsersRoles.USER)
+
+            every {
+                usersService.getById(
+                    user.id,
+                    any(),
+                    any()
+                )
+            } throws NotFoundException("User with id ${user.id} not found")
+
+            val exception = assertFailsWith<NotFoundException> {
+                serviceUnderTest.getDocsByUserId(user.id)
+            }
+
+            assertThat(exception.message).isEqualTo("User with id ${user.id} not found")
+
+            verify { usersService.getById(user.id, any(), any()) }
+            verify(exactly = 0) { repository.findByUserId(user.id) }
+        }
+
+        @Test
+        fun `Should throw BadRequestException if user role is not USER`() {
+            val user = createUser().copy(role = UsersRoles.EXPERT)
+
+            every { usersService.getById(user.id, any(), any()) } returns user
+
+            val exception = assertFailsWith<BadRequestException> {
+                serviceUnderTest.getDocsByUserId(user.id)
+            }
+
+            assertThat(exception.message).isEqualTo("This user has role ${user.role}, not ${UsersRoles.USER}. Please use another controller to check his documents.")
+
+            verify { usersService.getById(user.id, any(), any()) }
+            verify(exactly = 0) { repository.findByUserId(user.id) }
         }
     }
 }
