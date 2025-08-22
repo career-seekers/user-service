@@ -22,7 +22,7 @@ class AuthServiceLoginTests : AuthServiceMocks() {
 
         @Test
         fun `login should return UserTokensDto`() {
-            every { usersService.getByEmail(user.email) } returns user
+            every { usersService.getByEmail(user.email, false) } returns user
             every { jwtUtil.removeOldRefreshTokenByUUID(loginDto.uuid) } returns Unit
             every { passwordEncoder.matches(loginDto.password, user.password) } returns true
             every { jwtUtil.generateAccessToken(any()) } returns "accessToken"
@@ -35,7 +35,7 @@ class AuthServiceLoginTests : AuthServiceMocks() {
                 refreshToken = "refreshToken"
             ))
 
-            verify { usersService.getByEmail(user.email) }
+            verify { usersService.getByEmail(user.email, false) }
             verify { jwtUtil.removeOldRefreshTokenByUUID(loginDto.uuid) }
             verify { passwordEncoder.matches(loginDto.password, user.password) }
             verify { jwtUtil.generateAccessToken(any()) }
@@ -44,9 +44,9 @@ class AuthServiceLoginTests : AuthServiceMocks() {
 
         @Test
         fun `login should return JwtAuthenticationException when user credentials are incorrect`() {
-            every { usersService.getByEmail(user.email) } returns user
+            every { usersService.getByEmail(user.email, throwable = false) } returns user
             every { jwtUtil.removeOldRefreshTokenByUUID(loginDto.uuid) } returns Unit
-            every { passwordEncoder.matches(loginDto.password, user.password) } returns false
+            every { passwordEncoder.matches(any(), any()) } returns false
 
             val exception = assertFailsWith<JwtAuthenticationException> {
                 serviceUnderTest.login(loginDto)
@@ -54,7 +54,7 @@ class AuthServiceLoginTests : AuthServiceMocks() {
 
             assertThat(exception.message).isEqualTo("Wrong email or password")
 
-            verify { usersService.getByEmail(user.email) }
+            verify { usersService.getByEmail(user.email, false) }
             verify { jwtUtil.removeOldRefreshTokenByUUID(loginDto.uuid) }
             verify { passwordEncoder.matches(loginDto.password, user.password) }
 
