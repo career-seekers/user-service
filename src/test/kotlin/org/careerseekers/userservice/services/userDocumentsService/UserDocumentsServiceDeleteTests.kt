@@ -57,4 +57,22 @@ class UserDocumentsServiceDeleteTests : UserDocumentsServiceMocks() {
             verify(exactly = 0) { serviceUnderTest["removeDocumentsFromDatabase"](documents) }
         }
     }
+
+    @Nested
+    inner class DeleteAllTests {
+        @Test
+        fun `Should return 5 users`() {
+            val documents = List(5) { createUserDocs(createUser()) }
+
+            every { serviceUnderTest.getAll() } returns documents
+            every { serviceUnderTest.deleteById(any()) } returns "User documents deleted successfully."
+
+            val result = serviceUnderTest.deleteAll()
+
+            assertThat(result).isEqualTo("Users documents deleted successfully.")
+
+            verify { serviceUnderTest.getAll() }
+            verify(exactly = 5) { serviceUnderTest.deleteById(any()) }
+        }
+    }
 }
