@@ -17,7 +17,7 @@ open class UserDocumentsServiceMocks {
     protected val userDocumentsMapper = mockk<UserDocumentsMapper>()
     protected val snilsValidator = mockk<SnilsValidator>()
 
-    protected val usersServiceMock = mockk<UserDocumentsService>(relaxed = true)
+    protected val userDocumentsServiceMock = mockk<UserDocumentsService>(relaxed = true)
     protected val serviceUnderTest = UserDocumentsService(
         repository = repository,
         usersRepository = usersRepository,
