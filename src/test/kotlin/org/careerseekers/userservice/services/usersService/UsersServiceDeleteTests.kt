@@ -4,13 +4,13 @@ import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.careerseekers.userservice.UsersCreator.createUser
+import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mocks.UsersServiceMocks
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 
 @ExtendWith(MockKExtension::class)
 class UsersServiceDeleteTests : UsersServiceMocks() {
@@ -38,7 +38,7 @@ class UsersServiceDeleteTests : UsersServiceMocks() {
 
             every { usersServiceMock.getById(user.id, any(), any()) } throws NotFoundException("User with id ${user.id} does not exist.")
 
-            val exception = assertThrows<NotFoundException> {
+            val exception = assertFailsWith<NotFoundException> {
                 serviceUnderTest.deleteById(user.id)
             }
 

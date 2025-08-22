@@ -34,6 +34,7 @@ class UserDocumentsService(
     ICreateService<UserDocuments, Long, CreateUserDocsDto>,
     IUpdateService<UserDocuments, Long, UpdateUserDocsDto>,
     IDeleteService<UserDocuments, Long> {
+
     override fun getAll() = repository.findAll()
 
     fun getById(id: Long, throwable: Boolean = true): UserDocuments? {
@@ -48,7 +49,7 @@ class UserDocumentsService(
         return usersService.getById(userId, message = "User with id $userId not found").let { user ->
             if (user!!.role == UsersRoles.USER) {
                 repository.findByUserId(user.id)
-                    ?: if (throwable) throw NotFoundException("Documents for user with if $userId not found") else null
+                    ?: if (throwable) throw NotFoundException("Documents for user with id $userId not found") else null
             } else {
                 throw BadRequestException(
                     "This user has role ${user.role}, not ${UsersRoles.USER}. Please use another controller to check his documents."
@@ -104,7 +105,7 @@ class UserDocumentsService(
             ).checkNullable("Parameters snilsNumber and snilsFile can be only all null values or all non-null values.")
             item.snilsNumber?.let { snilsValidator.checkSnilsValid(it) }
 
-            item.snilsFile.let { snilsFile ->
+            item.snilsFile.let {
                 val oldId = docs.snilsId
                 documentsApiResolver.loadDocId("uploadSnils", item.snilsFile).let {
                     docs.snilsId = it ?: throw BadRequestException("Something went wrong while uploading snils.")
@@ -118,9 +119,9 @@ class UserDocumentsService(
 
             item.studyingCertificateFile?.let {
                 val oldId = docs.studyingCertificateId
-                documentsApiResolver.loadDocId("uploadStudyingCertificate", it).let {
+                documentsApiResolver.loadDocId("uploadStudyingCertificate", it).let { docId ->
                     docs.studyingCertificateId =
-                        it ?: throw BadRequestException("Studying certificate ID could not be found.")
+                        docId ?: throw BadRequestException("Studying certificate ID could not be found.")
                 }
 
                 documentsApiResolver.deleteDocument(oldId, throwable = false)
@@ -131,9 +132,9 @@ class UserDocumentsService(
 
             item.additionalStudyingCertificateFile?.let {
                 val oldId = docs.additionalStudyingCertificateId
-                documentsApiResolver.loadDocId("uploadAdditionalStudyingCertificate", it).let {
+                documentsApiResolver.loadDocId("uploadAdditionalStudyingCertificate", it).let { docId ->
                     docs.additionalStudyingCertificateId =
-                        it ?: throw BadRequestException("Additional studying certificate ID could not be found.")
+                        docId ?: throw BadRequestException("Additional studying certificate ID could not be found.")
                 }
 
                 documentsApiResolver.deleteDocument(oldId, throwable = false)
@@ -143,8 +144,8 @@ class UserDocumentsService(
 
             item.consentToChildPdpFile?.let {
                 val oldId = docs.consentToChildPdpId
-                documentsApiResolver.loadDocId("uploadConsentToChildPDP", it).let {
-                    docs.consentToChildPdpId = it ?: throw BadRequestException("Consent to child pdp ID not found.")
+                documentsApiResolver.loadDocId("uploadConsentToChildPDP", it).let { docId ->
+                    docs.consentToChildPdpId = docId ?: throw BadRequestException("Consent to child pdp ID not found.")
                 }
 
                 documentsApiResolver.deleteDocument(oldId, throwable = false)

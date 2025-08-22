@@ -7,9 +7,9 @@ import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.careerseekers.userservice.FileStructureCreator.createFileStructure
-import org.careerseekers.userservice.UsersCreator.createUser
-import org.careerseekers.userservice.UsersCreator.createUserDto
+import org.careerseekers.userservice.mocks.generators.FileStructureGenerator.createFileStructure
+import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
+import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUserDto
 import org.careerseekers.userservice.enums.FileTypes
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.MobileNumberFormatException
@@ -19,8 +19,8 @@ import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumb
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.assertFailsWith
 
 
 @ExtendWith(MockKExtension::class)
@@ -32,9 +32,9 @@ class UsersServiceCreateTests : UsersServiceMocks() {
         defaultAvatarFieldUsersService.isAccessible = true
         defaultAvatarFieldUsersService.set(serviceUnderTest, defaultAvatarId)
 
-        val defaultAvatarFieldusersServiceMock = usersServiceMock.javaClass.getDeclaredField("defaultAvatarId")
-        defaultAvatarFieldusersServiceMock.isAccessible = true
-        defaultAvatarFieldusersServiceMock.set(usersServiceMock, defaultAvatarId)
+        val defaultAvatarFieldUsersServiceMock = usersServiceMock.javaClass.getDeclaredField("defaultAvatarId")
+        defaultAvatarFieldUsersServiceMock.isAccessible = true
+        defaultAvatarFieldUsersServiceMock.set(usersServiceMock, defaultAvatarId)
     }
 
     @BeforeEach
@@ -54,7 +54,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
             val dto = createUserDto(user).copy(avatarId = null, password = "encodedPassword")
 
             every {
-                usersServiceMock invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
+                serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
                     dto.email,
                     dto.mobileNumber
                 )
@@ -86,7 +86,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
                 )
             } returns fileStructure
             every {
-                usersServiceMock invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
+                serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
                     dto.email,
                     dto.mobileNumber
                 )
@@ -108,7 +108,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
         @Test
         fun `create should throw DoubleRecordException if email already exists`() {
             val user = createUser()
-            val dto = createUserDto(user).copy(password = "encodedPassword")
+            val dto = createUserDto(user).copy(password = "encodedPassword", avatarId = 1)
             val fileStructure = createFileStructure(FileTypes.AVATAR)
 
             every {
@@ -118,7 +118,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
                 )
             } returns fileStructure
             every {
-                usersServiceMock invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
+                serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
                     dto.email,
                     dto.mobileNumber
                 )
@@ -126,8 +126,8 @@ class UsersServiceCreateTests : UsersServiceMocks() {
 
             every { passwordEncoder.encode(any()) } returns "encodedPassword"
 
-            val exception = assertThrows<DoubleRecordException> {
-                usersServiceMock.create(dto)
+            val exception = assertFailsWith<DoubleRecordException> {
+                serviceUnderTest.create(dto)
             }
 
             assertThat(exception.message).isEqualTo("User with email ${dto.email} already exists")
@@ -144,7 +144,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
         @Test
         fun `create should throw DoubleRecordException if mobile number already exists`() {
             val user = createUser()
-            val dto = createUserDto(user).copy(password = "encodedPassword")
+            val dto = createUserDto(user).copy(password = "encodedPassword", avatarId = 1)
             val fileStructure = createFileStructure(FileTypes.AVATAR)
 
             every {
@@ -154,7 +154,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
                 )
             } returns fileStructure
             every {
-                usersServiceMock invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
+                serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
                     dto.email,
                     dto.mobileNumber
                 )
@@ -162,8 +162,8 @@ class UsersServiceCreateTests : UsersServiceMocks() {
 
             every { passwordEncoder.encode(any()) } returns "encodedPassword"
 
-            val exception = assertThrows<DoubleRecordException> {
-                usersServiceMock.create(dto)
+            val exception = assertFailsWith<DoubleRecordException> {
+                serviceUnderTest.create(dto)
             }
 
             assertThat(exception.message).isEqualTo("User with mobile number ${dto.mobileNumber} already exists")
@@ -177,7 +177,11 @@ class UsersServiceCreateTests : UsersServiceMocks() {
         @Test
         fun `create should throw MobileNumberFormatException on invalid mobile number`() {
             val user = createUser()
-            val dto = createUserDto(user).copy(password = "encodedPassword", mobileNumber = "Wrong mobile number")
+            val dto = createUserDto(user).copy(
+                password = "encodedPassword",
+                mobileNumber = "Wrong mobile number",
+                avatarId = 1
+            )
             val fileStructure = createFileStructure(FileTypes.AVATAR)
 
             every {
@@ -187,7 +191,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
                 )
             } returns fileStructure
             every {
-                usersServiceMock invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
+                serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
                     dto.email,
                     dto.mobileNumber
                 )
@@ -198,14 +202,19 @@ class UsersServiceCreateTests : UsersServiceMocks() {
             every { repository.save(user) } returns user
 
 
-            val exception = assertThrows<MobileNumberFormatException> {
-                usersServiceMock.create(dto)
+            val exception = assertFailsWith<MobileNumberFormatException> {
+                serviceUnderTest.create(dto)
             }
 
             assertThat(exception.message).isEqualTo("Mobile number must be 12 characters long in format '+79991234567'")
 
             verify { documentExistenceChecker.checkFileExistence(dto.avatarId!!, FileTypes.AVATAR) }
-            verify { usersServiceMock invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(dto.email, dto.mobileNumber) }
+            verify {
+                serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
+                    dto.email,
+                    dto.mobileNumber
+                )
+            }
             verify { checkMobileNumberValid(any()) }
             verify(exactly = 0) { usersMapper.usersFromCreateDto(any()) }
             verify(exactly = 0) { repository.save(any()) }

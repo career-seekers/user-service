@@ -3,15 +3,15 @@ package org.careerseekers.userservice.services.authService
 import io.mockk.every
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.careerseekers.userservice.UsersCreator.createUser
+import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
 import org.careerseekers.userservice.dto.auth.UpdateUserTokensDto
 import org.careerseekers.userservice.dto.jwt.UserTokensDto
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
 import org.careerseekers.userservice.mocks.AuthServiceMocks
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.assertThrows
 import java.util.UUID
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 
 class AuthServiceUpdateTokensTests : AuthServiceMocks() {
 
@@ -61,7 +61,7 @@ class AuthServiceUpdateTokensTests : AuthServiceMocks() {
                 "Invalid token claims"
             )
 
-            val exception = assertThrows<JwtAuthenticationException> {
+            val exception = assertFailsWith<JwtAuthenticationException> {
                 serviceUnderTest.updateTokens(dto)
             }
 
@@ -83,7 +83,7 @@ class AuthServiceUpdateTokensTests : AuthServiceMocks() {
                 "Invalid token claims"
             )
 
-            val exception = assertThrows<JwtAuthenticationException> {
+            val exception = assertFailsWith<JwtAuthenticationException> {
                 serviceUnderTest.updateTokens(dto)
             }
 
@@ -105,7 +105,7 @@ class AuthServiceUpdateTokensTests : AuthServiceMocks() {
                 "Invalid token metadata! JWT validity cannot be asserted and should not be trusted."
             )
 
-            val exception = assertThrows<JwtAuthenticationException> {
+            val exception = assertFailsWith<JwtAuthenticationException> {
                 serviceUnderTest.updateTokens(dto)
             }
 
@@ -127,7 +127,7 @@ class AuthServiceUpdateTokensTests : AuthServiceMocks() {
             every { jwtUtil.removeOldRefreshTokenByUUID(dto.uuid) } returns Unit
             every { jwtUtil.getUserFromToken(eq(dto.refreshToken)) } returns null
 
-            val exception = assertThrows<JwtAuthenticationException> {
+            val exception = assertFailsWith<JwtAuthenticationException> {
                 serviceUnderTest.updateTokens(dto)
             }
 

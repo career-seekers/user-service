@@ -27,7 +27,7 @@ class JwtAuthenticationEntryPoint(private val jwtUtil: JwtUtil) : Authentication
             try {
                 jwtUtil.verifyToken(jwtToken)
             } catch (e: JwtAuthenticationException) {
-                var body = ""
+                var body: String?
 
                 if (e.message!!.contains("Invalid token claims") || e.message!!.contains("Invalid token!")) {
                     response?.status = HttpServletResponse.SC_UNAUTHORIZED

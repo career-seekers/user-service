@@ -4,16 +4,16 @@ import io.mockk.Called
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.careerseekers.userservice.UsersCreator.createUser
+import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mocks.UsersServiceMocks
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import java.util.Optional
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 @ExtendWith(MockKExtension::class)
 class UsersServiceGetTests : UsersServiceMocks() {
@@ -57,7 +57,7 @@ class UsersServiceGetTests : UsersServiceMocks() {
 
             every { repository.findById(userId) } returns Optional.empty()
 
-            val exception = assertThrows<NotFoundException> {
+            val exception = assertFailsWith<NotFoundException> {
                 serviceUnderTest.getById(userId, throwable = true, message = "User with id $userId not found")
             }
 
@@ -79,7 +79,7 @@ class UsersServiceGetTests : UsersServiceMocks() {
 
         @Test
         fun `getById should throw NotFoundException when id is null and throwable true`() {
-            val exception = assertThrows<NotFoundException> {
+            val exception = assertFailsWith<NotFoundException> {
                 serviceUnderTest.getById(null, throwable = true, message = "User with id null not found")
             }
             assertEquals("ID cannot be null.", exception.message)
@@ -117,7 +117,7 @@ class UsersServiceGetTests : UsersServiceMocks() {
 
             every { repository.getByEmail(email) } returns null
 
-            val exception = assertThrows<NotFoundException> {
+            val exception = assertFailsWith<NotFoundException> {
                 serviceUnderTest.getByEmail(email, throwable = true)
             }
 
@@ -160,7 +160,7 @@ class UsersServiceGetTests : UsersServiceMocks() {
 
             every { repository.getByMobileNumber(mobileNumber) } returns null
 
-            val exception = assertThrows<NotFoundException> {
+            val exception = assertFailsWith<NotFoundException> {
                 serviceUnderTest.getByMobileNumber(mobileNumber, throwable = true)
             }
 

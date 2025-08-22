@@ -3,9 +3,9 @@ package org.careerseekers.userservice.services.authService
 import io.mockk.every
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.careerseekers.userservice.RegistrationsDtoCreator.createUserRegistrationDto
-import org.careerseekers.userservice.RegistrationsDtoCreator.createUserWithChildRegistrationDto
-import org.careerseekers.userservice.UsersCreator.createUser
+import org.careerseekers.userservice.mocks.generators.RegistrationsDtoGenerator.createUserRegistrationDto
+import org.careerseekers.userservice.mocks.generators.RegistrationsDtoGenerator.createUserWithChildRegistrationDto
+import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
 import org.careerseekers.userservice.dto.jwt.UserTokensDto
 import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.enums.UsersRoles
@@ -13,8 +13,8 @@ import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.mocks.AuthServiceMocks
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 
 class AuthServiceRegisterTests : AuthServiceMocks() {
 
@@ -103,7 +103,7 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
             every { jwtUtil.generateRefreshToken(any()) } returns "refreshToken"
             every { userPostProcessor.processRegistration(regDto) } throws BadRequestException("Invalid data package for user registration")
 
-            val exception = assertThrows<BadRequestException> {
+            val exception = assertFailsWith<BadRequestException> {
                 serviceUnderTest.register(regDto)
             }
 
@@ -171,7 +171,7 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
                 )
             } throws BadRequestException("Cached verification code was not found.")
 
-            val exception = assertThrows<BadRequestException> {
+            val exception = assertFailsWith<BadRequestException> {
                 serviceUnderTest.register(regDto)
             }
 
@@ -206,7 +206,7 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
                 )
             } throws BadRequestException("Incorrect verification code")
 
-            val exception = assertThrows<BadRequestException> {
+            val exception = assertFailsWith<BadRequestException> {
                 serviceUnderTest.register(regDto)
             }
 
@@ -241,7 +241,7 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
                 )
             } throws BadRequestException("The maximum number of attempts has been reached. A new code has been sent to the mail")
 
-            val exception = assertThrows<BadRequestException> {
+            val exception = assertFailsWith<BadRequestException> {
                 serviceUnderTest.register(regDto)
             }
 
