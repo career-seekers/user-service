@@ -108,7 +108,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
         @Test
         fun `create should throw DoubleRecordException if email already exists`() {
             val user = createUser()
-            val dto = createUserDto(user).copy(password = "encodedPassword")
+            val dto = createUserDto(user).copy(password = "encodedPassword", avatarId = 1)
             val fileStructure = createFileStructure(FileTypes.AVATAR)
 
             every {
@@ -144,7 +144,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
         @Test
         fun `create should throw DoubleRecordException if mobile number already exists`() {
             val user = createUser()
-            val dto = createUserDto(user).copy(password = "encodedPassword")
+            val dto = createUserDto(user).copy(password = "encodedPassword", avatarId = 1)
             val fileStructure = createFileStructure(FileTypes.AVATAR)
 
             every {
@@ -177,7 +177,11 @@ class UsersServiceCreateTests : UsersServiceMocks() {
         @Test
         fun `create should throw MobileNumberFormatException on invalid mobile number`() {
             val user = createUser()
-            val dto = createUserDto(user).copy(password = "encodedPassword", mobileNumber = "Wrong mobile number")
+            val dto = createUserDto(user).copy(
+                password = "encodedPassword",
+                mobileNumber = "Wrong mobile number",
+                avatarId = 1
+            )
             val fileStructure = createFileStructure(FileTypes.AVATAR)
 
             every {
@@ -205,7 +209,12 @@ class UsersServiceCreateTests : UsersServiceMocks() {
             assertThat(exception.message).isEqualTo("Mobile number must be 12 characters long in format '+79991234567'")
 
             verify { documentExistenceChecker.checkFileExistence(dto.avatarId!!, FileTypes.AVATAR) }
-            verify { serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(dto.email, dto.mobileNumber) }
+            verify {
+                serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
+                    dto.email,
+                    dto.mobileNumber
+                )
+            }
             verify { checkMobileNumberValid(any()) }
             verify(exactly = 0) { usersMapper.usersFromCreateDto(any()) }
             verify(exactly = 0) { repository.save(any()) }
