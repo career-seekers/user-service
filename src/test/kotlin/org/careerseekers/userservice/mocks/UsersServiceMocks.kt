@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.mocks
 
 import io.mockk.mockk
+import io.mockk.spyk
 import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.mappers.UsersMapper
 import org.careerseekers.userservice.repositories.UsersRepository
@@ -22,7 +23,7 @@ open class UsersServiceMocks {
     protected val emailVerificationCodeVerifier = mockk<EmailVerificationCodeVerifier>()
 
     protected val usersServiceMock = mockk<UsersService>(relaxed = true)
-    protected val serviceUnderTest = UsersService(
+    protected val serviceUnderTest = spyk(UsersService(
         repository,
         jwtUtil,
         usersMapper,
@@ -32,5 +33,5 @@ open class UsersServiceMocks {
         documentExistenceChecker,
         emailVerificationCodeVerifier,
         usersServiceMock
-    )
+    ), recordPrivateCalls = true)
 }
