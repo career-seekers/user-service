@@ -1,4 +1,4 @@
-package org.careerseekers.userservice
+package org.careerseekers.userservice.mocks.generators
 
 import MocksGenerator.randomBoolean
 import MocksGenerator.randomDateOfBirth
@@ -9,7 +9,7 @@ import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.UsersRoles
 import kotlin.random.Random
 
-object UsersCreator {
+object UsersGenerator {
     private val roles =
         listOf(UsersRoles.USER, UsersRoles.EXPERT, UsersRoles.MENTOR, UsersRoles.TUTOR, UsersRoles.ADMIN)
 

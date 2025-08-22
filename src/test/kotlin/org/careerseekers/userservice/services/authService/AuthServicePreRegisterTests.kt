@@ -3,7 +3,7 @@ package org.careerseekers.userservice.services.authService
 import io.mockk.every
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.careerseekers.userservice.UsersCreator.createUser
+import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
 import org.careerseekers.userservice.dto.auth.PreRegisterUserDto
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.mocks.AuthServiceMocks

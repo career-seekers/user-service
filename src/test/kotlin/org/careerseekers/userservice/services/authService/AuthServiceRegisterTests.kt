@@ -3,9 +3,9 @@ package org.careerseekers.userservice.services.authService
 import io.mockk.every
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.careerseekers.userservice.RegistrationsDtoCreator.createUserRegistrationDto
-import org.careerseekers.userservice.RegistrationsDtoCreator.createUserWithChildRegistrationDto
-import org.careerseekers.userservice.UsersCreator.createUser
+import org.careerseekers.userservice.mocks.generators.RegistrationsDtoGenerator.createUserRegistrationDto
+import org.careerseekers.userservice.mocks.generators.RegistrationsDtoGenerator.createUserWithChildRegistrationDto
+import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
 import org.careerseekers.userservice.dto.jwt.UserTokensDto
 import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.enums.UsersRoles

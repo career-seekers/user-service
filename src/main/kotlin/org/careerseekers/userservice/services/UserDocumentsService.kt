@@ -34,6 +34,7 @@ class UserDocumentsService(
     ICreateService<UserDocuments, Long, CreateUserDocsDto>,
     IUpdateService<UserDocuments, Long, UpdateUserDocsDto>,
     IDeleteService<UserDocuments, Long> {
+
     override fun getAll() = repository.findAll()
 
     fun getById(id: Long, throwable: Boolean = true): UserDocuments? {

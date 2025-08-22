@@ -1,4 +1,4 @@
-package org.careerseekers.userservice
+package org.careerseekers.userservice.mocks.generators
 
 import MocksGenerator.randomString
 import org.careerseekers.userservice.dto.files.FileStructure
@@ -6,7 +6,7 @@ import org.careerseekers.userservice.enums.FileTypes
 import java.util.UUID
 import kotlin.random.Random
 
-object FileStructureCreator {
+object FileStructureGenerator {
     fun createFileStructure(fileType: FileTypes): FileStructure {
         return FileStructure(
             id = Random.nextLong(1, 10000),

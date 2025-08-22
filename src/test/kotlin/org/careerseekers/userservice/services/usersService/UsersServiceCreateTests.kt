@@ -7,9 +7,9 @@ import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.careerseekers.userservice.FileStructureCreator.createFileStructure
-import org.careerseekers.userservice.UsersCreator.createUser
-import org.careerseekers.userservice.UsersCreator.createUserDto
+import org.careerseekers.userservice.mocks.generators.FileStructureGenerator.createFileStructure
+import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
+import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUserDto
 import org.careerseekers.userservice.enums.FileTypes
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.MobileNumberFormatException

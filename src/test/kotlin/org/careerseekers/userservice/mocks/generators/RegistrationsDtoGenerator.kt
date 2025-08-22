@@ -1,4 +1,4 @@
-package org.careerseekers.userservice
+package org.careerseekers.userservice.mocks.generators
 
 import MocksGenerator.randomBoolean
 import MocksGenerator.randomDateOfBirth
@@ -10,7 +10,7 @@ import org.careerseekers.userservice.enums.UsersRoles
 import java.util.UUID
 import kotlin.random.Random
 
-object RegistrationsDtoCreator {
+object RegistrationsDtoGenerator {
 
     fun createUserRegistrationDto(role: UsersRoles) = UserRegistrationDto(
         verificationCode = (100000..999999).random().toString(),
