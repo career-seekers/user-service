@@ -19,8 +19,8 @@ import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumb
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.assertFailsWith
 
 
 @ExtendWith(MockKExtension::class)
@@ -32,9 +32,9 @@ class UsersServiceCreateTests : UsersServiceMocks() {
         defaultAvatarFieldUsersService.isAccessible = true
         defaultAvatarFieldUsersService.set(serviceUnderTest, defaultAvatarId)
 
-        val defaultAvatarFieldusersServiceMock = usersServiceMock.javaClass.getDeclaredField("defaultAvatarId")
-        defaultAvatarFieldusersServiceMock.isAccessible = true
-        defaultAvatarFieldusersServiceMock.set(usersServiceMock, defaultAvatarId)
+        val defaultAvatarFieldUsersServiceMock = usersServiceMock.javaClass.getDeclaredField("defaultAvatarId")
+        defaultAvatarFieldUsersServiceMock.isAccessible = true
+        defaultAvatarFieldUsersServiceMock.set(usersServiceMock, defaultAvatarId)
     }
 
     @BeforeEach
@@ -126,7 +126,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
 
             every { passwordEncoder.encode(any()) } returns "encodedPassword"
 
-            val exception = assertThrows<DoubleRecordException> {
+            val exception = assertFailsWith<DoubleRecordException> {
                 usersServiceMock.create(dto)
             }
 
@@ -162,7 +162,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
 
             every { passwordEncoder.encode(any()) } returns "encodedPassword"
 
-            val exception = assertThrows<DoubleRecordException> {
+            val exception = assertFailsWith<DoubleRecordException> {
                 usersServiceMock.create(dto)
             }
 
@@ -198,7 +198,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
             every { repository.save(user) } returns user
 
 
-            val exception = assertThrows<MobileNumberFormatException> {
+            val exception = assertFailsWith<MobileNumberFormatException> {
                 usersServiceMock.create(dto)
             }
 

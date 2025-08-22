@@ -16,8 +16,8 @@ import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mocks.UsersServiceMocks
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.assertFailsWith
 
 @ExtendWith(MockKExtension::class)
 class UsersServicePasswordChangingTests : UsersServiceMocks() {
@@ -90,7 +90,7 @@ class UsersServicePasswordChangingTests : UsersServiceMocks() {
 
             every { jwtUtil.getUserFromToken(jwtToken) } returns null
 
-            assertThrows<NotFoundException> {
+            assertFailsWith<NotFoundException> {
                 serviceUnderTest.changePasswordSecondStep(item, jwtToken)
             }
 
@@ -118,7 +118,7 @@ class UsersServicePasswordChangingTests : UsersServiceMocks() {
             every { repository.save(any()) } returns user
             every { verificationCodesCacheClient.deleteItemFromCache(any()) } just Runs
 
-            val exception = assertThrows<BadRequestException> {
+            val exception = assertFailsWith<BadRequestException> {
                 serviceUnderTest.changePasswordSecondStep(item, token)
             }
 
@@ -158,7 +158,7 @@ class UsersServicePasswordChangingTests : UsersServiceMocks() {
             every { repository.save(any()) } returns user
             every { verificationCodesCacheClient.deleteItemFromCache(any()) } just Runs
 
-            val exception = assertThrows<BadRequestException> {
+            val exception = assertFailsWith<BadRequestException> {
                 serviceUnderTest.changePasswordSecondStep(item, token)
             }
 

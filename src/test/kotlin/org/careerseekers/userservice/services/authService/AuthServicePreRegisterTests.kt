@@ -9,7 +9,7 @@ import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.mocks.AuthServiceMocks
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertFailsWith
 
 class AuthServicePreRegisterTests : AuthServiceMocks() {
 
@@ -40,7 +40,7 @@ class AuthServicePreRegisterTests : AuthServiceMocks() {
         fun `preRegister should return DoubleRecordException when user with similar email exist`() {
             every { usersService.getByEmail(user.email, eq(false)) } returns user
 
-            val exception = assertThrows<DoubleRecordException> { serviceUnderTest.preRegister(inputDto) }
+            val exception = assertFailsWith<DoubleRecordException> { serviceUnderTest.preRegister(inputDto) }
 
             assertThat(exception.message).isEqualTo("User with email ${user.email} already exists")
 
@@ -54,7 +54,7 @@ class AuthServicePreRegisterTests : AuthServiceMocks() {
             every { usersService.getByEmail(user.email, eq(false)) } returns null
             every { usersService.getByMobileNumber(user.mobileNumber, eq(false)) } returns user
 
-            val exception = assertThrows<DoubleRecordException> { serviceUnderTest.preRegister(inputDto) }
+            val exception = assertFailsWith<DoubleRecordException> { serviceUnderTest.preRegister(inputDto) }
 
             assertThat(exception.message).isEqualTo("User with mobile number ${user.mobileNumber} already exists")
 

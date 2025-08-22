@@ -11,8 +11,8 @@ import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mocks.UsersServiceMocks
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.assertFailsWith
 
 @ExtendWith(MockKExtension::class)
 class UsersServiceUpdateTests : UsersServiceMocks() {
@@ -49,7 +49,7 @@ class UsersServiceUpdateTests : UsersServiceMocks() {
 
             every { usersServiceMock.getById(1L, any(), any()) } throws NotFoundException("User with id ${dto.id} not found")
 
-            val exception = assertThrows<NotFoundException> {
+            val exception = assertFailsWith<NotFoundException> {
                 serviceUnderTest.update(dto)
             }
 
@@ -89,7 +89,7 @@ class UsersServiceUpdateTests : UsersServiceMocks() {
 
             every { usersServiceMock.getById(user.id, any(), any()) } throws NotFoundException("User with id ${user.id} does not exist.")
 
-            val exception = assertThrows<NotFoundException> {
+            val exception = assertFailsWith<NotFoundException> {
                 serviceUnderTest.verifyUser(dto)
             }
 
