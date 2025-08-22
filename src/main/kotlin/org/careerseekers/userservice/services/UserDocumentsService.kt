@@ -119,9 +119,9 @@ class UserDocumentsService(
 
             item.studyingCertificateFile?.let {
                 val oldId = docs.studyingCertificateId
-                documentsApiResolver.loadDocId("uploadStudyingCertificate", it).let {
+                documentsApiResolver.loadDocId("uploadStudyingCertificate", it).let { docId ->
                     docs.studyingCertificateId =
-                        it ?: throw BadRequestException("Studying certificate ID could not be found.")
+                        docId ?: throw BadRequestException("Studying certificate ID could not be found.")
                 }
 
                 documentsApiResolver.deleteDocument(oldId, throwable = false)
@@ -132,9 +132,9 @@ class UserDocumentsService(
 
             item.additionalStudyingCertificateFile?.let {
                 val oldId = docs.additionalStudyingCertificateId
-                documentsApiResolver.loadDocId("uploadAdditionalStudyingCertificate", it).let {
+                documentsApiResolver.loadDocId("uploadAdditionalStudyingCertificate", it).let { docId ->
                     docs.additionalStudyingCertificateId =
-                        it ?: throw BadRequestException("Additional studying certificate ID could not be found.")
+                        docId ?: throw BadRequestException("Additional studying certificate ID could not be found.")
                 }
 
                 documentsApiResolver.deleteDocument(oldId, throwable = false)
@@ -144,8 +144,8 @@ class UserDocumentsService(
 
             item.consentToChildPdpFile?.let {
                 val oldId = docs.consentToChildPdpId
-                documentsApiResolver.loadDocId("uploadConsentToChildPDP", it).let {
-                    docs.consentToChildPdpId = it ?: throw BadRequestException("Consent to child pdp ID not found.")
+                documentsApiResolver.loadDocId("uploadConsentToChildPDP", it).let { docId ->
+                    docs.consentToChildPdpId = docId ?: throw BadRequestException("Consent to child pdp ID not found.")
                 }
 
                 documentsApiResolver.deleteDocument(oldId, throwable = false)
