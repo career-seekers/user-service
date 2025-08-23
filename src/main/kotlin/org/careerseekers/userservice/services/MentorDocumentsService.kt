@@ -5,6 +5,7 @@ import org.careerseekers.userservice.dto.docs.CreateMentorDocsTransferDto
 import org.careerseekers.userservice.dto.docs.UpdateMentorDocsDto
 import org.careerseekers.userservice.entities.MentorDocuments
 import org.careerseekers.userservice.entities.Users
+import org.careerseekers.userservice.enums.ReviewStatus
 import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
@@ -17,11 +18,13 @@ import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
 import org.careerseekers.userservice.services.interfaces.crud.IUpdateService
 import org.careerseekers.userservice.utils.DocumentsApiResolver
+import org.careerseekers.userservice.utils.Tested
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Tested(testedBy = "scobca", createdOn = "23.08.2025", reviewStatus = ReviewStatus.APPROVED)
 class MentorDocumentsService(
     override val repository: MentorDocsRepository,
     private val usersRepository: UsersRepository,
