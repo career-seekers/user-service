@@ -1,8 +1,10 @@
 package org.careerseekers.userservice.mocks.generators
 
 import MocksGenerator.randomString
+import org.careerseekers.userservice.dto.docs.CreateTutorDocsDto
 import org.careerseekers.userservice.dto.docs.CreateUserDocsDto
 import org.careerseekers.userservice.dto.docs.SnilsDto
+import org.careerseekers.userservice.entities.TutorDocuments
 import org.careerseekers.userservice.entities.UserDocuments
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.mocks.generators.MultipartFileGenerator.createMultipartFile
@@ -37,5 +39,20 @@ object DocumentsGenerator {
         additionalStudyingCertificateFile = createMultipartFile(),
         parentRole = randomString(20),
         consentToChildPdpFile = createMultipartFile(),
+    )
+
+    fun createTutorDocuments(user: Users) = TutorDocuments(
+        id = Random.nextLong(1, 10000),
+        user = user,
+        institution = randomString(12),
+        post = randomString(12),
+        consentToTutorPdpId = Random.nextLong(1, 1000)
+    )
+
+    fun createTutorDocumentsDto(user: Users) = CreateTutorDocsDto(
+        userId = user.id,
+        institution = randomString(12),
+        post = randomString(12),
+        consentToTutorPdp = createMultipartFile()
     )
 }
