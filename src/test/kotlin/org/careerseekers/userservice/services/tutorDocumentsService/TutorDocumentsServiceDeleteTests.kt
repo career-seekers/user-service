@@ -3,6 +3,7 @@ package org.careerseekers.userservice.services.tutorDocumentsService
 import io.mockk.every
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
+import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.careerseekers.userservice.mocks.TutorDocumentsServiceMocks
@@ -62,6 +63,24 @@ class TutorDocumentsServiceDeleteTests : TutorDocumentsServiceMocks() {
             verify(exactly = 0) { usersRepository.save(any()) }
             verify(exactly = 0) { repository.delete(documents) }
             verify(exactly = 0) { documentsApiResolver.deleteDocument(any(), any()) }
+        }
+    }
+
+    @Nested
+    inner class DeleteAllTests {
+        @Test
+        fun `Should delete all documents and return String`() {
+            val documents = List(5) { createTutorDocuments(createUser().copy(role = UsersRoles.TUTOR)) }
+
+            every { repository.findAll() } returns documents
+            every { serviceUnderTest.deleteById(any()) } returns "Tutor documents deleted successfully."
+
+            val result = serviceUnderTest.deleteAll()
+
+            assertThat(result).isEqualTo("All tutors documents deleted successfully")
+
+            verify { repository.findAll() }
+            verify(exactly = 5) { serviceUnderTest.deleteById(any()) }
         }
     }
 }
