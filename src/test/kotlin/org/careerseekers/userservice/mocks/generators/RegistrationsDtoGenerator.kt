@@ -1,9 +1,9 @@
 package org.careerseekers.userservice.mocks.generators
 
-import MocksGenerator.randomBoolean
-import MocksGenerator.randomDateOfBirth
-import MocksGenerator.randomEmail
-import MocksGenerator.randomString
+import org.careerseekers.userservice.mocks.MocksGenerator.randomBoolean
+import org.careerseekers.userservice.mocks.MocksGenerator.randomDateOfBirth
+import org.careerseekers.userservice.mocks.MocksGenerator.randomEmail
+import org.careerseekers.userservice.mocks.MocksGenerator.randomString
 import org.careerseekers.userservice.dto.auth.UserRegistrationDto
 import org.careerseekers.userservice.dto.auth.UserWithChildRegistrationDto
 import org.careerseekers.userservice.enums.UsersRoles

@@ -1,6 +1,6 @@
 package org.careerseekers.userservice.services.userDocumentsService
 
-import MocksGenerator.randomString
+import org.careerseekers.userservice.mocks.MocksGenerator.randomString
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
