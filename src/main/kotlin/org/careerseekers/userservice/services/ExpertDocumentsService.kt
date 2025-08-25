@@ -37,7 +37,7 @@ class ExpertDocumentsService(
         return usersService.getById(userId, message = "User with id $userId not found").let { user ->
             if (user!!.role == UsersRoles.EXPERT) {
                 repository.findByUserId(user.id)
-                    ?: if (throwable) throw NotFoundException("Documents for user with if $userId not found") else null
+                    ?: if (throwable) throw NotFoundException("Documents for user with id $userId not found") else null
             } else {
                 throw BadRequestException(
                     "This user has role ${user.role}, not ${UsersRoles.EXPERT}. Please use another controller to check his documents."

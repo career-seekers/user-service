@@ -1,6 +1,6 @@
 package org.careerseekers.userservice.mocks.generators
 
-import org.careerseekers.userservice.mocks.MocksGenerator.randomString
+import org.careerseekers.userservice.mocks.generators.MocksGenerator.randomString
 import org.careerseekers.userservice.dto.files.FileStructure
 import org.careerseekers.userservice.enums.FileTypes
 import java.util.UUID
