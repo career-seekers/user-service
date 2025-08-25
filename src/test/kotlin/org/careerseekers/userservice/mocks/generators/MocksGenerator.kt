@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.mocks
+package org.careerseekers.userservice.mocks.generators
 
 import java.time.LocalDate
 import java.time.ZoneId
