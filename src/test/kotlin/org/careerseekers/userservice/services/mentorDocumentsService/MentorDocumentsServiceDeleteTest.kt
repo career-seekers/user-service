@@ -52,11 +52,11 @@ class MentorDocumentsServiceDeleteTest : MentorDocumentsServiceMocks() {
                     any(),
                     any()
                 )
-            } throws NotFoundException("Tutor documents not found.")
+            } throws NotFoundException("Mentor documents not found.")
 
             val exception = assertFailsWith<NotFoundException> { serviceUnderTest.deleteById(documents.id) }
 
-            assertThat(exception.message).isEqualTo("Tutor documents not found.")
+            assertThat(exception.message).isEqualTo("Mentor documents not found.")
 
             verify { serviceUnderTest.getById(documents.id, any(), any()) }
 
