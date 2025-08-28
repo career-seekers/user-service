@@ -144,6 +144,12 @@ allOpen {
 tasks.withType<Test> {
     useJUnitPlatform()
     jvmArgs("-XX:+EnableDynamicAgentLoading")
+
+    filter {
+        if (project.hasProperty("excludeTests")) {
+            excludeTestsMatching(project.property("excludeTests") as String)
+        }
+    }
 }
 
 conventionalCommits {
