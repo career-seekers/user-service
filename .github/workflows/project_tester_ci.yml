@@ -1,0 +1,26 @@
+name: project-tester-ci.yml
+on:
+  pull_request:
+
+jobs:
+  project-testing:
+    runs-on: ubuntu-latest
+
+    environment: production-testing
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Run tests excluding contextLoads test
+        run: |
+          chmod +x ./gradlew
+          ./gradlew test -PexcludeTests=org.careerseekers.userservice.UserServiceApplicationTests
