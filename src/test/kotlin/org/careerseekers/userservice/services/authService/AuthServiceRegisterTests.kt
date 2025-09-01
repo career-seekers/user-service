@@ -33,6 +33,7 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
             val regDto = createUserRegistrationDto(UsersRoles.TUTOR)
 
             every { emailVerificationCodeVerifier.verify(any(), any(), any(), any()) } returns Unit
+            every { verificationCodesCacheClient.deleteItemFromCache(any()) } returns Unit
 
             every { usersService.create(any()) } returns user
             every { jwtUtil.removeOldRefreshTokenByUUID(regDto.uuid) } returns Unit
@@ -64,6 +65,7 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
             val regDto = createUserWithChildRegistrationDto(UsersRoles.USER)
 
             every { emailVerificationCodeVerifier.verify(any(), any(), any(), any()) } returns Unit
+            every { verificationCodesCacheClient.deleteItemFromCache(any()) } returns Unit
 
             every { usersService.create(any()) } returns user
             every { jwtUtil.removeOldRefreshTokenByUUID(regDto.uuid) } returns Unit
@@ -96,6 +98,7 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
             val regDto = createUserRegistrationDto(UsersRoles.USER)
 
             every { emailVerificationCodeVerifier.verify(any(), any(), any(), any()) } returns Unit
+            every { verificationCodesCacheClient.deleteItemFromCache(any()) } returns Unit
 
             every { usersService.create(any()) } returns user
             every { jwtUtil.removeOldRefreshTokenByUUID(regDto.uuid) } returns Unit
@@ -130,6 +133,7 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
             val regDto = createUserRegistrationDto(UsersRoles.EXPERT)
 
             every { emailVerificationCodeVerifier.verify(any(), any(), any(), any()) } returns Unit
+            every { verificationCodesCacheClient.deleteItemFromCache(any()) } returns Unit
 
             every { usersService.create(any()) } returns user
             every { jwtUtil.removeOldRefreshTokenByUUID(regDto.uuid) } returns Unit
