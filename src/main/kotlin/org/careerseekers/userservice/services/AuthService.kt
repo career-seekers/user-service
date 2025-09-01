@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.services
 
 import org.careerseekers.userservice.cache.TemporaryPasswordsCache
+import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
 import org.careerseekers.userservice.dto.TemporaryPasswordDto
 import org.careerseekers.userservice.dto.auth.LoginUserDto
@@ -35,6 +36,7 @@ class AuthService(
     private val registrationPostProcessors: List<IUsersRegistrationProcessor>,
     private val emailSendingProducer: KafkaEmailSendingProducer,
     private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
+    private val verificationCodesCacheClient: VerificationCodesCacheClient,
 ) {
     fun preRegister(item: PreRegisterUserDto): BasicSuccessfulResponse<String> {
         usersService.getByEmail(item.email, throwable = false)?.let {
@@ -60,6 +62,8 @@ class AuthService(
             verificationCode = data.verificationCode,
             mailEventTypes = MailEventTypes.PRE_REGISTRATION,
         )
+
+        verificationCodesCacheClient.deleteItemFromCache(data.email)
 
         return usersService.create(
             CreateUserDto(
