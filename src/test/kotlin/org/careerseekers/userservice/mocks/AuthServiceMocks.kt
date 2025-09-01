@@ -3,6 +3,7 @@ package org.careerseekers.userservice.mocks
 import io.mockk.mockk
 import io.mockk.spyk
 import org.careerseekers.userservice.cache.TemporaryPasswordsCache
+import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.services.AuthService
 import org.careerseekers.userservice.services.UsersService
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
@@ -23,6 +24,7 @@ open class AuthServiceMocks {
     protected val registrationPostProcessors = listOf<IUsersRegistrationProcessor>(userPostProcessor, expertPostProcessor)
     protected val emailSendingProducer = mockk<KafkaEmailSendingProducer>()
     protected val emailVerificationCodeVerifier = mockk<EmailVerificationCodeVerifier>()
+    protected val verificationCodesCacheClient = mockk<VerificationCodesCacheClient>()
 
     protected val serviceUnderTest = spyk(AuthService(
         jwtUtil = jwtUtil,
@@ -31,6 +33,7 @@ open class AuthServiceMocks {
         temporaryPasswordsCache = temporaryPasswordsCache,
         registrationPostProcessors = registrationPostProcessors,
         emailSendingProducer = emailSendingProducer,
-        emailVerificationCodeVerifier = emailVerificationCodeVerifier
+        emailVerificationCodeVerifier = emailVerificationCodeVerifier,
+        verificationCodesCacheClient = verificationCodesCacheClient,
     ))
 }
