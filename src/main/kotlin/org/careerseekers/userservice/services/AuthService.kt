@@ -63,8 +63,6 @@ class AuthService(
             mailEventTypes = MailEventTypes.PRE_REGISTRATION,
         )
 
-        verificationCodesCacheClient.deleteItemFromCache(data.email)
-
         return usersService.create(
             CreateUserDto(
                 firstName = data.firstName,
@@ -84,6 +82,7 @@ class AuthService(
                 jwtUtil.generateRefreshToken(CreateJwtToken(it, data.uuid))
             )
         }.also {
+            verificationCodesCacheClient.deleteItemFromCache(data.email)
             registrationPostProcessors.forEach { processor ->
                 if (processor.userRole == data.role) {
                     processor.processRegistration(data)
