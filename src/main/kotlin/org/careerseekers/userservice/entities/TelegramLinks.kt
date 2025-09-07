@@ -22,7 +22,7 @@ data class TelegramLinks(
     @Column(nullable = false, unique = true)
     @field:JsonProperty("tgLink")
     @field:NotBlank
-    var tgLink: String?,
+    var tgLink: String,
 
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
