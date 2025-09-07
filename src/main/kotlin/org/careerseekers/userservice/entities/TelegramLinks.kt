@@ -1,5 +1,6 @@
 package org.careerseekers.userservice.entities
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -18,10 +19,12 @@ data class TelegramLinks(
     val id: Long,
 
     @Column(nullable = false, unique = true)
+    @field:JsonProperty("tgLink")
     @field:NotBlank
     var tgLink: String?,
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     var user: Users,
+
 )

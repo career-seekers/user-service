@@ -83,7 +83,6 @@ data class Users(
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     var children: MutableList<Children>? = mutableListOf(),
 
-    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
     var telegramLink: TelegramLinks? = null
 ) : ConvertableToHttpResponse<Users>
