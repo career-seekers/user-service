@@ -39,6 +39,8 @@ class TelegramLinksService(
     override fun update(item: UpdateTelegramLinkDto): String {
         return getById(item.id, message = "Telegram link with id ${item.id} not found").let { link ->
             link!!.tgLink = item.tgLink
+            repository.save(link)
+
             "Telegram link updated successfully."
         }
     }
