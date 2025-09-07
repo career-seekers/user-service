@@ -46,13 +46,19 @@ class TelegramLinksService(
     @Transactional
     override fun deleteById(id: Long): String {
         return getById(id, message = "Telegram link with id $id not found").let { link ->
-            repository.delete(link!!)
+            link!!.user.telegramLink = null
+            repository.delete(link)
+
             "Telegram link deleted successfully."
         }
     }
 
     override fun deleteAll(): String {
-        super.deleteAll()
+        getAll().forEach { link ->
+            link.user.telegramLink = null
+            repository.delete(link)
+        }
+
         return "All telegram links deleted successfully."
     }
 }

@@ -1,7 +1,7 @@
 package org.careerseekers.userservice.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -24,7 +24,8 @@ data class TelegramLinks(
     @field:NotBlank
     var tgLink: String?,
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnoreProperties(value = ["telegramLink"])
     var user: Users,
 ) : ConvertableToHttpResponse<TelegramLinks>
