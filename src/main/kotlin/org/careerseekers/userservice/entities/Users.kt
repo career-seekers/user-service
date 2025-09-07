@@ -1,9 +1,11 @@
 package org.careerseekers.userservice.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -16,7 +18,7 @@ import java.util.Date
 
 @Entity
 @Table(name = "users")
-data class Users (
+data class Users(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
@@ -80,5 +82,9 @@ data class Users (
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var children: MutableList<Children>? = mutableListOf()
+    var children: MutableList<Children>? = mutableListOf(),
+
+    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIgnoreProperties(value = ["user"])
+    var telegramLink: TelegramLinks? = null
 ) : ConvertableToHttpResponse<Users>
