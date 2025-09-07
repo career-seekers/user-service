@@ -11,6 +11,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import jakarta.validation.constraints.NotBlank
+import org.careerseekers.userservice.io.converters.ConvertableToHttpResponse
 
 @Entity
 data class TelegramLinks(
@@ -26,5 +27,4 @@ data class TelegramLinks(
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     var user: Users,
-
-)
+) : ConvertableToHttpResponse<TelegramLinks>
