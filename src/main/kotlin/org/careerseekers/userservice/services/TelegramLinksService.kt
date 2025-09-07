@@ -3,6 +3,7 @@ package org.careerseekers.userservice.services
 import org.careerseekers.userservice.dto.users.links.CreateTelegramLinksDto
 import org.careerseekers.userservice.dto.users.links.UpdateTelegramLinkDto
 import org.careerseekers.userservice.entities.TelegramLinks
+import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.mappers.TelegramLinksMapper
 import org.careerseekers.userservice.repositories.TelegramLinksRepository
 import org.careerseekers.userservice.services.interfaces.CrudService
@@ -18,13 +19,16 @@ class TelegramLinksService(
 
     @Transactional
     override fun create(item: CreateTelegramLinksDto): TelegramLinks {
+        repository.getByTgLink(item.tgLink)
+            ?.let { throw DoubleRecordException("This telegram link is already in use.") }
+
         return usersService.getById(item.userId, message = "User with id ${item.userId} not found.").let { user ->
             repository.save(telegramLinksMapper.linkFromDto(item.copy(user = user)))
         }
     }
 
     @Transactional
-    override fun createAll(items: List<CreateTelegramLinksDto>): Any {
+    override fun createAll(items: List<CreateTelegramLinksDto>): String {
         for (item in items) {
             create(item)
         }
@@ -40,7 +44,7 @@ class TelegramLinksService(
     }
 
     @Transactional
-    override fun deleteById(id: Long): Any? {
+    override fun deleteById(id: Long): String {
         return getById(id, message = "Telegram link with id $id not found").let { link ->
             repository.delete(link!!)
             "Telegram link deleted successfully."
