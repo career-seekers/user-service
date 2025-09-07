@@ -14,4 +14,5 @@ data class CreateUserDocsTransferDto(
     var additionalStudyingCertificateId: Long?,
     var parentRole: String,
     var consentToChildPdpId: Long?,
+    var birthCertificateId: Long?,
 ) : DtoClass

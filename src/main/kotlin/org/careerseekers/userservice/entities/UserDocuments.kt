@@ -53,4 +53,7 @@ data class UserDocuments(
 
     @Column(nullable = false, unique = true)
     var consentToChildPdpId: Long,
+
+    @Column(nullable = false, unique = true)
+    var birthCertificateId: Long,
 ) : ConvertableToHttpResponse<UserDocuments>
