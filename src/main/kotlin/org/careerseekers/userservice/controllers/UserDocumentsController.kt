@@ -58,6 +58,7 @@ class UserDocumentsController(
         @RequestPart("additionalStudyingCertificateFile") additionalStudyingCertificateFile: MultipartFile,
         @RequestPart("parentRole") parentRole: String,
         @RequestPart("consentToChildPdpFile") consentToChildPdpFile: MultipartFile,
+        @RequestPart("birthCertificateFile") birthCertificateFile: MultipartFile,
     ): BasicSuccessfulResponse<UserDocuments> {
         val body = CreateUserDocsDto(
             userId = userId.toLongOrThrow(),
@@ -71,7 +72,8 @@ class UserDocumentsController(
             trainingGround = trainingGround,
             additionalStudyingCertificateFile = additionalStudyingCertificateFile,
             parentRole = parentRole,
-            consentToChildPdpFile = consentToChildPdpFile
+            consentToChildPdpFile = consentToChildPdpFile,
+            birthCertificateFile = birthCertificateFile,
         )
 
         return service.create(body).toHttpResponse()

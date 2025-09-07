@@ -27,7 +27,8 @@ object DocumentsGenerator {
         trainingGround = randomString(20),
         additionalStudyingCertificateId = Random.nextLong(1, 1000),
         parentRole = randomString(20),
-        consentToChildPdpId = Random.nextLong(1, 1000)
+        consentToChildPdpId = Random.nextLong(1, 1000),
+        birthCertificateId = Random.nextLong(1, 1000),
     )
 
     fun createUserDocsDto(user: Users) = CreateUserDocsDto(
@@ -43,6 +44,7 @@ object DocumentsGenerator {
         additionalStudyingCertificateFile = createMultipartFile(),
         parentRole = randomString(20),
         consentToChildPdpFile = createMultipartFile(),
+        birthCertificateFile = createMultipartFile(),
     )
 
     fun createTutorDocuments(user: Users) = TutorDocuments(

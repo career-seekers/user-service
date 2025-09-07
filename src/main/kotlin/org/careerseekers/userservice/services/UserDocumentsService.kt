@@ -80,7 +80,8 @@ class UserDocumentsService(
                 "uploadAdditionalStudyingCertificate",
                 item.additionalStudyingCertificateFile
             ),
-            consentToChildPdpId = documentsApiResolver.loadDocId("uploadConsentToChildPDP", item.consentToChildPdpFile)
+            consentToChildPdpId = documentsApiResolver.loadDocId("uploadConsentToChildPDP", item.consentToChildPdpFile),
+            birthCertificateId = documentsApiResolver.loadDocId("uploadBirthCertificate", item.birthCertificateFile),
         )
         return userDocumentsMapper.userDocsFromDto(transferDto)
     }

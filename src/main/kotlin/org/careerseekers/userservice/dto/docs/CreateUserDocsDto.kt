@@ -13,4 +13,5 @@ data class CreateUserDocsDto(
     val additionalStudyingCertificateFile: MultipartFile,
     val parentRole: String,
     val consentToChildPdpFile: MultipartFile,
+    val birthCertificateFile: MultipartFile,
 ) : DtoClass
