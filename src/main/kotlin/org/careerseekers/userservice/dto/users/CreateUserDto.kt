@@ -13,5 +13,5 @@ data class CreateUserDto(
     val mobileNumber: String,
     val password: String,
     val role: UsersRoles = UsersRoles.USER,
-    val avatarId: Long?
+    val avatarId: Long? = null
 ) : DtoClass

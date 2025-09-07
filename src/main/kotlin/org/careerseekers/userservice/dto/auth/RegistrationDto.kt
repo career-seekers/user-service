@@ -41,7 +41,7 @@ data class UserRegistrationDto(
     override val mobileNumber: String,
     override val password: String? = null,
     override val role: UsersRoles,
-    override val avatarId: Long?,
+    override val avatarId: Long? = null,
     @Serializable(with = UUIDSerializer::class)
     override val uuid: UUID,
 ) : RegistrationDto
@@ -59,7 +59,7 @@ data class UserWithChildRegistrationDto(
     override val mobileNumber: String,
     override val password: String? = null,
     override val role: UsersRoles,
-    override val avatarId: Long?,
+    override val avatarId: Long? = null,
     @Serializable(with = UUIDSerializer::class)
     override val uuid: UUID,
     val mentorEqualsUser: Boolean,
