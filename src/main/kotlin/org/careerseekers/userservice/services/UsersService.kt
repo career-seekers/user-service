@@ -10,6 +10,7 @@ import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.FileTypes
 import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.enums.ReviewStatus
+import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mappers.UsersMapper
@@ -53,6 +54,9 @@ class UsersService(
         return repository.getByMobileNumber(mobileNumber)
             ?: if (throwable) throw NotFoundException("User with mobile number $mobileNumber not found") else null
     }
+
+    fun getByRole(role: UsersRoles): List<Users> = repository.getByRole(role)
+
 
     @Transactional
     override fun create(item: CreateUserDto): Users {
