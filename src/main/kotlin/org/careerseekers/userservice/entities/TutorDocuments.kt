@@ -18,7 +18,7 @@ data class TutorDocuments(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
 
-    @JsonIgnoreProperties(value = ["password"])
+    @JsonIgnoreProperties(value = ["password", "userDocuments", "expertDocuments", "tutorDocuments", "mentorDocuments"])
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     var user: Users,

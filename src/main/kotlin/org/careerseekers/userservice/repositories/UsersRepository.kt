@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.repositories
 
 import org.careerseekers.userservice.entities.Users
+import org.careerseekers.userservice.enums.UsersRoles
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
@@ -8,4 +9,5 @@ import org.springframework.stereotype.Repository
 interface UsersRepository : JpaRepository<Users, Long> {
     fun getByEmail(email: String): Users?
     fun getByMobileNumber(mobileNumber: String): Users?
+    fun getByRole(role: UsersRoles): List<Users>
 }

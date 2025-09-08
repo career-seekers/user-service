@@ -6,6 +6,7 @@ import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
 import org.careerseekers.userservice.dto.users.VerifyUserDto
 import org.careerseekers.userservice.entities.Users
+import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.careerseekers.userservice.io.converters.extensions.toHttpResponse
 import org.careerseekers.userservice.repositories.UsersRepository
@@ -46,6 +47,10 @@ class UsersController(
     @GetMapping("/getByMobileNumber/{mobileNumber}")
     fun getByMobileNumber(@PathVariable mobileNumber: String): BasicSuccessfulResponse<Users> =
         service.getByMobileNumber(mobileNumber)!!.toHttpResponse()
+
+    @GetMapping("/getByRole/{role}")
+    fun getByRole(@PathVariable role: String): BasicSuccessfulResponse<List<Users>> =
+        service.getByRole(UsersRoles.valueOf(role.uppercase())).toHttpResponse()
 
     @PostMapping("/")
     override fun create(@RequestBody item: CreateUserDto): BasicSuccessfulResponse<Users> =

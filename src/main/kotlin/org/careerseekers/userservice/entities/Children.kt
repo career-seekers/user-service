@@ -1,5 +1,6 @@
 package org.careerseekers.userservice.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -30,6 +31,7 @@ data class Children(
     @Column(nullable = false)
     var dateOfBirth: Date,
 
+    @JsonIgnoreProperties(value = ["password", "userDocuments", "expertDocuments", "tutorDocuments", "mentorDocuments", "menteeChildren", "children"])
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     var user: Users,

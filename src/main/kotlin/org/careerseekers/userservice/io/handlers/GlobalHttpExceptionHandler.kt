@@ -25,7 +25,7 @@ class GlobalHttpExceptionHandler {
     @ExceptionHandler(Exception::class)
     fun handleAllExceptions(ex: Exception): ResponseEntity<BasicErrorResponse> {
         val errorResponse = BasicErrorResponse(
-            status = HttpStatus.NOT_FOUND.value(),
+            status = HttpStatus.BAD_REQUEST.value(),
             message = "${ex::class}; ${ex.message}",
         )
 
