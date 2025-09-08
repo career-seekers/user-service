@@ -4,6 +4,8 @@ import io.mockk.Called
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
+import org.assertj.core.api.Assertions.assertThat
+import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mocks.UsersServiceMocks
@@ -178,6 +180,24 @@ class UsersServiceGetTests : UsersServiceMocks() {
 
             assertNull(result)
             verify { repository.getByMobileNumber(mobileNumber) }
+        }
+    }
+
+    @Nested
+    inner class GetByRole {
+        @Test
+        fun `Should return list of users with role ADMIN`() {
+            val users = MutableList(10) { createUser().copy(role = UsersRoles.USER) }
+
+            users[0].role = UsersRoles.ADMIN
+            users[5].role = UsersRoles.ADMIN
+
+            every { repository.getByRole(UsersRoles.ADMIN) } returns listOf(users[0], users[5])
+
+            val resultAdmin = serviceUnderTest.getByRole(UsersRoles.ADMIN)
+
+            assertThat(resultAdmin.size == 2)
+            assertThat(resultAdmin.forEach { user -> user.role = UsersRoles.ADMIN })
         }
     }
 }
