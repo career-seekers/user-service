@@ -8,10 +8,10 @@ data class CreateUserDto(
     val firstName: String,
     val lastName: String,
     val patronymic: String,
-    val dateOfBirth: Date,
+    val dateOfBirth: Date? = null,
     val email: String,
     val mobileNumber: String,
-    val password: String,
+    var password: String? = null,
     val role: UsersRoles = UsersRoles.USER,
     val avatarId: Long? = null
 ) : DtoClass

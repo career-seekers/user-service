@@ -1,9 +1,7 @@
 package org.careerseekers.userservice.services
 
-import org.careerseekers.userservice.cache.TemporaryPasswordsCache
 import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
-import org.careerseekers.userservice.dto.TemporaryPasswordDto
 import org.careerseekers.userservice.dto.auth.LoginUserDto
 import org.careerseekers.userservice.dto.auth.PreRegisterUserDto
 import org.careerseekers.userservice.dto.auth.RegistrationDto
@@ -20,7 +18,6 @@ import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingP
 import org.careerseekers.userservice.services.processors.IUsersRegistrationProcessor
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
-import org.careerseekers.userservice.utils.PasswordGenerator.generatePassword
 import org.careerseekers.userservice.utils.Tested
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -32,7 +29,6 @@ class AuthService(
     private val jwtUtil: JwtUtil,
     private val usersService: UsersService,
     private val passwordEncoder: PasswordEncoder,
-    private val temporaryPasswordsCache: TemporaryPasswordsCache,
     private val registrationPostProcessors: List<IUsersRegistrationProcessor>,
     private val emailSendingProducer: KafkaEmailSendingProducer,
     private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
@@ -71,7 +67,7 @@ class AuthService(
                 dateOfBirth = data.dateOfBirth,
                 email = data.email,
                 mobileNumber = data.mobileNumber,
-                password = data.password ?: generatePassword(data.email),
+                password = data.password,
                 role = data.role,
                 avatarId = data.avatarId,
             )
@@ -116,12 +112,5 @@ class AuthService(
                 jwtUtil.generateRefreshToken(CreateJwtToken(this, data.uuid))
             )
         } ?: throw JwtAuthenticationException("Invalid refresh token")
-    }
-
-    private fun generatePassword(email: String): String {
-        val password = generatePassword()
-        temporaryPasswordsCache.loadItemToCache(TemporaryPasswordDto(email, password))
-
-        return passwordEncoder.encode(password)
     }
 }

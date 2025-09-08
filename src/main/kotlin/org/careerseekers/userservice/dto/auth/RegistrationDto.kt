@@ -18,7 +18,7 @@ sealed interface RegistrationDto : DtoClass {
     val lastName: String
     val patronymic: String
     @Serializable(with = DateSerializer::class)
-    val dateOfBirth: Date
+    val dateOfBirth: Date?
     val email: String
     val mobileNumber: String
     val password: String?
@@ -36,7 +36,7 @@ data class UserRegistrationDto(
     override val lastName: String,
     override val patronymic: String,
     @Serializable(with = DateSerializer::class)
-    override val dateOfBirth: Date,
+    override val dateOfBirth: Date? = null,
     override val email: String,
     override val mobileNumber: String,
     override val password: String? = null,
@@ -54,7 +54,7 @@ data class UserWithChildRegistrationDto(
     override val lastName: String,
     override val patronymic: String,
     @Serializable(with = DateSerializer::class)
-    override val dateOfBirth: Date,
+    override val dateOfBirth: Date? = null,
     override val email: String,
     override val mobileNumber: String,
     override val password: String? = null,

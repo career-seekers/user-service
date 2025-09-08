@@ -1,7 +1,9 @@
 package org.careerseekers.userservice.services
 
+import org.careerseekers.userservice.cache.TemporaryPasswordsCache
 import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
+import org.careerseekers.userservice.dto.TemporaryPasswordDto
 import org.careerseekers.userservice.dto.users.ChangePasswordSecondStepDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
@@ -21,6 +23,7 @@ import org.careerseekers.userservice.utils.DocumentExistenceChecker
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
+import org.careerseekers.userservice.utils.PasswordGenerator
 import org.careerseekers.userservice.utils.Tested
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
@@ -36,8 +39,9 @@ class UsersService(
     private val usersMapper: UsersMapper,
     private val passwordEncoder: PasswordEncoder,
     private val emailSendingProducer: KafkaEmailSendingProducer,
-    private val verificationCodesCacheClient: VerificationCodesCacheClient,
+    private val temporaryPasswordsCache: TemporaryPasswordsCache,
     private val documentExistenceChecker: DocumentExistenceChecker,
+    private val verificationCodesCacheClient: VerificationCodesCacheClient,
     private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
     @param:Lazy private val usersService: UsersService?,
 ) : CrudService<Users, Long, CreateUserDto, UpdateUserDto> {
@@ -66,6 +70,8 @@ class UsersService(
 
         checkIfUserExistsByEmailOrMobile(item.email, item.mobileNumber)
         checkMobileNumberValid(item.mobileNumber)
+
+        item.password ?: generatePassword(item.email)
 
         val userToSave = usersMapper.usersFromCreateDto(
             item.copy(
@@ -161,5 +167,12 @@ class UsersService(
         if (usersService?.getByMobileNumber(mobile, false) != null) {
             throw DoubleRecordException("User with mobile number $mobile already exists")
         }
+    }
+
+    private fun generatePassword(email: String): String {
+        val password = PasswordGenerator.generatePassword()
+        temporaryPasswordsCache.loadItemToCache(TemporaryPasswordDto(email, password))
+
+        return passwordEncoder.encode(password)
     }
 }

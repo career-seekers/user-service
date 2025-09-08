@@ -33,7 +33,7 @@ data class Users(
     var patronymic: String,
 
     @Column(nullable = true)
-    var dateOfBirth: Date,
+    var dateOfBirth: Date? = null,
 
     @Column(nullable = false, unique = true)
     var email: String,
