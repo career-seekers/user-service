@@ -1,12 +1,15 @@
 package org.careerseekers.userservice.services
 
+import org.careerseekers.userservice.dto.TgLinkNotificationDto
 import org.careerseekers.userservice.dto.users.links.CreateTelegramLinksDto
 import org.careerseekers.userservice.dto.users.links.UpdateTelegramLinkDto
 import org.careerseekers.userservice.entities.TelegramLinks
 import org.careerseekers.userservice.exceptions.DoubleRecordException
+import org.careerseekers.userservice.io.converters.extensions.toCache
 import org.careerseekers.userservice.mappers.TelegramLinksMapper
 import org.careerseekers.userservice.repositories.TelegramLinksRepository
 import org.careerseekers.userservice.services.interfaces.CrudService
+import org.careerseekers.userservice.services.kafka.producers.KafkaTgLinksNotificationProducer
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,6 +18,7 @@ class TelegramLinksService(
     override val repository: TelegramLinksRepository,
     private val telegramLinksMapper: TelegramLinksMapper,
     private val usersService: UsersService,
+    private val notificationProducer: KafkaTgLinksNotificationProducer
 ) : CrudService<TelegramLinks, Long, CreateTelegramLinksDto, UpdateTelegramLinkDto> {
 
     @Transactional
@@ -24,6 +28,8 @@ class TelegramLinksService(
 
         return usersService.getById(item.userId, message = "User with id ${item.userId} not found.").let { user ->
             repository.save(telegramLinksMapper.linkFromDto(item.copy(user = user)))
+        }.also {
+            notificationProducer.sendMessage(TgLinkNotificationDto(user = it.user.toCache()))
         }
     }
 
