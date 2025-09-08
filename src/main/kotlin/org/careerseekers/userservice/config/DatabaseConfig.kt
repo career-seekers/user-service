@@ -1,33 +1,27 @@
 package org.careerseekers.userservice.config
 
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import javax.sql.DataSource
 
 @Configuration
+@ConfigurationProperties(prefix = "database")
 class DatabaseConfig {
-    @Value("\${database.url}")
-    private lateinit var databaseUrl: String
-
-    @Value("\${database.username}")
-    private lateinit var databaseUsername: String
-
-    @Value("\${database.password}")
-    private lateinit var databasePassword: String
-
-    @Value("\${database.schema}")
-    private lateinit var databaseSchema: String
+    lateinit var url: String
+    lateinit var username: String
+    lateinit var password: String
+    lateinit var schema: String
 
     @Bean
     fun dataSource(): DataSource {
         val dataSource = DriverManagerDataSource()
 
-        dataSource.url = databaseUrl
-        dataSource.username = databaseUsername
-        dataSource.password = databasePassword
-        dataSource.schema = databaseSchema
+        dataSource.url = url
+        dataSource.username = username
+        dataSource.password = password
+        dataSource.schema = schema
 
         return dataSource
     }

@@ -5,6 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.Jwts.SIG
 import io.jsonwebtoken.security.Keys
+import org.careerseekers.userservice.config.JwtProperties
 import org.careerseekers.userservice.dto.jwt.CreateJwtToken
 import org.careerseekers.userservice.dto.jwt.SaveRefreshTokenDto
 import org.careerseekers.userservice.entities.Users
@@ -14,7 +15,6 @@ import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.careerseekers.userservice.mappers.JwtTokensStorageMapper
 import org.careerseekers.userservice.repositories.JwtTokensRepository
 import org.careerseekers.userservice.services.UsersService
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -24,24 +24,16 @@ import java.util.UUID
 
 @Utility
 class JwtUtil(
+    private val jwtProperties: JwtProperties,
     private val jwtTokensRepository: JwtTokensRepository,
     private val jwtTokensStorageMapper: JwtTokensStorageMapper,
-    @Lazy private val usersService: UsersService,
+    @param:Lazy private val usersService: UsersService,
 ) {
-    @Value("\${config.jwt.secret}")
-    private lateinit var jwtSecret: String
-
-    @Value("\${config.jwt.access_token_expiration}")
-    private lateinit var accessExpirationTime: String
-
-    @Value("\${config.jwt.refresh_token_expiration}")
-    private lateinit var refreshExpirationTime: String
-
-    fun generateAccessToken(data: CreateJwtToken): String = generateToken(data, accessExpirationTime)
+    fun generateAccessToken(data: CreateJwtToken): String = generateToken(data, jwtProperties.accessTokenExpiration)
 
     @Transactional
     fun generateRefreshToken(data: CreateJwtToken): String {
-        val token = generateToken(data, refreshExpirationTime, false)
+        val token = generateToken(data, jwtProperties.refreshTokenExpiration, false)
         saveRefreshToken(data, token)
 
         return token
@@ -60,7 +52,7 @@ class JwtUtil(
             .claims(claims)
             .issuedAt(Date())
             .expiration(Date.from(Instant.now().plusSeconds(expiration.toLong())))
-            .signWith(Keys.hmacShaKeyFor(jwtSecret.toByteArray()), SIG.HS512)
+            .signWith(Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray()), SIG.HS512)
             .compact()
     }
 
@@ -104,7 +96,7 @@ class JwtUtil(
     fun getClaims(token: String): Claims? {
         val claims = try {
             Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(jwtSecret.toByteArray()))
+                .verifyWith(Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray()))
                 .build()
                 .parseSignedClaims(token)
                 .payload
