@@ -2,7 +2,6 @@ package org.careerseekers.userservice.mocks
 
 import io.mockk.mockk
 import io.mockk.spyk
-import org.careerseekers.userservice.cache.TemporaryPasswordsCache
 import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.services.AuthService
 import org.careerseekers.userservice.services.UsersService
