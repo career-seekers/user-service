@@ -28,7 +28,7 @@ class RpcUsersService(
                 .setFirstName(user.firstName)
                 .setLastName(user.lastName)
                 .setPatronymic(user.patronymic)
-                .setDateOfBirth(user.dateOfBirth.toTimestamp())
+                .setDateOfBirth(user.dateOfBirth?.toTimestamp())
                 .setEmail(user.email)
                 .setMobileNumber(user.mobileNumber)
                 .setPassword(user.password)

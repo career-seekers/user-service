@@ -19,7 +19,7 @@ data class UsersCacheDto(
     val lastName: String,
     val patronymic: String,
     @Serializable(with = DateSerializer::class)
-    val dateOfBirth: Date,
+    val dateOfBirth: Date?,
     val email: String,
     val mobileNumber: String,
     val password: String,

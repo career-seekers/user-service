@@ -18,7 +18,6 @@ open class AuthServiceMocks {
     protected val jwtUtil = mockk<JwtUtil>()
     protected val usersService = mockk<UsersService>()
     protected val passwordEncoder = mockk<PasswordEncoder>()
-    protected val temporaryPasswordsCache = mockk<TemporaryPasswordsCache>()
     protected val userPostProcessor = mockk<UserRegistrationProcessor>()
     protected val expertPostProcessor = mockk<ExpertRegistrationProcessor>()
     protected val registrationPostProcessors = listOf<IUsersRegistrationProcessor>(userPostProcessor, expertPostProcessor)
@@ -30,7 +29,6 @@ open class AuthServiceMocks {
         jwtUtil = jwtUtil,
         usersService = usersService,
         passwordEncoder = passwordEncoder,
-        temporaryPasswordsCache = temporaryPasswordsCache,
         registrationPostProcessors = registrationPostProcessors,
         emailSendingProducer = emailSendingProducer,
         emailVerificationCodeVerifier = emailVerificationCodeVerifier,
