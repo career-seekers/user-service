@@ -1,8 +1,8 @@
-package org.careerseekers.userservice.config.kafka.producers
+package org.careerseekers.userservice.config
 
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
-import org.careerseekers.userservice.dto.EmailSendingTaskDto
+import org.careerseekers.userservice.dto.KafkaMessagesDto
 import org.careerseekers.userservice.serializers.PolymorphicKafkaSerializer
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -13,12 +13,12 @@ import org.springframework.kafka.core.ProducerFactory
 
 @Configuration
 @ConfigurationProperties(prefix = "spring.kafka")
-class EmailSendingProducerConfig {
+class KafkaProducerFactoryConfig<T : KafkaMessagesDto> {
 
     lateinit var bootstrapServers: String
 
     @Bean
-    fun producerFactory(): ProducerFactory<String, EmailSendingTaskDto> {
+    fun producerFactory(): ProducerFactory<String, T> {
         val configProps = mapOf(
 
             /**
@@ -63,7 +63,7 @@ class EmailSendingProducerConfig {
     }
 
     @Bean
-    fun emailSendingKafkaProducer(): KafkaTemplate<String, EmailSendingTaskDto> {
+    fun emailSendingKafkaProducer(): KafkaTemplate<String, T> {
         return KafkaTemplate(producerFactory())
     }
 }
