@@ -61,26 +61,26 @@ data class Users(
     var jwtTokens: MutableList<JwtTokensStorage>? = mutableListOf(),
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
-    @JsonIgnore
+    @JsonIgnoreProperties("user")
     var userDocuments: UserDocuments?,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
-    @JsonIgnore
+    @JsonIgnoreProperties("user")
     var expertDocuments: ExpertDocuments?,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
-    @JsonIgnore
+    @JsonIgnoreProperties("user")
     var tutorDocuments: TutorDocuments?,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
-    @JsonIgnore
+    @JsonIgnoreProperties("user")
     var mentorDocuments: MentorDocuments?,
 
-    @JsonIgnore
+    @JsonIgnoreProperties("user")
     @OneToMany(mappedBy = "mentor", cascade = [CascadeType.ALL], orphanRemoval = true)
     var menteeChildren: MutableList<Children>? = mutableListOf(),
 
-    @JsonIgnore
+    @JsonIgnoreProperties("user")
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     var children: MutableList<Children>? = mutableListOf(),
 

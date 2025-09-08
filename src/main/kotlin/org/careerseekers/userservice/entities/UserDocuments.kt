@@ -22,7 +22,7 @@ data class UserDocuments(
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
-    @JsonIgnoreProperties(value = ["password"])
+    @JsonIgnoreProperties(value = ["password", "userDocuments", "expertDocuments", "tutorDocuments", "mentorDocuments"])
     var user: Users,
 
     @Column(nullable = false, unique = true)
