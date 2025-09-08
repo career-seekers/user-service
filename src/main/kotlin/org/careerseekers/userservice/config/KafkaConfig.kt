@@ -17,4 +17,13 @@ class KafkaConfig {
             .replicas(3)
             .build()
     }
+
+    @Bean
+    fun tgLinksNotificationTopic(): NewTopic {
+        return TopicBuilder
+            .name(KafkaTopics.TG_LINKS_NOTIFICATION.name)
+            .partitions(12)
+            .replicas(3)
+            .build()
+    }
 }
