@@ -17,3 +17,9 @@ class EmailSendingTaskDto(
     val user: UsersCacheDto? = null,
     val eventType: MailEventTypes,
 ) : KafkaMessagesDto()
+
+@Serializable
+@SerialName("tg_link_notification")
+class TgLinkNotificationDto(
+    val user: UsersCacheDto,
+) : KafkaMessagesDto()
