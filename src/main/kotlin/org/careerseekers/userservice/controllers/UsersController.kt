@@ -77,7 +77,7 @@ class UsersController(
         @RequestHeader("Authorization") authHeader: String,
     ) = service.changePasswordSecondStep(body, jwtToken = authHeader.removePrefix("Bearer ")).toHttpResponse()
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/verify")
     fun verifyUser(@RequestBody item: VerifyUserDto) = service.verifyUser(item).toHttpResponse()
 
@@ -85,7 +85,7 @@ class UsersController(
     override fun deleteById(@PathVariable id: Long): BasicSuccessfulResponse<String> =
         service.deleteById(id).toHttpResponse()
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/")
     override fun deleteAll(): BasicSuccessfulResponse<String> =
         service.deleteAll().toHttpResponse()

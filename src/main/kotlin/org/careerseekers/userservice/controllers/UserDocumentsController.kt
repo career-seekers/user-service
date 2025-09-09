@@ -114,7 +114,7 @@ class UserDocumentsController(
     @DeleteMapping("/{id}")
     override fun deleteById(@PathVariable id: Long) = service.deleteById(id).toHttpResponse()
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/")
     override fun deleteAll() = service.deleteAll().toHttpResponse()
 }

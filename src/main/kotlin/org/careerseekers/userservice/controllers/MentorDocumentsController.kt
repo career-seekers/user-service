@@ -74,7 +74,7 @@ class MentorDocumentsController(
         return service.deleteById(id).toHttpResponse()
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/")
     override fun deleteAll() = service.deleteAll().toHttpResponse()
 }
