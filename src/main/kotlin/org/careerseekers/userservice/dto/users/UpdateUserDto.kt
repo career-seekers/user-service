@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.dto.users
 
 import org.careerseekers.userservice.dto.DtoClass
+import java.util.Date
 
 data class UpdateUserDto(
     val id: Long,
@@ -9,4 +10,5 @@ data class UpdateUserDto(
     val patronymic: String? = null,
     val email: String? = null,
     val mobileNumber: String? = null,
+    val dateOfBirth: Date? = null,
 ) : DtoClass

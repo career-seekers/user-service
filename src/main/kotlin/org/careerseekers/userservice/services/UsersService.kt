@@ -117,6 +117,7 @@ class UsersService(
             )?.let { user -> throw DoubleRecordException("User with mobile number $user already exist") }
             user.mobileNumber = it
         }
+        item.dateOfBirth?.let { user.dateOfBirth = it }
 
         return "User updated successfully."
     }
