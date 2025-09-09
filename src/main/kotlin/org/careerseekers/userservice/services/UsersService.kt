@@ -102,6 +102,21 @@ class UsersService(
         item.firstName?.let { user.firstName = it }
         item.lastName?.let { user.lastName = it }
         item.patronymic?.let { user.patronymic = it }
+        item.email?.let {
+            getByEmail(
+                it,
+                throwable = false
+            )?.let { user -> throw DoubleRecordException("User with email ${user.email} already exist") }
+
+            user.email = it
+        }
+        item.mobileNumber?.let {
+            getByMobileNumber(
+                it,
+                throwable = false
+            )?.let { user -> throw DoubleRecordException("User with mobile number $user already exist") }
+            user.mobileNumber = it
+        }
 
         return "User updated successfully."
     }

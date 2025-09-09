@@ -7,4 +7,6 @@ data class UpdateUserDto(
     val firstName: String? = null,
     val lastName: String? = null,
     val patronymic: String? = null,
+    val email: String? = null,
+    val mobileNumber: String? = null,
 ) : DtoClass
