@@ -8,7 +8,6 @@ import org.careerseekers.userservice.mappers.UsersMapper
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.UsersService
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
-import org.careerseekers.userservice.utils.DocumentExistenceChecker
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -20,7 +19,6 @@ open class UsersServiceMocks {
     protected val passwordEncoder = mockk<PasswordEncoder>()
     protected val emailSendingProducer = mockk<KafkaEmailSendingProducer>()
     protected val verificationCodesCacheClient = mockk<VerificationCodesCacheClient>()
-    protected val documentExistenceChecker = mockk<DocumentExistenceChecker>()
     protected val emailVerificationCodeVerifier = mockk<EmailVerificationCodeVerifier>()
     protected val temporaryPasswordsCache = mockk<TemporaryPasswordsCache>()
 
@@ -32,7 +30,6 @@ open class UsersServiceMocks {
         passwordEncoder,
         emailSendingProducer,
         temporaryPasswordsCache,
-        documentExistenceChecker,
         verificationCodesCacheClient,
         emailVerificationCodeVerifier,
         usersServiceMock

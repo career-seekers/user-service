@@ -67,7 +67,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
 
             assertThat(result).isNotNull().isEqualTo(user)
 
-            verify(exactly = 0) { documentExistenceChecker.checkFileExistence(any(), any()) }
             verify { passwordEncoder.encode(dto.password) }
             verify { usersMapper.usersFromCreateDto(any()) }
             verify { repository.save(user) }
@@ -79,12 +78,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
             val dto = createUserDto(user).copy(password = "encodedPassword", avatarId = 1)
             val fileStructure = createFileStructure(FileTypes.AVATAR)
 
-            every {
-                documentExistenceChecker.checkFileExistence(
-                    dto.avatarId!!,
-                    FileTypes.AVATAR
-                )
-            } returns fileStructure
             every {
                 serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
                     dto.email,
@@ -99,7 +92,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
 
             assertThat(result).isNotNull().isEqualTo(user)
 
-            verify { documentExistenceChecker.checkFileExistence(any(), any()) }
             verify { passwordEncoder.encode(dto.password) }
             verify { usersMapper.usersFromCreateDto(any()) }
             verify { repository.save(user) }
@@ -111,12 +103,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
             val dto = createUserDto(user).copy(password = "encodedPassword", avatarId = 1)
             val fileStructure = createFileStructure(FileTypes.AVATAR)
 
-            every {
-                documentExistenceChecker.checkFileExistence(
-                    dto.avatarId!!,
-                    FileTypes.AVATAR
-                )
-            } returns fileStructure
             every {
                 serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
                     dto.email,
@@ -132,9 +118,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
 
             assertThat(exception.message).isEqualTo("User with email ${dto.email} already exists")
 
-            verify {
-                documentExistenceChecker.checkFileExistence(dto.avatarId!!, FileTypes.AVATAR)
-            }
             verify(exactly = 0) { checkMobileNumberValid(any()) }
             verify(exactly = 0) { usersMapper.usersFromCreateDto(any()) }
             verify(exactly = 0) { repository.save(any()) }
@@ -147,12 +130,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
             val dto = createUserDto(user).copy(password = "encodedPassword", avatarId = 1)
             val fileStructure = createFileStructure(FileTypes.AVATAR)
 
-            every {
-                documentExistenceChecker.checkFileExistence(
-                    dto.avatarId!!,
-                    FileTypes.AVATAR
-                )
-            } returns fileStructure
             every {
                 serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
                     dto.email,
@@ -168,7 +145,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
 
             assertThat(exception.message).isEqualTo("User with mobile number ${dto.mobileNumber} already exists")
 
-            verify { documentExistenceChecker.checkFileExistence(dto.avatarId!!, FileTypes.AVATAR) }
             verify(exactly = 0) { checkMobileNumberValid(any()) }
             verify(exactly = 0) { usersMapper.usersFromCreateDto(any()) }
             verify(exactly = 0) { repository.save(any()) }
@@ -184,12 +160,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
             )
             val fileStructure = createFileStructure(FileTypes.AVATAR)
 
-            every {
-                documentExistenceChecker.checkFileExistence(
-                    dto.avatarId!!,
-                    FileTypes.AVATAR
-                )
-            } returns fileStructure
             every {
                 serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
                     dto.email,
@@ -208,7 +178,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
 
             assertThat(exception.message).isEqualTo("Mobile number must be 12 characters long in format '+79991234567'")
 
-            verify { documentExistenceChecker.checkFileExistence(dto.avatarId!!, FileTypes.AVATAR) }
             verify {
                 serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
                     dto.email,

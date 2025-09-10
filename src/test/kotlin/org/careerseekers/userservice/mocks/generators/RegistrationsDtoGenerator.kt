@@ -22,7 +22,6 @@ object RegistrationsDtoGenerator {
         mobileNumber = "+7" + (1000000000..9999999999).random().toString(),
         password = randomString(12),
         role = role,
-        avatarId = Random.nextLong(1, 100),
         uuid = UUID.randomUUID()
     )
 
@@ -36,7 +35,6 @@ object RegistrationsDtoGenerator {
         mobileNumber = "+7" + (1000000000..9999999999).random().toString(),
         password = randomString(12),
         role = role,
-        avatarId = Random.nextLong(1, 100),
         uuid = UUID.randomUUID(),
         mentorEqualsUser = randomBoolean(),
         childFirstName = randomString(6),

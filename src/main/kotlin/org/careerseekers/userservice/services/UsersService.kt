@@ -9,7 +9,6 @@ import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
 import org.careerseekers.userservice.dto.users.VerifyUserDto
 import org.careerseekers.userservice.entities.Users
-import org.careerseekers.userservice.enums.FileTypes
 import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.enums.ReviewStatus
 import org.careerseekers.userservice.enums.UsersRoles
@@ -19,7 +18,6 @@ import org.careerseekers.userservice.mappers.UsersMapper
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.interfaces.CrudService
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
-import org.careerseekers.userservice.utils.DocumentExistenceChecker
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
@@ -40,7 +38,6 @@ class UsersService(
     private val passwordEncoder: PasswordEncoder,
     private val emailSendingProducer: KafkaEmailSendingProducer,
     private val temporaryPasswordsCache: TemporaryPasswordsCache,
-    private val documentExistenceChecker: DocumentExistenceChecker,
     private val verificationCodesCacheClient: VerificationCodesCacheClient,
     private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
     @param:Lazy private val usersService: UsersService?,
@@ -64,10 +61,6 @@ class UsersService(
 
     @Transactional
     override fun create(item: CreateUserDto): Users {
-        if (item.avatarId != null && item.avatarId != defaultAvatarId.toLongOrNull()) {
-            documentExistenceChecker.checkFileExistence(item.avatarId, FileTypes.AVATAR)
-        }
-
         checkIfUserExistsByEmailOrMobile(item.email, item.mobileNumber)
         checkMobileNumberValid(item.mobileNumber)
 
@@ -78,7 +71,7 @@ class UsersService(
         val userToSave = usersMapper.usersFromCreateDto(
             item.copy(
                 password = passwordEncoder.encode(item.password),
-                avatarId = item.avatarId ?: defaultAvatarId.toLongOrNull()
+                avatarId = defaultAvatarId.toLongOrNull()
             ),
         )
         return repository.save(userToSave)

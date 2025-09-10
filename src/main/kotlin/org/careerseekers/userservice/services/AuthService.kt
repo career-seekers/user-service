@@ -69,7 +69,6 @@ class AuthService(
                 mobileNumber = data.mobileNumber,
                 password = data.password,
                 role = data.role,
-                avatarId = data.avatarId,
             )
         ).let {
             jwtUtil.removeOldRefreshTokenByUUID(data.uuid)
