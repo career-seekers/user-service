@@ -14,6 +14,7 @@ import org.careerseekers.userservice.enums.ReviewStatus
 import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
+import org.careerseekers.userservice.io.converters.extensions.toCache
 import org.careerseekers.userservice.mappers.UsersMapper
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.interfaces.CrudService
@@ -74,7 +75,14 @@ class UsersService(
                 avatarId = defaultAvatarId.toLongOrNull()
             ),
         )
-        return repository.save(userToSave)
+        return repository.save(userToSave).also { user ->
+            if (user.role == UsersRoles.EXPERT) {
+                emailSendingProducer.sendMessage(EmailSendingTaskDto(
+                    user = user.toCache(),
+                    eventType = MailEventTypes.EXPERT_REGISTRATION,
+                ))
+            }
+        }
     }
 
     @Transactional

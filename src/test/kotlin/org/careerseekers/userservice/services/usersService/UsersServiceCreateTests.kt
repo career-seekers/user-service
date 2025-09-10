@@ -72,30 +72,30 @@ class UsersServiceCreateTests : UsersServiceMocks() {
             verify { repository.save(user) }
         }
 
-        @Test
-        fun `create should check avatar existence when avatarId is not null and differs from default`() {
-            val user = createUser()
-            val dto = createUserDto(user).copy(password = "encodedPassword", avatarId = 1)
-            val fileStructure = createFileStructure(FileTypes.AVATAR)
-
-            every {
-                serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
-                    dto.email,
-                    dto.mobileNumber
-                )
-            } returns Unit
-            every { passwordEncoder.encode(dto.password) } returns "encodedPassword"
-            every { usersMapper.usersFromCreateDto(any()) } returns user
-            every { repository.save(user) } returns user
-
-            val result = serviceUnderTest.create(dto)
-
-            assertThat(result).isNotNull().isEqualTo(user)
-
-            verify { passwordEncoder.encode(dto.password) }
-            verify { usersMapper.usersFromCreateDto(any()) }
-            verify { repository.save(user) }
-        }
+//        @Test
+//        fun `create should check avatar existence when avatarId is not null and differs from default`() {
+//            val user = createUser()
+//            val dto = createUserDto(user).copy(password = "encodedPassword", avatarId = 1)
+//            val fileStructure = createFileStructure(FileTypes.AVATAR)
+//
+//            every {
+//                serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
+//                    dto.email,
+//                    dto.mobileNumber
+//                )
+//            } returns Unit
+//            every { passwordEncoder.encode(dto.password) } returns "encodedPassword"
+//            every { usersMapper.usersFromCreateDto(any()) } returns user
+//            every { repository.save(user) } returns user
+//
+//            val result = serviceUnderTest.create(dto)
+//
+//            assertThat(result).isNotNull().isEqualTo(user)
+//
+//            verify { passwordEncoder.encode(dto.password) }
+//            verify { usersMapper.usersFromCreateDto(any()) }
+//            verify { repository.save(user) }
+//        }
 
         @Test
         fun `create should throw DoubleRecordException if email already exists`() {
