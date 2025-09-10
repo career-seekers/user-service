@@ -71,7 +71,9 @@ class UsersService(
         checkIfUserExistsByEmailOrMobile(item.email, item.mobileNumber)
         checkMobileNumberValid(item.mobileNumber)
 
-        item.password ?: generatePassword(item.email)
+        if (item.password == null) {
+            item.password = generatePassword(item.email)
+        }
 
         val userToSave = usersMapper.usersFromCreateDto(
             item.copy(
