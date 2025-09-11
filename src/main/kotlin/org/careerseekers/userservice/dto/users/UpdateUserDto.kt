@@ -11,4 +11,5 @@ data class UpdateUserDto(
     val email: String? = null,
     val mobileNumber: String? = null,
     val dateOfBirth: Date? = null,
+    val tutorId: Long? = null,
 ) : DtoClass

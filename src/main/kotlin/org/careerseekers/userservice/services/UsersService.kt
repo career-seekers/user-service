@@ -127,6 +127,7 @@ class UsersService(
             user.mobileNumber = it
         }
         item.dateOfBirth?.let { user.dateOfBirth = it }
+        item.tutorId?.let { user.tutorId = it }
 
         return "User updated successfully."
     }
