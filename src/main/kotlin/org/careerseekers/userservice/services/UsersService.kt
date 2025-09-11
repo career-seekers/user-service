@@ -192,6 +192,6 @@ class UsersService(
         val password = PasswordGenerator.generatePassword()
         temporaryPasswordsCache.loadItemToCache(TemporaryPasswordDto(email, password))
 
-        return passwordEncoder.encode(password)
+        return password
     }
 }
