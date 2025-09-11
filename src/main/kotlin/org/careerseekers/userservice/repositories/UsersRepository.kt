@@ -10,4 +10,5 @@ interface UsersRepository : JpaRepository<Users, Long> {
     fun getByEmail(email: String): Users?
     fun getByMobileNumber(mobileNumber: String): Users?
     fun getByRole(role: UsersRoles): List<Users>
+    fun getByTutorId(tutorId: Long): List<Users>
 }

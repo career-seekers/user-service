@@ -60,6 +60,8 @@ class UsersService(
 
     fun getByRole(role: UsersRoles): List<Users> = repository.getByRole(role)
 
+    fun getByTutorId(tutorId: Long): List<Users> = repository.getByTutorId(tutorId)
+
 
     @Transactional
     override fun create(item: CreateUserDto): Users {
