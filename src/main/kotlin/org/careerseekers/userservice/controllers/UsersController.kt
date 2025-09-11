@@ -52,6 +52,10 @@ class UsersController(
     fun getByRole(@PathVariable role: String): BasicSuccessfulResponse<List<Users>> =
         service.getByRole(UsersRoles.valueOf(role.uppercase())).toHttpResponse()
 
+    @GetMapping("/getByTutorId/{id}")
+    fun getByTutorId(@PathVariable id: Long): BasicSuccessfulResponse<List<Users>> =
+        service.getByTutorId(id).toHttpResponse()
+
     @PostMapping("/")
     override fun create(@RequestBody item: CreateUserDto): BasicSuccessfulResponse<Users> =
         service.create(item).toHttpResponse()

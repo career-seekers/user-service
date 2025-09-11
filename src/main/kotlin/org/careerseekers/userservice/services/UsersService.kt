@@ -12,6 +12,7 @@ import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.enums.ReviewStatus
 import org.careerseekers.userservice.enums.UsersRoles
+import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.io.converters.extensions.toCache
@@ -59,14 +60,19 @@ class UsersService(
 
     fun getByRole(role: UsersRoles): List<Users> = repository.getByRole(role)
 
+    fun getByTutorId(tutorId: Long): List<Users> = repository.getByTutorId(tutorId)
+
 
     @Transactional
     override fun create(item: CreateUserDto): Users {
         checkIfUserExistsByEmailOrMobile(item.email, item.mobileNumber)
         checkMobileNumberValid(item.mobileNumber)
 
-        if (item.password == null) {
+        if (item.role == UsersRoles.EXPERT) {
             item.password = generatePassword(item.email)
+            if (item.tutorId == null) throw BadRequestException("Expert must be linked with tutor.")
+        } else {
+            if (item.password == null) throw BadRequestException("All users will be created with password.")
         }
 
         val userToSave = usersMapper.usersFromCreateDto(
