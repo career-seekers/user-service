@@ -71,6 +71,8 @@ class UsersService(
         if (item.role == UsersRoles.EXPERT) {
             item.password = generatePassword(item.email)
             if (item.tutorId == null) throw BadRequestException("Expert must be linked with tutor.")
+        } else {
+            if (item.password == null) throw BadRequestException("All users will be created with password.")
         }
 
         val userToSave = usersMapper.usersFromCreateDto(
