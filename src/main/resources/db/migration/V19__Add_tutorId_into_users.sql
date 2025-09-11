@@ -1,0 +1,2 @@
+ALTER TABLE users
+    ADD tutor_id BIGINT DEFAULT NULL;

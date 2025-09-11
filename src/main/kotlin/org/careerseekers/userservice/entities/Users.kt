@@ -56,6 +56,9 @@ data class Users(
     @Column(nullable = false)
     var isMentor: Boolean = false,
 
+    @Column(nullable = true)
+    var tutorId: Long? = null,
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     var jwtTokens: MutableList<JwtTokensStorage>? = mutableListOf(),
