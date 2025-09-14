@@ -2,10 +2,8 @@ package org.careerseekers.userservice.services
 
 import jakarta.transaction.Transactional
 import org.careerseekers.userservice.dto.docs.CreateExpertDocsDto
-import org.careerseekers.userservice.dto.docs.CreateExpertDocsTransferDto
 import org.careerseekers.userservice.dto.docs.UpdateExpertDocsDto
 import org.careerseekers.userservice.entities.ExpertDocuments
-import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
@@ -17,7 +15,6 @@ import org.careerseekers.userservice.services.interfaces.crud.ICreateService
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
 import org.careerseekers.userservice.services.interfaces.crud.IUpdateService
-import org.careerseekers.userservice.utils.DocumentsApiResolver
 import org.springframework.stereotype.Service
 
 @Service
@@ -25,7 +22,6 @@ class ExpertDocumentsService(
     override val repository: ExpertDocsRepository,
     private val usersRepository: UsersRepository,
     private val usersService: UsersService,
-    private val documentsApiResolver: DocumentsApiResolver,
     private val expertDocumentsMapper: ExpertDocumentsMapper,
 ) : IReadService<ExpertDocuments, Long>,
     ICreateService<ExpertDocuments, Long, CreateExpertDocsDto>,
@@ -46,20 +42,6 @@ class ExpertDocumentsService(
         }
     }
 
-    private fun createExpertDocument(item: CreateExpertDocsDto, user: Users): ExpertDocuments {
-        val transferDto = CreateExpertDocsTransferDto(
-            user = user,
-            institution = item.institution,
-            post = item.post,
-            consentToExpertPdpId = documentsApiResolver.loadDocId(
-                "uploadConsentToExpertPDP",
-                item.consentToExpertPdp
-            )
-        )
-
-        return expertDocumentsMapper.expertDocsFromDto(transferDto)
-    }
-
     @Transactional
     override fun create(item: CreateExpertDocsDto): ExpertDocuments {
         val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
@@ -68,6 +50,8 @@ class ExpertDocumentsService(
             throw BadRequestException(
                 "This user has role ${user.role}, not ${UsersRoles.EXPERT}. Please use another controller to create his documents."
             )
+        } else {
+            item.user = user
         }
 
         getDocsByUserId(
@@ -75,7 +59,7 @@ class ExpertDocumentsService(
             throwable = false
         )?.let { throw DoubleRecordException("This user already has documents. If you want to change it, use update method.") }
 
-        return repository.save(createExpertDocument(item, user))
+        return repository.save(expertDocumentsMapper.expertDocsFromDto(item))
     }
 
     @Transactional
@@ -83,15 +67,6 @@ class ExpertDocumentsService(
         getById(item.id, message = basicNotFoundMessage)!!.let { docs ->
             item.institution?.let { docs.institution = it }
             item.post?.let { docs.post = it }
-
-            item.consentToExpertPdp.let {
-                val oldId = docs.consentToExpertPdpId
-
-                documentsApiResolver.loadDocId("uploadConsentToExpertPDP", item.consentToExpertPdp)?.let {
-                    docs.consentToExpertPdpId = it
-                }
-                documentsApiResolver.deleteDocument(oldId, throwable = false)
-            }
         }
 
         return "Expert documents updated successfully."
@@ -104,7 +79,6 @@ class ExpertDocumentsService(
             usersRepository.save(it.user)
 
             repository.delete(it)
-            documentsApiResolver.deleteDocument(it.consentToExpertPdpId, throwable = false)
         }
 
         return "Expert documents deleted successfully."
