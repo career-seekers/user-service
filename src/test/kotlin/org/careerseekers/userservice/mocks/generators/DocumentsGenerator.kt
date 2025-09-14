@@ -82,13 +82,11 @@ object DocumentsGenerator {
         user = user,
         institution = randomString(12),
         post = randomString(12),
-        consentToExpertPdpId = Random.nextLong(1, 1000)
     )
 
     fun createExpertDocumentsDto(user: Users) = CreateExpertDocsDto(
         userId = user.id,
         institution = randomString(12),
         post = randomString(12),
-        consentToExpertPdp = createMultipartFile()
     )
 }

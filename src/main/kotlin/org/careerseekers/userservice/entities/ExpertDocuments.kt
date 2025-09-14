@@ -29,6 +29,6 @@ data class ExpertDocuments(
     @Column(nullable = false)
     var post: String,
 
-    @Column(nullable = false, unique = true)
-    var consentToExpertPdpId: Long
+    @Column(nullable = false)
+    var consentToExpertPdp: Boolean = true,
 ) : ConvertableToHttpResponse<ExpertDocuments>

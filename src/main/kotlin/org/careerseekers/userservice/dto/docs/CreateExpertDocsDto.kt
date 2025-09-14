@@ -1,11 +1,11 @@
 package org.careerseekers.userservice.dto.docs
 
 import org.careerseekers.userservice.dto.DtoClass
-import org.springframework.web.multipart.MultipartFile
+import org.careerseekers.userservice.entities.Users
 
 data class CreateExpertDocsDto(
     val userId: Long,
     val institution: String,
     val post: String,
-    val consentToExpertPdp: MultipartFile,
+    var user: Users? = null,
 ) : DtoClass

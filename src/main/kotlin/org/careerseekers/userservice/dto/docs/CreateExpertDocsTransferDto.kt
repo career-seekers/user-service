@@ -7,5 +7,4 @@ data class CreateExpertDocsTransferDto(
     val user: Users,
     val institution: String,
     val post: String,
-    val consentToExpertPdpId: Long?,
 ) : DtoClass
