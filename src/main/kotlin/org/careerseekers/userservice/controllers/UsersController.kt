@@ -7,11 +7,13 @@ import org.careerseekers.userservice.dto.users.UpdateUserDto
 import org.careerseekers.userservice.dto.users.VerifyUserDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.UsersRoles
+import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.careerseekers.userservice.io.converters.extensions.toHttpResponse
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.UsersService
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -21,12 +23,14 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import kotlin.jvm.optionals.getOrNull
 
 @RestController
 @RequestMapping("users-service/v1/users")
 class UsersController(
     override val service: UsersService,
-    val repository: UsersRepository
+    val repository: UsersRepository,
+    private val passwordEncoder: PasswordEncoder,
 ) : CrudController<Users, Long, CreateUserDto, UpdateUserDto> {
 
     @GetMapping("/")
@@ -82,6 +86,14 @@ class UsersController(
     ) = service.changePasswordSecondStep(body, jwtToken = authHeader.removePrefix("Bearer ")).toHttpResponse()
 
     @PreAuthorize("hasAuthority('ADMIN')")
+    @PatchMapping("/permanentPasswordChanging")
+    fun changePassword(@RequestBody data: TemporaryDto) {
+        repository.findById(data.id).getOrNull()?.let { user ->
+            user.password = passwordEncoder.encode(data.password)
+        } ?: throw NotFoundException("User not found")
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/verify")
     fun verifyUser(@RequestBody item: VerifyUserDto) = service.verifyUser(item).toHttpResponse()
 
@@ -94,3 +106,8 @@ class UsersController(
     override fun deleteAll(): BasicSuccessfulResponse<String> =
         service.deleteAll().toHttpResponse()
 }
+
+data class TemporaryDto(
+    val id: Long,
+    val password: String,
+)
