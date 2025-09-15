@@ -112,20 +112,24 @@ class UsersService(
         item.lastName?.let { user.lastName = it }
         item.patronymic?.let { user.patronymic = it }
         item.email?.let {
-            getByEmail(
-                it,
-                throwable = false
-            )?.let { user -> throw DoubleRecordException("User with email ${user.email} already exist") }
+            if (item.email != user.email) {
+                getByEmail(
+                    it,
+                    throwable = false
+                )?.let { user -> throw DoubleRecordException("User with email ${user.email} already exist") }
 
-            user.email = it
+                user.email = it
+            }
         }
         item.mobileNumber?.let {
-            getByMobileNumber(
-                it,
-                throwable = false
-            )?.let { user -> throw DoubleRecordException("User with mobile number $user already exist") }
-            user.mobileNumber = it
-        }
+            if (item.mobileNumber != user.mobileNumber) {
+                getByMobileNumber(
+                    it,
+                    throwable = false
+                )?.let { user -> throw DoubleRecordException("User with mobile number $user already exist") }
+                user.mobileNumber = it
+            }
+         }
         item.dateOfBirth?.let { user.dateOfBirth = it }
         item.tutorId?.let { user.tutorId = it }
 
