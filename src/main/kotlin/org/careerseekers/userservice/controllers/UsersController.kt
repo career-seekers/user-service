@@ -88,9 +88,10 @@ class UsersController(
     @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/permanentPasswordChanging")
     fun changePassword(@RequestBody data: TemporaryDto) {
-        repository.findById(data.id).getOrNull()?.let { user ->
-            user.password = passwordEncoder.encode(data.password)
-        } ?: throw NotFoundException("User not found")
+        val user = repository.findById(data.id).getOrNull() ?: throw NotFoundException("User not found")
+        user.password = passwordEncoder.encode(data.password)
+
+        repository.save(user)
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
