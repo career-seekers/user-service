@@ -29,6 +29,6 @@ data class TutorDocuments(
     @Column(nullable = false)
     var post: String,
 
-    @Column(nullable = false, unique = true)
-    var consentToTutorPdpId: Long
+    @Column(nullable = false)
+    var consentToTutorPdpId: Boolean = true
 ) : ConvertableToHttpResponse<TutorDocuments>

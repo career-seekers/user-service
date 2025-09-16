@@ -28,7 +28,7 @@ class TutorDocumentsServiceCreateTests : TutorDocumentsServiceMocks() {
 
             every { usersService.getById(user.id, any(), any()) } returns user
             every { serviceUnderTest.getDocsByUserId(user.id, throwable = false) } returns null
-            every { serviceUnderTest["createTutorDocument"](dto, user) } returns documents
+            every { tutorDocumentsMapper.tutorDocsFromDto(any()) } returns documents
             every { repository.save(any()) } returns documents
 
             val result = serviceUnderTest.create(dto)

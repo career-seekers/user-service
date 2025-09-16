@@ -5,12 +5,10 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.NotFoundException
-import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.careerseekers.userservice.mocks.TutorDocumentsServiceMocks
 import org.careerseekers.userservice.mocks.generators.DocumentsGenerator.createTutorDocuments
 import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
 import org.junit.jupiter.api.Nested
-import org.mockito.ArgumentMatchers.any
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
@@ -27,7 +25,6 @@ class TutorDocumentsServiceDeleteTests : TutorDocumentsServiceMocks() {
             every { serviceUnderTest.getById(documents.id, any(), any()) } returns documents
             every { usersRepository.save(any()) } returns user
             every { repository.delete(any()) } returns Unit
-            every { documentsApiResolver.deleteDocument(any(), any()) } returns BasicSuccessfulResponse(any<String>())
 
             val result = serviceUnderTest.deleteById(documents.id)
 
@@ -38,7 +35,6 @@ class TutorDocumentsServiceDeleteTests : TutorDocumentsServiceMocks() {
             verify { serviceUnderTest.getById(documents.id, any(), any()) }
             verify { usersRepository.save(any()) }
             verify { repository.delete(documents) }
-            verify { documentsApiResolver.deleteDocument(any(), any()) }
         }
 
         @Test
@@ -62,7 +58,6 @@ class TutorDocumentsServiceDeleteTests : TutorDocumentsServiceMocks() {
 
             verify(exactly = 0) { usersRepository.save(any()) }
             verify(exactly = 0) { repository.delete(documents) }
-            verify(exactly = 0) { documentsApiResolver.deleteDocument(any(), any()) }
         }
     }
 
