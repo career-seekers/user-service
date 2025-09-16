@@ -5,6 +5,7 @@ import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
 import org.careerseekers.userservice.dto.TemporaryPasswordDto
 import org.careerseekers.userservice.dto.users.ChangePasswordSecondStepDto
+import org.careerseekers.userservice.dto.users.ChangeUserRoleDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
 import org.careerseekers.userservice.dto.users.VerifyUserDto
@@ -145,6 +146,15 @@ class UsersService(
         )
 
         return "Email sent successfully"
+    }
+
+    @Transactional
+    fun updateRole(item: ChangeUserRoleDto): String {
+        getById(item.id, message = "User with id ${item.id} not found.")!!.apply {
+            role = item.role
+        }.also(repository::save)
+
+        return "User role was updated successfully to ${item.role}."
     }
 
     @Transactional

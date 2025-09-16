@@ -2,6 +2,7 @@ package org.careerseekers.userservice.controllers
 
 import org.careerseekers.userservice.controllers.interfaces.CrudController
 import org.careerseekers.userservice.dto.users.ChangePasswordSecondStepDto
+import org.careerseekers.userservice.dto.users.ChangeUserRoleDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
 import org.careerseekers.userservice.dto.users.VerifyUserDto
@@ -73,6 +74,11 @@ class UsersController(
     @PatchMapping("/")
     override fun update(@RequestBody item: UpdateUserDto): BasicSuccessfulResponse<String> =
         service.update(item).toHttpResponse()
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PatchMapping("/updateUserRole")
+    fun updateUserRole(@RequestBody item: ChangeUserRoleDto): BasicSuccessfulResponse<String> =
+        service.updateRole(item).toHttpResponse()
 
     @PostMapping("/changePasswordFirstStep")
     fun changePasswordFirstStep(
