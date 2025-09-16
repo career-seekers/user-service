@@ -1,10 +1,8 @@
 package org.careerseekers.userservice.services
 
 import org.careerseekers.userservice.dto.docs.CreateTutorDocsDto
-import org.careerseekers.userservice.dto.docs.CreateTutorDocsTransferDto
 import org.careerseekers.userservice.dto.docs.UpdateTutorDocsDto
 import org.careerseekers.userservice.entities.TutorDocuments
-import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.ReviewStatus
 import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.BadRequestException
@@ -17,7 +15,6 @@ import org.careerseekers.userservice.services.interfaces.crud.ICreateService
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
 import org.careerseekers.userservice.services.interfaces.crud.IUpdateService
-import org.careerseekers.userservice.utils.DocumentsApiResolver
 import org.careerseekers.userservice.utils.Tested
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -29,7 +26,6 @@ class TutorDocumentsService(
     override val repository: TutorDocsRepository,
     private val usersRepository: UsersRepository,
     private val usersService: UsersService,
-    private val documentsApiResolver: DocumentsApiResolver,
     private val tutorDocumentsMapper: TutorDocumentsMapper,
 ) : IReadService<TutorDocuments, Long>,
     ICreateService<TutorDocuments, Long, CreateTutorDocsDto>,
@@ -50,20 +46,6 @@ class TutorDocumentsService(
         }
     }
 
-    private fun createTutorDocument(item: CreateTutorDocsDto, user: Users): TutorDocuments {
-        val transferDto = CreateTutorDocsTransferDto(
-            user = user,
-            institution = item.institution,
-            post = item.post,
-            consentToTutorPdpId = documentsApiResolver.loadDocId(
-                "uploadConsentToTutorPDP",
-                item.consentToTutorPdp
-            )
-        )
-
-        return tutorDocumentsMapper.tutorDocsFromDto(transferDto)
-    }
-
     @Transactional
     override fun create(item: CreateTutorDocsDto): TutorDocuments {
         val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
@@ -74,11 +56,12 @@ class TutorDocumentsService(
             )
         }
 
+        item.user = user
         getDocsByUserId(user.id, throwable = false)?.let {
             throw DoubleRecordException("This user already has documents. If you want to change it, use update method.")
         }
 
-        return repository.save(createTutorDocument(item, user))
+        return repository.save(tutorDocumentsMapper.tutorDocsFromDto(item))
     }
 
     @Transactional
@@ -86,15 +69,6 @@ class TutorDocumentsService(
         getById(item.id, message = basicNotFoundMessage)!!.let { docs ->
             item.institution?.let { docs.institution = it }
             item.post?.let { docs.post = it }
-
-            item.consentToTutorPdp?.let {
-                val oldId = docs.consentToTutorPdpId
-
-                documentsApiResolver.loadDocId("uploadConsentToMentorPDP", item.consentToTutorPdp)?.let {
-                    docs.consentToTutorPdpId = it
-                }
-                documentsApiResolver.deleteDocument(oldId, throwable = false)
-            }
         }
 
         return "Tutor documents updated successfully."
@@ -107,7 +81,6 @@ class TutorDocumentsService(
             usersRepository.save(it.user)
 
             repository.delete(it)
-            documentsApiResolver.deleteDocument(it.consentToTutorPdpId, throwable = false)
         }
 
         return "Tutor documents deleted successfully."
