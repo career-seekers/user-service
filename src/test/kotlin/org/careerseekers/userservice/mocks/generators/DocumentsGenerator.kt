@@ -52,14 +52,12 @@ object DocumentsGenerator {
         user = user,
         institution = randomString(12),
         post = randomString(12),
-        consentToTutorPdpId = Random.nextLong(1, 1000)
     )
 
     fun createTutorDocumentsDto(user: Users) = CreateTutorDocsDto(
         userId = user.id,
         institution = randomString(12),
         post = randomString(12),
-        consentToTutorPdp = createMultipartFile()
     )
 
     fun createMentorDocuments(user: Users) = MentorDocuments(

@@ -8,7 +8,6 @@ import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.NotFoundException
 import org.careerseekers.userservice.mocks.ExpertDocumentsServiceMocks
 import org.careerseekers.userservice.mocks.generators.DocumentsGenerator.createExpertDocuments
-import org.careerseekers.userservice.mocks.generators.MultipartFileGenerator.createMultipartFile
 import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
@@ -25,7 +24,6 @@ class ExpertDocumentsServiceUpdateTests : ExpertDocumentsServiceMocks() {
             id = documents.id,
             institution = "newInstitution",
             post = null,
-            consentToExpertPdp = createMultipartFile()
         )
 
         @Test
