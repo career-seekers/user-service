@@ -48,3 +48,13 @@ config:
     secret: ${JWT_SECRET}
     access_token_expiration: ${JWT_ACCESS_EXPIRATION_TIME}
     refresh_token_expiration: ${JWT_REFRESH_EXPIRATION_TIME}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
