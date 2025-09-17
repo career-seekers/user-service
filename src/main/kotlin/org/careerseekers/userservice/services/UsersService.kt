@@ -84,10 +84,12 @@ class UsersService(
         )
         return repository.save(userToSave).also { user ->
             if (user.role == UsersRoles.EXPERT) {
-                emailSendingProducer.sendMessage(EmailSendingTaskDto(
-                    user = user.toCache(),
-                    eventType = MailEventTypes.EXPERT_REGISTRATION,
-                ))
+                emailSendingProducer.sendMessage(
+                    EmailSendingTaskDto(
+                        user = user.toCache(),
+                        eventType = MailEventTypes.EXPERT_REGISTRATION,
+                    )
+                )
             }
         }
     }
@@ -107,15 +109,29 @@ class UsersService(
 
     @Transactional
     override fun update(item: UpdateUserDto): String {
+        fun require(value: Boolean, lazyMessage: () -> Any = { "Exception." }) {
+            if (!value) throw BadRequestException(lazyMessage().toString())
+        }
+
         val user = usersService?.getById(item.id, message = "User with id ${item.id} does not exist.")!!
 
-        item.firstName?.let { user.firstName = it }
-        item.lastName?.let { user.lastName = it }
-        item.patronymic?.let { user.patronymic = it }
+        item.firstName?.let {
+            require(it.isNotBlank()) { "First name must not be empty." }
+            user.firstName = it
+        }
+        item.lastName?.let {
+            require(it.isNotBlank()) { "Last name must not be empty." }
+            user.lastName = it
+        }
+        item.patronymic?.let {
+            require(it.isNotBlank()) { "Patronymic must not be empty." }
+            user.patronymic = it
+        }
         item.email?.let {
+            require(it.isNotBlank()) { "Email must not be empty." }
             if (item.email != user.email) {
                 getByEmail(
-                    it,
+                    it.lowercase().trim(),
                     throwable = false
                 )?.let { user -> throw DoubleRecordException("User with email ${user.email} already exist") }
 
@@ -123,14 +139,15 @@ class UsersService(
             }
         }
         item.mobileNumber?.let {
+            require(it.isNotBlank()) { "Mobile number must not be empty." }
             if (item.mobileNumber != user.mobileNumber) {
                 getByMobileNumber(
-                    it,
+                    it.trim(),
                     throwable = false
                 )?.let { user -> throw DoubleRecordException("User with mobile number $user already exist") }
                 user.mobileNumber = it
             }
-         }
+        }
         item.dateOfBirth?.let { user.dateOfBirth = it }
         item.tutorId?.let { user.tutorId = it }
 
