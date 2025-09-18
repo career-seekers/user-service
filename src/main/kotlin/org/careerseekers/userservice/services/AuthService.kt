@@ -35,6 +35,7 @@ class AuthService(
     private val verificationCodesCacheClient: VerificationCodesCacheClient,
 ) {
     fun preRegister(item: PreRegisterUserDto): BasicSuccessfulResponse<String> {
+        item.email = item.email.lowercase()
         usersService.getByEmail(item.email, throwable = false)?.let {
             throw DoubleRecordException("User with email ${item.email} already exists")
         }
@@ -54,7 +55,7 @@ class AuthService(
     @Transactional
     fun register(data: RegistrationDto): UserTokensDto {
         emailVerificationCodeVerifier.verify(
-            email = data.email,
+            email = data.email.lowercase(),
             verificationCode = data.verificationCode,
             mailEventTypes = MailEventTypes.PRE_REGISTRATION,
         )
@@ -88,6 +89,7 @@ class AuthService(
 
     @Transactional
     fun login(data: LoginUserDto): UserTokensDto {
+        data.email = data.email.lowercase()
         return usersService.getByEmail(data.email, throwable = false)?.let {
             jwtUtil.removeOldRefreshTokenByUUID(data.uuid)
             if (passwordEncoder.matches(data.password, it.password)) {

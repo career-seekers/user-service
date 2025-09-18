@@ -66,6 +66,8 @@ class UsersService(
 
     @Transactional
     override fun create(item: CreateUserDto): Users {
+        item.email = item.email.lowercase()
+
         checkIfUserExistsByEmailOrMobile(item.email, item.mobileNumber)
         checkMobileNumberValid(item.mobileNumber)
 
