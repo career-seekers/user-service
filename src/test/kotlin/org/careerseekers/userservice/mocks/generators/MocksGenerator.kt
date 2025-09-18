@@ -15,7 +15,7 @@ object MocksGenerator {
     }
 
     fun randomEmail(): String {
-        return "${randomString(8)}@example.com"
+        return "${randomString(8)}@example.com".lowercase()
     }
 
     fun randomDateOfBirth(): Date {

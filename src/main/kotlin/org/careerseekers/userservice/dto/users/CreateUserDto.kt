@@ -9,7 +9,7 @@ data class CreateUserDto(
     val lastName: String,
     val patronymic: String,
     val dateOfBirth: Date? = null,
-    val email: String,
+    var email: String,
     val mobileNumber: String,
     var password: String? = null,
     val role: UsersRoles = UsersRoles.USER,
