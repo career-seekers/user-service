@@ -26,7 +26,7 @@ class UsersServiceDeleteTests : UsersServiceMocks() {
 
             val result = serviceUnderTest.deleteById(user.id)
 
-            assertThat(result).isEqualTo("User deleted successfully.")
+            assertThat(result).isEqualTo("Пользователь удалён успешно.")
 
             verify(exactly = 1) { usersServiceMock.getById(user.id, any(), any()) }
             verify(exactly = 1) { repository.delete(user) }
@@ -57,7 +57,7 @@ class UsersServiceDeleteTests : UsersServiceMocks() {
 
             val result = serviceUnderTest.deleteAll()
 
-            assertThat(result).isEqualTo("Users deleted successfully.")
+            assertThat(result).isEqualTo("Все пользователи удалены успешно.")
 
             verify(exactly = 1) { repository.deleteAll() }
         }

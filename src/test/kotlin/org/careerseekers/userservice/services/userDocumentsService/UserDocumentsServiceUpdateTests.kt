@@ -59,7 +59,7 @@ class UserDocumentsServiceUpdateTests : UserDocumentsServiceMocks() {
 
             val result = serviceUnderTest.update(dto)
 
-            assertThat(result).isNotNull.isEqualTo("User documents updated successfully.")
+            assertThat(result).isNotNull.isEqualTo("Пользовательские документы успешно обновлены.")
 
             assertThat(documents.id).isEqualTo(dto.id)
             assertThat(documents.user).isEqualTo(user)

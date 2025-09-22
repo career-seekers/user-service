@@ -27,16 +27,16 @@ class ExpertDocumentsService(
     ICreateService<ExpertDocuments, Long, CreateExpertDocsDto>,
     IUpdateService<ExpertDocuments, Long, UpdateExpertDocsDto>,
     IDeleteService<ExpertDocuments, Long> {
-    private val basicNotFoundMessage: String = "Expert documents not found."
+    private val basicNotFoundMessage: String = "Документы эксперта не найдены."
 
     fun getDocsByUserId(userId: Long, throwable: Boolean = true): ExpertDocuments? {
-        return usersService.getById(userId, message = "User with id $userId not found").let { user ->
+        return usersService.getById(userId, message = "Пользователь с ID $userId не найден.").let { user ->
             if (user!!.role == UsersRoles.EXPERT) {
                 repository.findByUserId(user.id)
-                    ?: if (throwable) throw NotFoundException("Documents for user with id $userId not found") else null
+                    ?: if (throwable) throw NotFoundException("Пользовательские документы с ID пользователя $userId не найдены.") else null
             } else {
                 throw BadRequestException(
-                    "This user has role ${user.role}, not ${UsersRoles.EXPERT}. Please use another controller to check his documents."
+                    "У этого пользователя есть роль ${user.role}, а не ${UsersRoles.EXPERT}. Пожалуйста, используйте другого администратора для проверки его документов."
                 )
             }
         }
@@ -44,11 +44,11 @@ class ExpertDocumentsService(
 
     @Transactional
     override fun create(item: CreateExpertDocsDto): ExpertDocuments {
-        val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
+        val user = usersService.getById(item.userId, message = "Пользователь с ID ${item.userId} не найден.")!!
 
         if (user.role != UsersRoles.EXPERT) {
             throw BadRequestException(
-                "This user has role ${user.role}, not ${UsersRoles.EXPERT}. Please use another controller to create his documents."
+                "У этого пользователя есть роль ${user.role}, а не ${UsersRoles.EXPERT}. Пожалуйста, используйте другой контроллер для создания его документов."
             )
         } else {
             item.user = user
@@ -57,7 +57,7 @@ class ExpertDocumentsService(
         getDocsByUserId(
             user.id,
             throwable = false
-        )?.let { throw DoubleRecordException("This user already has documents. If you want to change it, use update method.") }
+        )?.let { throw DoubleRecordException("У этого пользователя уже есть документы. Если вы хотите изменить его, используйте метод обновления.") }
 
         return repository.save(expertDocumentsMapper.expertDocsFromDto(item))
     }
@@ -69,7 +69,7 @@ class ExpertDocumentsService(
             item.post?.let { docs.post = it }
         }
 
-        return "Expert documents updated successfully."
+        return "Документы эксперта обновлены успешно."
     }
 
     @Transactional
@@ -81,12 +81,12 @@ class ExpertDocumentsService(
             repository.delete(it)
         }
 
-        return "Expert documents deleted successfully."
+        return "Документы эксперта удалены успешно."
     }
 
     @Transactional
     override fun deleteAll(): String {
         getAll().forEach { deleteById(it.id) }
-        return "All expert documents deleted successfully"
+        return "Все документы эксперта удалены успешно."
     }
 }

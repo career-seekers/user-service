@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono
 
 @Utility
 class DocumentsApiResolver(
-    @Qualifier("file-service") private val httpClient: WebClient
+    @param:Qualifier("file-service") private val httpClient: WebClient
 ) {
     private val documentCleanupScope = CoroutineScope(Dispatchers.IO)
 

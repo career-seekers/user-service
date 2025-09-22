@@ -44,7 +44,7 @@ class UserDocumentsController(
 
     @GetMapping("/getBySnilsNumber/{snils}")
     fun getBySnilsNumber(@PathVariable snils: String) = repository.findBySnilsNumber(snils)?.toHttpResponse()
-        ?: throw NotFoundException("Documents with snils number $snils not found")
+        ?: throw NotFoundException("Документы с номером снилс $snils не найдены.")
 
     @PostMapping("/")
     fun create(

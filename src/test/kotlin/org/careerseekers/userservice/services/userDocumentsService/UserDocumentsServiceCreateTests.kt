@@ -79,13 +79,13 @@ class UserDocumentsServiceCreateTests : UserDocumentsServiceMocks() {
                     user.id,
                     throwable = false
                 )
-            } throws BadRequestException("This user has role ${user.role}, not ${UsersRoles.USER}. Please use another controller to check his documents.")
+            } throws BadRequestException("У этого пользователя есть роль ${user.role}, а не ${UsersRoles.USER}. Пожалуйста, используйте другой контроллер для проверки его документов.")
 
             val exception = assertFailsWith<BadRequestException> {
                 serviceUnderTest.create(documentsDto)
             }
 
-            assertThat(exception.message).isEqualTo("This user has role ${user.role}, not ${UsersRoles.USER}. Please use another controller to check his documents.")
+            assertThat(exception.message).isEqualTo("У этого пользователя есть роль ${user.role}, а не ${UsersRoles.USER}. Пожалуйста, используйте другой контроллер для проверки его документов.")
 
             verify { usersService.getById(user.id, any(), any()) }
             verify { serviceUnderTest.getDocsByUserId(user.id, throwable = false) }
@@ -107,7 +107,7 @@ class UserDocumentsServiceCreateTests : UserDocumentsServiceMocks() {
                 serviceUnderTest.create(documentsDto)
             }
 
-            assertThat(exception.message).isEqualTo("This user already has documents. If you want to change it, use update method.")
+            assertThat(exception.message).isEqualTo("У этого пользователя уже есть документы. Если вы хотите изменить его, используйте метод обновления.")
 
             verify { usersService.getById(user.id, any(), any()) }
             verify { serviceUnderTest.getDocsByUserId(user.id, throwable = false) }
@@ -129,11 +129,11 @@ class UserDocumentsServiceCreateTests : UserDocumentsServiceMocks() {
                     documentsDto,
                     user
                 )
-            } throws BadRequestException("Snils number length must be 11 chars")
+            } throws BadRequestException("Номер СНИЛС должен содержать 11 цифр.")
 
             val exception = assertFailsWith<BadRequestException> { serviceUnderTest.create(documentsDto) }
 
-            assertThat(exception.message).isEqualTo("Snils number length must be 11 chars")
+            assertThat(exception.message).isEqualTo("Номер СНИЛС должен содержать 11 цифр.")
 
             verify { usersService.getById(user.id, any(), any()) }
             verify { serviceUnderTest.getDocsByUserId(user.id, throwable = false) }
@@ -155,11 +155,11 @@ class UserDocumentsServiceCreateTests : UserDocumentsServiceMocks() {
                     documentsDto,
                     user
                 )
-            } throws BadRequestException("Snils number must be a digit")
+            } throws BadRequestException("Номер СНИЛС должен содержать только цифры.")
 
             val exception = assertFailsWith<BadRequestException> { serviceUnderTest.create(documentsDto) }
 
-            assertThat(exception.message).isEqualTo("Snils number must be a digit")
+            assertThat(exception.message).isEqualTo("Номер СНИЛС должен содержать только цифры.")
 
             verify { usersService.getById(user.id, any(), any()) }
             verify { serviceUnderTest.getDocsByUserId(user.id, throwable = false) }

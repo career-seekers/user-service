@@ -40,7 +40,7 @@ class MentorDocumentsServiceUpdateTests : MentorDocumentsServiceMocks() {
 
             val result = serviceUnderTest.update(dto)
 
-            assertThat(result).isEqualTo("Mentor documents updated successfully.")
+            assertThat(result).isEqualTo("Документы наставника обновлены успешно.")
 
             assertThat(documents.institution).isEqualTo("newInstitution")
             assertThat(documents.post).isEqualTo("oldPost")
@@ -53,13 +53,13 @@ class MentorDocumentsServiceUpdateTests : MentorDocumentsServiceMocks() {
 
         @Test
         fun `Should return NotFoundException when documents not found`() {
-            every { serviceUnderTest.getById(dto.id, any(), any()) } throws NotFoundException("Mentor documents not found.")
+            every { serviceUnderTest.getById(dto.id, any(), any()) } throws NotFoundException("Документы наставника не найдены.")
 
             val exception = assertFailsWith<NotFoundException> {
                 serviceUnderTest.update(dto)
             }
 
-            assertThat(exception.message).isEqualTo("Mentor documents not found.")
+            assertThat(exception.message).isEqualTo("Документы наставника не найдены.")
 
             verify { serviceUnderTest.getById(dto.id, any(), any()) }
 

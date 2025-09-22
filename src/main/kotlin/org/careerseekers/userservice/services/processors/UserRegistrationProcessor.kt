@@ -35,7 +35,7 @@ class UserRegistrationProcessor(
     }
 
     private fun processUserRegistration(): Nothing =
-        throw BadRequestException("Invalid data package for user registration")
+        throw BadRequestException("Неверный пакет данных для регистрации пользователя.")
 
 
     private fun processUserWithChildRegistration(item: UserWithChildRegistrationDto) {

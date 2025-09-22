@@ -52,7 +52,7 @@ class AuthServiceLoginTests : AuthServiceMocks() {
                 serviceUnderTest.login(loginDto)
             }
 
-            assertThat(exception.message).isEqualTo("Wrong email or password")
+            assertThat(exception.message).isEqualTo("Неверный адрес электронной почты или пароль.")
 
             verify { usersService.getByEmail(user.email, false) }
             verify { jwtUtil.removeOldRefreshTokenByUUID(loginDto.uuid) }
@@ -70,7 +70,7 @@ class AuthServiceLoginTests : AuthServiceMocks() {
                 serviceUnderTest.login(loginDto)
             }
 
-            assertThat(exception.message).isEqualTo("Wrong email or password")
+            assertThat(exception.message).isEqualTo("Неверный адрес электронной почты или пароль.")
 
             verify { usersService.getByEmail(user.email, eq(false)) }
 

@@ -19,7 +19,7 @@ class RpcUsersService(
     override fun getById(request: UserId, responseObserver: StreamObserver<User>) {
         val response = usersService.getById(
             request.id,
-            message = "User with id ${request.id} not found."
+            message = "Пользователь с ID ${request.id} не найден."
         )!!.let { user ->
             usersCacheLoader.loadItemToCache(user.toCache())
 

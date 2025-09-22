@@ -76,7 +76,7 @@ class TutorDocumentsServiceCreateTests : TutorDocumentsServiceMocks() {
                 serviceUnderTest.create(dto)
             }
 
-            assertThat(exception.message).isEqualTo("This user has role ${user.role}, not ${UsersRoles.TUTOR}. Please use another controller to create his documents.")
+            assertThat(exception.message).isEqualTo("У этого пользователя есть роль ${user.role}, а не ${UsersRoles.TUTOR}. Пожалуйста, используйте другой контроллер для создания его документов.")
 
             verify { usersService.getById(user.id, any(), any()) }
 
@@ -97,7 +97,7 @@ class TutorDocumentsServiceCreateTests : TutorDocumentsServiceMocks() {
                 serviceUnderTest.create(dto)
             }
 
-            assertThat(exception.message).isEqualTo("This user already has documents. If you want to change it, use update method.")
+            assertThat(exception.message).isEqualTo("У этого пользователя уже есть документы. Если вы хотите изменить его, используйте метод обновления.")
 
             verify { usersService.getById(user.id, any(), any()) }
             verify { serviceUnderTest.getDocsByUserId(user.id, throwable = false) }

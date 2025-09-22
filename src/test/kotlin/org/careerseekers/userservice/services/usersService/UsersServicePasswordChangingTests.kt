@@ -38,7 +38,7 @@ class UsersServicePasswordChangingTests : UsersServiceMocks() {
                 })
             }
 
-            assertThat(result).isEqualTo("Email sent successfully")
+            assertThat(result).isEqualTo("Электронное письмо успешно отправлено.")
         }
     }
 
@@ -66,7 +66,7 @@ class UsersServicePasswordChangingTests : UsersServiceMocks() {
 
             val result = serviceUnderTest.changePasswordSecondStep(item, jwtToken)
 
-            assertThat(result).isEqualTo("User updated successfully.")
+            assertThat(result).isEqualTo("Информация о пользователе обновлена успешно.")
             assertThat(user.password).isEqualTo("encodedNewPass")
 
             verifyOrder {
@@ -113,7 +113,7 @@ class UsersServicePasswordChangingTests : UsersServiceMocks() {
                     token = any(),
                     mailEventTypes = MailEventTypes.PASSWORD_RESET,
                 )
-            } throws BadRequestException("Incorrect verification code")
+            } throws BadRequestException("Неверный верификационный код.")
             every { passwordEncoder.encode(any()) } returns "encodedNewPass"
             every { repository.save(any()) } returns user
             every { verificationCodesCacheClient.deleteItemFromCache(any()) } just Runs
@@ -122,7 +122,7 @@ class UsersServicePasswordChangingTests : UsersServiceMocks() {
                 serviceUnderTest.changePasswordSecondStep(item, token)
             }
 
-            assertThat(exception.message).isEqualTo("Incorrect verification code")
+            assertThat(exception.message).isEqualTo("Неверный верификационный код.")
 
             verify { jwtUtil.getUserFromToken(token) }
             verify {
@@ -153,7 +153,7 @@ class UsersServicePasswordChangingTests : UsersServiceMocks() {
                     token = any(),
                     mailEventTypes = MailEventTypes.PASSWORD_RESET,
                 )
-            } throws BadRequestException("The maximum number of attempts has been reached. A new code has been sent to the mail")
+            } throws BadRequestException("Достигнуто максимальное количество попыток. На почту отправлен новый код.")
             every { passwordEncoder.encode(any()) } returns "encodedNewPass"
             every { repository.save(any()) } returns user
             every { verificationCodesCacheClient.deleteItemFromCache(any()) } just Runs
@@ -162,7 +162,7 @@ class UsersServicePasswordChangingTests : UsersServiceMocks() {
                 serviceUnderTest.changePasswordSecondStep(item, token)
             }
 
-            assertThat(exception.message).isEqualTo("The maximum number of attempts has been reached. A new code has been sent to the mail")
+            assertThat(exception.message).isEqualTo("Достигнуто максимальное количество попыток. На почту отправлен новый код.")
 
             verify { jwtUtil.getUserFromToken(token) }
             verify {

@@ -34,7 +34,7 @@ class UsersServiceUpdateTests : UsersServiceMocks() {
 
 
             val result = serviceUnderTest.update(updateDto)
-            assertThat(result).isEqualTo("User updated successfully.")
+            assertThat(result).isEqualTo("Информация о пользователе обновлена успешно.")
 
             assertThat(user.firstName).isEqualTo("NewFirstName")
             assertThat(user.lastName).isEqualTo("LastName")
@@ -75,7 +75,7 @@ class UsersServiceUpdateTests : UsersServiceMocks() {
 
             verify(exactly = 1) { usersServiceMock.getById(user.id, any(), any()) }
 
-            assertThat(result).isEqualTo("User verification updated successfully.")
+            assertThat(result).isEqualTo("Подтверждение пользователя успешно обновлено.")
             assertThat(user.verified).isTrue
         }
 

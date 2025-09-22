@@ -58,14 +58,14 @@ class AuthServiceUpdateTokensTests : AuthServiceMocks() {
                     throwTimeLimit = eq(false)
                 )
             } throws JwtAuthenticationException(
-                "Invalid token claims"
+                "Невалидное содержание токена."
             )
 
             val exception = assertFailsWith<JwtAuthenticationException> {
                 serviceUnderTest.updateTokens(dto)
             }
 
-            assertThat(exception.message).isEqualTo("Invalid token claims")
+            assertThat(exception.message).isEqualTo("Невалидное содержание токена.")
 
             verify { jwtUtil.verifyToken(dto.accessToken, throwTimeLimit = eq(false)) }
 
@@ -80,14 +80,14 @@ class AuthServiceUpdateTokensTests : AuthServiceMocks() {
         fun `updateTokens should return JwtAuthenticationException if refresh token claims broken`() {
             every { jwtUtil.verifyToken(dto.accessToken, throwTimeLimit = eq(false)) } returns true
             every { jwtUtil.verifyToken(dto.refreshToken, uuid = dto.uuid) } throws JwtAuthenticationException(
-                "Invalid token claims"
+                "Невалидное содержание токена."
             )
 
             val exception = assertFailsWith<JwtAuthenticationException> {
                 serviceUnderTest.updateTokens(dto)
             }
 
-            assertThat(exception.message).isEqualTo("Invalid token claims")
+            assertThat(exception.message).isEqualTo("Невалидное содержание токена.")
 
             verify { jwtUtil.verifyToken(dto.accessToken, throwTimeLimit = eq(false)) }
             verify { jwtUtil.verifyToken(dto.refreshToken, any()) }
@@ -102,14 +102,14 @@ class AuthServiceUpdateTokensTests : AuthServiceMocks() {
         fun `updateTokens should return JwtAuthenticationException if refresh token not found in storage`() {
             every { jwtUtil.verifyToken(dto.accessToken, throwTimeLimit = eq(false)) } returns true
             every { jwtUtil.verifyToken(dto.refreshToken, uuid = dto.uuid) } throws JwtAuthenticationException(
-                "Invalid token metadata! JWT validity cannot be asserted and should not be trusted."
+                "Недопустимые метаданные токена! Достоверность JWT не может быть подтверждена, и ей не следует доверять."
             )
 
             val exception = assertFailsWith<JwtAuthenticationException> {
                 serviceUnderTest.updateTokens(dto)
             }
 
-            assertThat(exception.message).isEqualTo("Invalid token metadata! JWT validity cannot be asserted and should not be trusted.")
+            assertThat(exception.message).isEqualTo("Недопустимые метаданные токена! Достоверность JWT не может быть подтверждена, и ей не следует доверять.")
 
             verify { jwtUtil.verifyToken(dto.accessToken, throwTimeLimit = eq(false)) }
             verify { jwtUtil.verifyToken(dto.refreshToken, any()) }
@@ -131,7 +131,7 @@ class AuthServiceUpdateTokensTests : AuthServiceMocks() {
                 serviceUnderTest.updateTokens(dto)
             }
 
-            assertThat(exception.message).isEqualTo("Invalid refresh token")
+            assertThat(exception.message).isEqualTo("Неверный refresh-токен.")
 
             verify { jwtUtil.verifyToken(dto.accessToken, throwTimeLimit = eq(false)) }
             verify { jwtUtil.verifyToken(dto.refreshToken, any()) }

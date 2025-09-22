@@ -24,9 +24,9 @@ class TelegramLinksService(
     @Transactional
     override fun create(item: CreateTelegramLinksDto): TelegramLinks {
         repository.getByTgLink(item.tgLink)
-            ?.let { throw DoubleRecordException("This telegram link is already in use.") }
+            ?.let { throw DoubleRecordException("Эта telegram-ссылка уже используется.") }
 
-        return usersService.getById(item.userId, message = "User with id ${item.userId} not found.").let { user ->
+        return usersService.getById(item.userId, message = "Пользователь с ID ${item.userId} не найден.").let { user ->
             repository.save(telegramLinksMapper.linkFromDto(item.copy(user = user)))
         }.also {
             notificationProducer.sendMessage(TgLinkNotificationDto(user = it.user.toCache()))
@@ -38,16 +38,16 @@ class TelegramLinksService(
         for (item in items) {
             create(item)
         }
-        return "Telegram links created successfully."
+        return "Telegram-ссылка успешно создана."
     }
 
     @Transactional
     override fun update(item: UpdateTelegramLinkDto): String {
-        return getById(item.id, message = "Telegram link with id ${item.id} not found").let { link ->
+        return getById(item.id, message = "Ссылка на Telegram с ID ${item.id} не найдена").let { link ->
             link!!.tgLink = item.tgLink
             repository.save(link)
 
-            "Telegram link updated successfully."
+            "Telegram-ссылка обновлена успешно."
         }
     }
 
@@ -57,7 +57,7 @@ class TelegramLinksService(
             link!!.user.telegramLink = null
             repository.delete(link)
 
-            "Telegram link deleted successfully."
+            "Telegram-ссылка удалена успешно."
         }
     }
 
@@ -67,6 +67,6 @@ class TelegramLinksService(
             repository.delete(link)
         }
 
-        return "All telegram links deleted successfully."
+        return "Все Telegram-ссылки удалены успешно."
     }
 }

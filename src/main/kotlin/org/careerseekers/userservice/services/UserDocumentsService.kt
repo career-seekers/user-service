@@ -43,19 +43,19 @@ class UserDocumentsService(
     fun getById(id: Long, throwable: Boolean = true): UserDocuments? {
         val o = repository.findById(id)
         if (throwable && !o.isPresent) {
-            throw NotFoundException("User documents with id $id not found")
+            throw NotFoundException("Пользовательские документы с ID $id не найдены.")
         }
         return if (!o.isPresent) null else o.get()
     }
 
     fun getDocsByUserId(userId: Long, throwable: Boolean = true): UserDocuments? {
-        return usersService.getById(userId, message = "User with id $userId not found").let { user ->
+        return usersService.getById(userId, message = "Пользователь с ID $userId не найден.").let { user ->
             if (user!!.role == UsersRoles.USER) {
                 repository.findByUserId(user.id)
-                    ?: if (throwable) throw NotFoundException("Documents for user with id $userId not found") else null
+                    ?: if (throwable) throw NotFoundException("Пользовательские документы с ID пользователя $userId не найдены.") else null
             } else {
                 throw BadRequestException(
-                    "This user has role ${user.role}, not ${UsersRoles.USER}. Please use another controller to check his documents."
+                    "У этого пользователя есть роль ${user.role}, а не ${UsersRoles.USER}. Пожалуйста, используйте другой контроллер для проверки его документов."
                 )
             }
         }
@@ -88,11 +88,11 @@ class UserDocumentsService(
 
     @Transactional
     override fun create(item: CreateUserDocsDto): UserDocuments {
-        val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
+        val user = usersService.getById(item.userId, message = "Пользователь с ID ${item.userId} не найден.")!!
         getDocsByUserId(
             user.id,
             throwable = false
-        )?.let { throw DoubleRecordException("This user already has documents. If you want to change it, use update method.") }
+        )?.let { throw DoubleRecordException("У этого пользователя уже есть документы. Если вы хотите изменить его, используйте метод обновления.") }
 
         val userDoc = createUserDocument(item, user)
 
@@ -106,13 +106,13 @@ class UserDocumentsService(
             listOf(
                 item.snilsNumber,
                 item.snilsFile
-            ).checkNullable("Parameters snilsNumber and snilsFile can be only all null values or all non-null values.")
+            ).checkNullable("Параметры snilsNumber и snilsFile могут содержать только все нулевые значения или все ненулевые значения, отличные от нуля.")
             item.snilsNumber?.let { snilsValidator.checkSnilsValid(it) }
 
             item.snilsFile.let {
                 val oldId = docs.snilsId
                 documentsApiResolver.loadDocId("uploadSnils", item.snilsFile).let {
-                    docs.snilsId = it ?: throw BadRequestException("Something went wrong while uploading snils.")
+                    docs.snilsId = it ?: throw BadRequestException("Что-то пошло не так при загрузке СНИЛС.")
                 }
                 docs.snilsNumber = item.snilsNumber!!
 
@@ -125,7 +125,7 @@ class UserDocumentsService(
                 val oldId = docs.studyingCertificateId
                 documentsApiResolver.loadDocId("uploadStudyingCertificate", it).let { docId ->
                     docs.studyingCertificateId =
-                        docId ?: throw BadRequestException("Studying certificate ID could not be found.")
+                        docId ?: throw BadRequestException("Справка из ОУ не найдена.")
                 }
 
                 documentsApiResolver.deleteDocument(oldId, throwable = false)
@@ -138,7 +138,7 @@ class UserDocumentsService(
                 val oldId = docs.additionalStudyingCertificateId
                 documentsApiResolver.loadDocId("uploadAdditionalStudyingCertificate", it).let { docId ->
                     docs.additionalStudyingCertificateId =
-                        docId ?: throw BadRequestException("Additional studying certificate ID could not be found.")
+                        docId ?: throw BadRequestException("Справка из дополнительного ОУ не найдена.")
                 }
 
                 documentsApiResolver.deleteDocument(oldId, throwable = false)
@@ -149,14 +149,14 @@ class UserDocumentsService(
             item.consentToChildPdpFile?.let {
                 val oldId = docs.consentToChildPdpId
                 documentsApiResolver.loadDocId("uploadConsentToChildPDP", it).let { docId ->
-                    docs.consentToChildPdpId = docId ?: throw BadRequestException("Consent to child pdp ID not found.")
+                    docs.consentToChildPdpId = docId ?: throw BadRequestException("Согласие на ОПД ребёнка не найдено.")
                 }
 
                 documentsApiResolver.deleteDocument(oldId, throwable = false)
             }
         }
 
-        return "User documents updated successfully."
+        return "Пользовательские документы успешно обновлены."
     }
 
     @Transactional
@@ -170,13 +170,13 @@ class UserDocumentsService(
             removeDocumentsFromDatabase(it)
         }
 
-        return "User documents deleted successfully."
+        return "Пользовательские документы успешно удалены."
     }
 
     @Transactional
     override fun deleteAll(): String {
         getAll().forEach { deleteById(it.id) }
-        return "Users documents deleted successfully."
+        return "Все документы пользователей успешно удалены."
     }
 
     private fun removeDocumentsFromDatabase(userDocs: UserDocuments) {
