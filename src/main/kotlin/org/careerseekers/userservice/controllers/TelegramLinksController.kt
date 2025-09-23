@@ -27,7 +27,7 @@ class TelegramLinksController(
 
     @GetMapping("/{id}")
     override fun getById(@PathVariable id: Long) =
-        service.getById(id, message = "Ссылка в Telegram с ID $id не найдены.")!!.toHttpResponse()
+        service.getById(id, message = "Ссылка в Telegram с ID $id не найдена.")!!.toHttpResponse()
 
     @PostMapping("/")
     override fun create(@RequestBody item: CreateTelegramLinksDto) = service.create(item).toHttpResponse()
