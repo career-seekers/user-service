@@ -40,7 +40,7 @@ class TutorDocumentsService(
                     ?: if (throwable) throw NotFoundException("Пользовательские документы с ID пользователя $userId не найдены.") else null
             } else {
                 throw BadRequestException(
-                    "У этого пользователя есть роль ${user.role}, а не ${UsersRoles.TUTOR}. Пожалуйста, используйте другого администратора для проверки его документов."
+                    "У этого пользователя есть роль ${user.role}, а не ${UsersRoles.TUTOR}. Пожалуйста, используйте другой контроллер для проверки его документов."
                 )
             }
         }

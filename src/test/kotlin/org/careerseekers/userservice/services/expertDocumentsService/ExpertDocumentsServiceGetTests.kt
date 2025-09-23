@@ -168,7 +168,7 @@ class ExpertDocumentsServiceGetTests : ExpertDocumentsServiceMocks() {
                 serviceUnderTest.getDocsByUserId(user.id)
             }
 
-            assertThat(exception.message).isEqualTo("У этого пользователя есть роль ${user.role}, а не ${UsersRoles.EXPERT}. Пожалуйста, используйте другого администратора для проверки его документов.")
+            assertThat(exception.message).isEqualTo("У этого пользователя есть роль ${user.role}, а не ${UsersRoles.EXPERT}. Пожалуйста, используйте другой контроллер для проверки его документов.")
 
             verify { usersService.getById(user.id, any(), any()) }
             verify(exactly = 0) { repository.findByUserId(user.id) }
