@@ -31,16 +31,16 @@ class TutorDocumentsService(
     ICreateService<TutorDocuments, Long, CreateTutorDocsDto>,
     IUpdateService<TutorDocuments, Long, UpdateTutorDocsDto>,
     IDeleteService<TutorDocuments, Long> {
-    private val basicNotFoundMessage: String = "Tutor documents not found."
+    private val basicNotFoundMessage: String = "Документы куратора не найдены."
 
     fun getDocsByUserId(userId: Long, throwable: Boolean = true): TutorDocuments? {
-        return usersService.getById(userId, message = "User with id $userId not found").let { user ->
+        return usersService.getById(userId, message = "Пользователь с ID $userId не найден.").let { user ->
             if (user!!.role == UsersRoles.TUTOR) {
                 repository.findByUserId(user.id)
-                    ?: if (throwable) throw NotFoundException("Documents for user with id $userId not found") else null
+                    ?: if (throwable) throw NotFoundException("Пользовательские документы с ID пользователя $userId не найдены.") else null
             } else {
                 throw BadRequestException(
-                    "This user has role ${user.role}, not ${UsersRoles.TUTOR}. Please use another controller to check his documents."
+                    "У этого пользователя есть роль ${user.role}, а не ${UsersRoles.TUTOR}. Пожалуйста, используйте другой контроллер для проверки его документов."
                 )
             }
         }
@@ -48,17 +48,17 @@ class TutorDocumentsService(
 
     @Transactional
     override fun create(item: CreateTutorDocsDto): TutorDocuments {
-        val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
+        val user = usersService.getById(item.userId, message = "Пользователь с ID ${item.userId} не найден.")!!
 
         if (user.role != UsersRoles.TUTOR) {
             throw BadRequestException(
-                "This user has role ${user.role}, not ${UsersRoles.TUTOR}. Please use another controller to create his documents."
+                "У этого пользователя есть роль ${user.role}, а не ${UsersRoles.TUTOR}. Пожалуйста, используйте другой контроллер для создания его документов."
             )
         }
 
         item.user = user
         getDocsByUserId(user.id, throwable = false)?.let {
-            throw DoubleRecordException("This user already has documents. If you want to change it, use update method.")
+            throw DoubleRecordException("У этого пользователя уже есть документы. Если вы хотите изменить его, используйте метод обновления.")
         }
 
         return repository.save(tutorDocumentsMapper.tutorDocsFromDto(item))
@@ -71,7 +71,7 @@ class TutorDocumentsService(
             item.post?.let { docs.post = it }
         }
 
-        return "Tutor documents updated successfully."
+        return "Документы куратора успешно обновлены."
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -83,12 +83,12 @@ class TutorDocumentsService(
             repository.delete(it)
         }
 
-        return "Tutor documents deleted successfully."
+        return "Документы куратора успешно удалены."
     }
 
     @Transactional
     override fun deleteAll(): String {
         getAll().forEach { deleteById(it.id) }
-        return "All tutors documents deleted successfully"
+        return "Все документы куратора успешно удалены."
     }
 }

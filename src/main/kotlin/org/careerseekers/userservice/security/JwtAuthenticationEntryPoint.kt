@@ -29,12 +29,12 @@ class JwtAuthenticationEntryPoint(private val jwtUtil: JwtUtil) : Authentication
             } catch (e: JwtAuthenticationException) {
                 var body: String?
 
-                if (e.message!!.contains("Invalid token claims") || e.message!!.contains("Invalid token!")) {
+                if (e.message!!.contains("Невалидное содержание токена.") || e.message!!.contains("Invalid token!")) {
                     response?.status = HttpServletResponse.SC_UNAUTHORIZED
                     body = """{"status": ${HttpStatus.UNAUTHORIZED.value()}, "message": ${e.message}}"""
                 } else {
                     response?.status = HttpServletResponse.SC_FORBIDDEN
-                    body = """{"status": ${HttpStatus.FORBIDDEN.value()}, "message": "Token expired"}"""
+                    body = """{"status": ${HttpStatus.FORBIDDEN.value()}, "message": "Срок жизни токена истёк."}"""
                 }
 
                 response?.writer?.write(body)

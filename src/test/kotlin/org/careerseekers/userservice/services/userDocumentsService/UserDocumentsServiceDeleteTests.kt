@@ -28,7 +28,7 @@ class UserDocumentsServiceDeleteTests : UserDocumentsServiceMocks() {
 
             val result = serviceUnderTest.deleteById(documents.id)
 
-            assertThat(result).isEqualTo("User documents deleted successfully.")
+            assertThat(result).isEqualTo("Пользовательские документы успешно удалены.")
             assertThat(user.userDocuments).isNull()
 
             verify { serviceUnderTest.getById(documents.id, true) }
@@ -65,11 +65,11 @@ class UserDocumentsServiceDeleteTests : UserDocumentsServiceMocks() {
             val documents = List(5) { createUserDocs(createUser()) }
 
             every { serviceUnderTest.getAll() } returns documents
-            every { serviceUnderTest.deleteById(any()) } returns "User documents deleted successfully."
+            every { serviceUnderTest.deleteById(any()) } returns "Пользовательские документы успешно удалены."
 
             val result = serviceUnderTest.deleteAll()
 
-            assertThat(result).isEqualTo("Users documents deleted successfully.")
+            assertThat(result).isEqualTo("Все документы пользователей успешно удалены.")
 
             verify { serviceUnderTest.getAll() }
             verify(exactly = 5) { serviceUnderTest.deleteById(any()) }

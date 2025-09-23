@@ -60,22 +60,22 @@ class JwtUtil(
         val o = SaveRefreshTokenDto(data.user, data.uuid, token)
         jwtTokensRepository.save(jwtTokensStorageMapper.tokenFromSaveRefreshDto(o))
 
-        return BasicSuccessfulResponse("Token saved")
+        return BasicSuccessfulResponse("Токен сохранён успешно.")
     }
 
     fun verifyToken(token: String, uuid: UUID? = null, throwTimeLimit: Boolean = true): Boolean {
-        val claims = getClaims(token) ?: throw JwtAuthenticationException("Invalid token claims")
+        val claims = getClaims(token) ?: throw JwtAuthenticationException("Невалидное содержание токена.")
         if (!claims.expiration.after(Date()) && throwTimeLimit) {
-            throw JwtAuthenticationException("Token expired")
+            throw JwtAuthenticationException("Срок жизни токена истёк.")
         }
 
         if (uuid != null && (claims["uuid"].toString() != uuid.toString())) {
             jwtTokensRepository.findByUuid(uuid).let {
-                if (it == null) throw JwtAuthenticationException("Invalid token metadata! JWT validity cannot be asserted and should not be trusted.")
+                if (it == null) throw JwtAuthenticationException("Недопустимые метаданные токена! Достоверность JWT не может быть подтверждена, и ей не следует доверять.")
             }
 
             jwtTokensRepository.deleteByToken(token)
-            throw JwtAuthenticationException("Invalid token metadata! JWT validity cannot be asserted and should not be trusted.")
+            throw JwtAuthenticationException("Недопустимые метаданные токена! Достоверность JWT не может быть подтверждена, и ей не следует доверять.")
         }
 
         return true
@@ -101,7 +101,7 @@ class JwtUtil(
                 .parseSignedClaims(token)
                 .payload
         } catch (_: ExpiredJwtException) {
-            throw JwtAuthenticationException("Jwt token expired")
+            throw JwtAuthenticationException("Срок жизни токена истёк.")
         }
 
         return claims

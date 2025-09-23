@@ -51,12 +51,12 @@ class UsersService(
 
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
-            ?: if (throwable) throw NotFoundException("User with email $email not found") else null
+            ?: if (throwable) throw NotFoundException("Пользователь с адресом электронной почты $email не найден.") else null
     }
 
     fun getByMobileNumber(mobileNumber: String, throwable: Boolean = true): Users? {
         return repository.getByMobileNumber(mobileNumber)
-            ?: if (throwable) throw NotFoundException("User with mobile number $mobileNumber not found") else null
+            ?: if (throwable) throw NotFoundException("Пользователь с номером мобильного телефона $mobileNumber не найден.") else null
     }
 
     fun getByRole(role: UsersRoles): List<Users> = repository.getByRole(role)
@@ -73,9 +73,9 @@ class UsersService(
 
         if (item.role == UsersRoles.EXPERT) {
             item.password = generatePassword(item.email)
-            if (item.tutorId == null) throw BadRequestException("Expert must be linked with tutor.")
+            if (item.tutorId == null) throw BadRequestException("Эксперт должен быть связан с куратором.")
         } else {
-            if (item.password == null) throw BadRequestException("All users will be created with password.")
+            if (item.password == null) throw BadRequestException("Все пользователи должны быть созданы с использованием пароля.")
         }
 
         val userToSave = usersMapper.usersFromCreateDto(
@@ -115,45 +115,45 @@ class UsersService(
             if (!value) throw BadRequestException(lazyMessage().toString())
         }
 
-        val user = usersService?.getById(item.id, message = "User with id ${item.id} does not exist.")!!
+        val user = usersService?.getById(item.id, message = "Пользователь с ID ${item.id} не существует.")!!
 
         item.firstName?.let {
-            require(it.isNotBlank()) { "First name must not be empty." }
+            require(it.isNotBlank()) { "Имя не должно быть пустым." }
             user.firstName = it
         }
         item.lastName?.let {
-            require(it.isNotBlank()) { "Last name must not be empty." }
+            require(it.isNotBlank()) { "Фамилия не должна быть пустой." }
             user.lastName = it
         }
         item.patronymic?.let {
-            require(it.isNotBlank()) { "Patronymic must not be empty." }
+            require(it.isNotBlank()) { "Отчество не должно быть пустым." }
             user.patronymic = it
         }
         item.email?.let {
-            require(it.isNotBlank()) { "Email must not be empty." }
+            require(it.isNotBlank()) { "Адрес электронной почты не должен быть пустым." }
             if (item.email != user.email) {
                 getByEmail(
                     it.lowercase().trim(),
                     throwable = false
-                )?.let { user -> throw DoubleRecordException("User with email ${user.email} already exist") }
+                )?.let { user -> throw DoubleRecordException("Пользователь с электронной почтой ${user.email} уже существует.") }
 
                 user.email = it
             }
         }
         item.mobileNumber?.let {
-            require(it.isNotBlank()) { "Mobile number must not be empty." }
+            require(it.isNotBlank()) { "Номер мобильного телефона не должен быть пустым." }
             if (item.mobileNumber != user.mobileNumber) {
                 getByMobileNumber(
                     it.trim(),
                     throwable = false
-                )?.let { user -> throw DoubleRecordException("User with mobile number $user already exist") }
+                )?.let { user -> throw DoubleRecordException("Пользователь с номером мобильного телефона $it уже существует.") }
                 user.mobileNumber = it
             }
         }
         item.dateOfBirth?.let { user.dateOfBirth = it }
         item.tutorId?.let { user.tutorId = it }
 
-        return "User updated successfully."
+        return "Информация о пользователе обновлена успешно."
     }
 
     fun changePasswordFirstStep(jwtToken: String): String {
@@ -164,16 +164,16 @@ class UsersService(
             )
         )
 
-        return "Email sent successfully"
+        return "Электронное письмо успешно отправлено."
     }
 
     @Transactional
     fun updateRole(item: ChangeUserRoleDto): String {
-        getById(item.id, message = "User with id ${item.id} not found.")!!.apply {
+        getById(item.id, message = "Пользователь с ID ${item.id} не найден.")!!.apply {
             role = item.role
         }.also(repository::save)
 
-        return "User role was updated successfully to ${item.role}."
+        return "Роль пользователя была успешно обновлена до ${item.role}."
     }
 
     @Transactional
@@ -192,39 +192,39 @@ class UsersService(
 
         verificationCodesCacheClient.deleteItemFromCache(user.id)
 
-        return "User updated successfully."
+        return "Информация о пользователе обновлена успешно."
     }
 
     @Transactional
     fun verifyUser(item: VerifyUserDto): String {
-        usersService?.getById(item.userId, message = "User with id ${item.userId} does not exist.").let {
+        usersService?.getById(item.userId, message = "Пользователь с ID ${item.userId} не найден.").let {
             it?.verified = item.status
         }
-        return "User verification updated successfully."
+        return "Подтверждение пользователя успешно обновлено."
     }
 
     @Transactional
     override fun deleteById(id: Long): String {
-        usersService?.getById(id, message = "User with id $id does not exist.")?.let { user ->
+        usersService?.getById(id, message = "Пользователь с ID $id не найден.")?.let { user ->
             repository.delete(user)
         }
 
-        return "User deleted successfully."
+        return "Пользователь удалён успешно."
     }
 
     @Transactional
     override fun deleteAll(): String {
         super.deleteAll()
 
-        return "Users deleted successfully."
+        return "Все пользователи удалены успешно."
     }
 
     private fun checkIfUserExistsByEmailOrMobile(email: String, mobile: String) {
         if (usersService?.getByEmail(email, false) != null) {
-            throw DoubleRecordException("User with email $email already exists")
+            throw DoubleRecordException("Пользователь с адресом электронной почты $email уже существует.")
         }
         if (usersService?.getByMobileNumber(mobile, false) != null) {
-            throw DoubleRecordException("User with mobile number $mobile already exists")
+            throw DoubleRecordException("Пользователь с номером мобильного телефона $mobile уже существует.")
         }
     }
 

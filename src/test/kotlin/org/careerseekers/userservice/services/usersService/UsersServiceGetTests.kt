@@ -47,7 +47,7 @@ class UsersServiceGetTests : UsersServiceMocks() {
 
             every { repository.findById(userId) } returns Optional.of(user)
 
-            val result = serviceUnderTest.getById(userId, throwable = true, message = "User with id $userId not found")
+            val result = serviceUnderTest.getById(userId, throwable = true, message = "Пользователь с ID $userId не найден.")
 
             assertEquals(user, result)
             verify { repository.findById(userId) }
@@ -60,10 +60,10 @@ class UsersServiceGetTests : UsersServiceMocks() {
             every { repository.findById(userId) } returns Optional.empty()
 
             val exception = assertFailsWith<NotFoundException> {
-                serviceUnderTest.getById(userId, throwable = true, message = "User with id $userId not found")
+                serviceUnderTest.getById(userId, throwable = true, message = "Пользователь с ID $userId не найден.")
             }
 
-            assertEquals("User with id $userId not found", exception.message)
+            assertEquals("Пользователь с ID $userId не найден.", exception.message)
             verify { repository.findById(userId) }
         }
 
@@ -73,7 +73,7 @@ class UsersServiceGetTests : UsersServiceMocks() {
 
             every { repository.findById(userId) } returns Optional.empty()
 
-            val result = serviceUnderTest.getById(userId, throwable = false, message = "User with id $userId not found")
+            val result = serviceUnderTest.getById(userId, throwable = false, message = "Пользователь с ID $userId не найден.")
 
             assertNull(result)
             verify { repository.findById(userId) }
@@ -123,7 +123,7 @@ class UsersServiceGetTests : UsersServiceMocks() {
                 serviceUnderTest.getByEmail(email, throwable = true)
             }
 
-            assertEquals("User with email $email not found", exception.message)
+            assertEquals("Пользователь с адресом электронной почты $email не найден.", exception.message)
             verify { repository.getByEmail(email) }
         }
 
@@ -166,7 +166,7 @@ class UsersServiceGetTests : UsersServiceMocks() {
                 serviceUnderTest.getByMobileNumber(mobileNumber, throwable = true)
             }
 
-            assertEquals("User with mobile number $mobileNumber not found", exception.message)
+            assertEquals("Пользователь с номером мобильного телефона $mobileNumber не найден.", exception.message)
             verify { repository.getByMobileNumber(mobileNumber) }
         }
 

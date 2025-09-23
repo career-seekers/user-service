@@ -115,7 +115,7 @@ class ExpertDocumentsServiceGetTests : ExpertDocumentsServiceMocks() {
                 serviceUnderTest.getDocsByUserId(user.id)
             }
 
-            assertThat(exception.message).isEqualTo("Documents for user with id ${user.id} not found")
+            assertThat(exception.message).isEqualTo("Пользовательские документы с ID пользователя ${user.id} не найдены.")
 
             verify { usersService.getById(user.id, any(), any()) }
             verify { repository.findByUserId(user.id) }
@@ -168,7 +168,7 @@ class ExpertDocumentsServiceGetTests : ExpertDocumentsServiceMocks() {
                 serviceUnderTest.getDocsByUserId(user.id)
             }
 
-            assertThat(exception.message).isEqualTo("This user has role ${user.role}, not ${UsersRoles.EXPERT}. Please use another controller to check his documents.")
+            assertThat(exception.message).isEqualTo("У этого пользователя есть роль ${user.role}, а не ${UsersRoles.EXPERT}. Пожалуйста, используйте другой контроллер для проверки его документов.")
 
             verify { usersService.getById(user.id, any(), any()) }
             verify(exactly = 0) { repository.findByUserId(user.id) }

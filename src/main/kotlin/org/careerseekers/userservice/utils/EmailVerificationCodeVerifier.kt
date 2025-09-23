@@ -24,14 +24,14 @@ class EmailVerificationCodeVerifier(
         user: UsersCacheDto? = null
     ) {
         val cacheItem = verificationCodesCacheClient.getItemFromCache(email)
-            ?: throw NotFoundException("Cached verification code was not found.")
+            ?: throw NotFoundException("Верификационный код не найден. Повторите попытку позже.")
 
         if (!passwordEncoder.matches(verificationCode, cacheItem.code)) {
             verificationCodesCacheClient.deleteItemFromCache(email)
             if (cacheItem.retries < 3) {
                 cacheItem.retries += 1
                 verificationCodesCacheClient.loadItemToCache(cacheItem)
-                throw BadRequestException("Incorrect verification code")
+                throw BadRequestException("Неверный верификационный код.")
             } else {
                 emailSendingProducer.sendMessage(
                     EmailSendingTaskDto(
@@ -40,7 +40,7 @@ class EmailVerificationCodeVerifier(
                         eventType = mailEventTypes,
                         user = user)
                 )
-                throw BadRequestException("The maximum number of attempts has been reached. A new code has been sent to the mail")
+                throw BadRequestException("Достигнуто максимальное количество попыток. На почту отправлен новый код.")
             }
         }
     }

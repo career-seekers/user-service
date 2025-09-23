@@ -37,11 +37,11 @@ class AuthService(
     fun preRegister(item: PreRegisterUserDto): BasicSuccessfulResponse<String> {
         item.email = item.email.lowercase()
         usersService.getByEmail(item.email, throwable = false)?.let {
-            throw DoubleRecordException("User with email ${item.email} already exists")
+            throw DoubleRecordException("Пользователь с адресом электронной почты ${item.email} уже существует.")
         }
 
         usersService.getByMobileNumber(item.mobileNumber, throwable = false)?.let {
-            throw DoubleRecordException("User with mobile number ${item.mobileNumber} already exists")
+            throw DoubleRecordException("Пользователь с номером мобильного телефона ${item.mobileNumber} уже существует.")
         }
 
         emailSendingProducer.sendMessage(EmailSendingTaskDto(
@@ -49,7 +49,7 @@ class AuthService(
             eventType = MailEventTypes.PRE_REGISTRATION,
         ))
 
-        return BasicSuccessfulResponse("Verification code sent to successfully")
+        return BasicSuccessfulResponse("Проверочный код успешно отправлен.")
     }
 
     @Transactional
@@ -97,8 +97,8 @@ class AuthService(
                     jwtUtil.generateAccessToken(CreateJwtToken(it, data.uuid)),
                     jwtUtil.generateRefreshToken(CreateJwtToken(it, data.uuid))
                 )
-            } else throw JwtAuthenticationException("Wrong email or password")
-        } ?: throw JwtAuthenticationException("Wrong email or password")
+            } else throw JwtAuthenticationException("Неверный адрес электронной почты или пароль.")
+        } ?: throw JwtAuthenticationException("Неверный адрес электронной почты или пароль.")
     }
 
     @Transactional
@@ -112,6 +112,6 @@ class AuthService(
                 jwtUtil.generateAccessToken(CreateJwtToken(this, data.uuid)),
                 jwtUtil.generateRefreshToken(CreateJwtToken(this, data.uuid))
             )
-        } ?: throw JwtAuthenticationException("Invalid refresh token")
+        } ?: throw JwtAuthenticationException("Неверный refresh-токен.")
     }
 }

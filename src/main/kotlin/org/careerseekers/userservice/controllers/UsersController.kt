@@ -91,6 +91,7 @@ class UsersController(
         @RequestHeader("Authorization") authHeader: String,
     ) = service.changePasswordSecondStep(body, jwtToken = authHeader.removePrefix("Bearer ")).toHttpResponse()
 
+    @Deprecated(message = "This method will be removed after version 1.2.0 release.", level = DeprecationLevel.WARNING)
     @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/permanentPasswordChanging")
     fun changePassword(@RequestBody data: TemporaryDto) {
@@ -114,6 +115,7 @@ class UsersController(
         service.deleteAll().toHttpResponse()
 }
 
+@Deprecated(message = "This DTO will be removed after version 1.2.0 release.", level = DeprecationLevel.WARNING)
 data class TemporaryDto(
     val id: Long,
     val password: String,

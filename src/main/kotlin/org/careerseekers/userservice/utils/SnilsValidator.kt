@@ -51,8 +51,8 @@ class SnilsValidator(private val userDocsRepository: UserDocsRepository) {
      * @throws BadRequestException if the SNILS number's format is invalid.
      */
     fun validateSnilsNumber(snilsNumber: String): Boolean {
-        require(snilsNumber.length == 11) { "Snils number length must be 11 chars" }
-        require(snilsNumber.all { it.isDigit() }) { "Snils number must be a digit" }
+        require(snilsNumber.length == 11) { "Номер СНИЛС должен содержать 11 цифр." }
+        require(snilsNumber.all { it.isDigit() }) { "Номер СНИЛС должен содержать только цифры." }
         return true
     }
 
@@ -71,7 +71,7 @@ class SnilsValidator(private val userDocsRepository: UserDocsRepository) {
         validateSnilsNumber(snilsNumber)
 
         userDocsRepository.findBySnilsNumber(snilsNumber)?.let {
-            throw DoubleRecordException("Documents with snils number $snilsNumber already exists")
+            throw DoubleRecordException("Документ с номером СНИЛС $snilsNumber уже существует.")
         }
     }
 }

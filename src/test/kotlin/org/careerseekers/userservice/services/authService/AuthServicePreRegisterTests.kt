@@ -42,7 +42,7 @@ class AuthServicePreRegisterTests : AuthServiceMocks() {
 
             val exception = assertFailsWith<DoubleRecordException> { serviceUnderTest.preRegister(inputDto) }
 
-            assertThat(exception.message).isEqualTo("User with email ${user.email} already exists")
+            assertThat(exception.message).isEqualTo("Пользователь с адресом электронной почты ${user.email} уже существует.")
 
             verify { usersService.getByEmail(user.email, false) }
             verify(exactly = 0) { usersService.getByMobileNumber(any(), any()) }
@@ -56,7 +56,7 @@ class AuthServicePreRegisterTests : AuthServiceMocks() {
 
             val exception = assertFailsWith<DoubleRecordException> { serviceUnderTest.preRegister(inputDto) }
 
-            assertThat(exception.message).isEqualTo("User with mobile number ${user.mobileNumber} already exists")
+            assertThat(exception.message).isEqualTo("Пользователь с номером мобильного телефона ${user.mobileNumber} уже существует.")
 
             verify { usersService.getByEmail(user.email, false) }
             verify { usersService.getByMobileNumber(user.mobileNumber, false) }

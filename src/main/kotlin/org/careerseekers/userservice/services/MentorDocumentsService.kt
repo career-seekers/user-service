@@ -35,16 +35,16 @@ class MentorDocumentsService(
     ICreateService<MentorDocuments, Long, CreateMentorDocsDto>,
     IUpdateService<MentorDocuments, Long, UpdateMentorDocsDto>,
     IDeleteService<MentorDocuments, Long> {
-    private val basicNotFoundMessage: String = "Mentor documents not found."
+    private val basicNotFoundMessage: String = "Документы наставника не найдены."
 
     fun getDocsByUserId(userId: Long, throwable: Boolean = true): MentorDocuments? {
-        return usersService.getById(userId, message = "User with id $userId not found").let { user ->
+        return usersService.getById(userId, message = "Пользователь с ID $userId не найден.").let { user ->
             if (user!!.role == UsersRoles.MENTOR) {
                 repository.findByUserId(user.id)
-                    ?: if (throwable) throw NotFoundException("Documents for user with id $userId not found") else null
+                    ?: if (throwable) throw NotFoundException("Пользовательские документы с ID пользователя $userId не найдены.") else null
             } else {
                 throw BadRequestException(
-                    "This user has role ${user.role}, not ${UsersRoles.MENTOR}. Please use another controller to check his documents."
+                    "У этого пользователя есть роль ${user.role}, а не ${UsersRoles.MENTOR}. Пожалуйста, используйте другой контроллер для проверки его документов."
                 )
             }
         }
@@ -66,16 +66,16 @@ class MentorDocumentsService(
 
     @Transactional
     override fun create(item: CreateMentorDocsDto): MentorDocuments {
-        val user = usersService.getById(item.userId, message = "User with id ${item.userId} not found.")!!
+        val user = usersService.getById(item.userId, message = "Пользователь с ID ${item.userId} не найден.")!!
 
         if (user.role != UsersRoles.MENTOR) {
             throw BadRequestException(
-                "This user has role ${user.role}, not ${UsersRoles.MENTOR}. Please use another controller to create his documents."
+                "У этого пользователя есть роль ${user.role}, а не ${UsersRoles.MENTOR}. Пожалуйста, используйте другой контроллер для создания его документов."
             )
         }
 
         getDocsByUserId(user.id, throwable = false)?.let {
-            throw DoubleRecordException("This user already has documents. If you want to change it, use update method.")
+            throw DoubleRecordException("У этого пользователя уже есть документы. Если вы хотите изменить его, используйте метод обновления.")
         }
 
         return repository.save(createMentorDocument(item, user))
@@ -97,7 +97,7 @@ class MentorDocumentsService(
             }
         }
 
-        return "Mentor documents updated successfully."
+        return "Документы наставника обновлены успешно."
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -110,12 +110,12 @@ class MentorDocumentsService(
             documentsApiResolver.deleteDocument(it.consentToMentorPdpId, throwable = false)
         }
 
-        return "Mentor documents deleted successfully."
+        return "Документы наставника удалены успешно."
     }
 
     @Transactional
     override fun deleteAll(): String {
         getAll().forEach { deleteById(it.id) }
-        return "All mentors documents deleted successfully"
+        return "Все документы наставника удалены успешно."
     }
 }

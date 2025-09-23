@@ -28,7 +28,7 @@ class TutorDocumentsServiceDeleteTests : TutorDocumentsServiceMocks() {
 
             val result = serviceUnderTest.deleteById(documents.id)
 
-            assertThat(result).isEqualTo("Tutor documents deleted successfully.")
+            assertThat(result).isEqualTo("Документы куратора успешно удалены.")
 
             assertThat(user.tutorDocuments).isNull()
 
@@ -48,11 +48,11 @@ class TutorDocumentsServiceDeleteTests : TutorDocumentsServiceMocks() {
                     any(),
                     any()
                 )
-            } throws NotFoundException("Tutor documents not found.")
+            } throws NotFoundException("Документы куратора не найдены.")
 
             val exception = assertFailsWith<NotFoundException> { serviceUnderTest.deleteById(documents.id) }
 
-            assertThat(exception.message).isEqualTo("Tutor documents not found.")
+            assertThat(exception.message).isEqualTo("Документы куратора не найдены.")
 
             verify { serviceUnderTest.getById(documents.id, any(), any()) }
 
@@ -68,11 +68,11 @@ class TutorDocumentsServiceDeleteTests : TutorDocumentsServiceMocks() {
             val documents = List(5) { createTutorDocuments(createUser().copy(role = UsersRoles.TUTOR)) }
 
             every { repository.findAll() } returns documents
-            every { serviceUnderTest.deleteById(any()) } returns "Tutor documents deleted successfully."
+            every { serviceUnderTest.deleteById(any()) } returns "Документы куратора успешно удалены."
 
             val result = serviceUnderTest.deleteAll()
 
-            assertThat(result).isEqualTo("All tutors documents deleted successfully")
+            assertThat(result).isEqualTo("Все документы куратора успешно удалены.")
 
             verify { repository.findAll() }
             verify(exactly = 5) { serviceUnderTest.deleteById(any()) }

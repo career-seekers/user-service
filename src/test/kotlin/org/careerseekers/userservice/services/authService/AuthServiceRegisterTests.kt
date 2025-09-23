@@ -104,13 +104,13 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
             every { jwtUtil.removeOldRefreshTokenByUUID(regDto.uuid) } returns Unit
             every { jwtUtil.generateAccessToken(any()) } returns "accessToken"
             every { jwtUtil.generateRefreshToken(any()) } returns "refreshToken"
-            every { userPostProcessor.processRegistration(regDto) } throws BadRequestException("Invalid data package for user registration")
+            every { userPostProcessor.processRegistration(regDto) } throws BadRequestException("Неверный пакет данных для регистрации пользователя.")
 
             val exception = assertFailsWith<BadRequestException> {
                 serviceUnderTest.register(regDto)
             }
 
-            assertThat(exception.message).isEqualTo("Invalid data package for user registration")
+            assertThat(exception.message).isEqualTo("Неверный пакет данных для регистрации пользователя.")
 
             verify {
                 emailVerificationCodeVerifier.verify(
@@ -173,13 +173,13 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
                     any(),
                     any()
                 )
-            } throws BadRequestException("Cached verification code was not found.")
+            } throws BadRequestException("Верификационный код не найден. Повторите попытку позже.")
 
             val exception = assertFailsWith<BadRequestException> {
                 serviceUnderTest.register(regDto)
             }
 
-            assertThat(exception.message).isEqualTo("Cached verification code was not found.")
+            assertThat(exception.message).isEqualTo("Верификационный код не найден. Повторите попытку позже.")
 
             verify {
                 emailVerificationCodeVerifier.verify(
@@ -208,13 +208,13 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
                     any(),
                     any()
                 )
-            } throws BadRequestException("Incorrect verification code")
+            } throws BadRequestException("Неверный верификационный код.")
 
             val exception = assertFailsWith<BadRequestException> {
                 serviceUnderTest.register(regDto)
             }
 
-            assertThat(exception.message).isEqualTo("Incorrect verification code")
+            assertThat(exception.message).isEqualTo("Неверный верификационный код.")
 
             verify {
                 emailVerificationCodeVerifier.verify(
@@ -243,13 +243,13 @@ class AuthServiceRegisterTests : AuthServiceMocks() {
                     any(),
                     any()
                 )
-            } throws BadRequestException("The maximum number of attempts has been reached. A new code has been sent to the mail")
+            } throws BadRequestException("Достигнуто максимальное количество попыток. На почту отправлен новый код.")
 
             val exception = assertFailsWith<BadRequestException> {
                 serviceUnderTest.register(regDto)
             }
 
-            assertThat(exception.message).isEqualTo("The maximum number of attempts has been reached. A new code has been sent to the mail")
+            assertThat(exception.message).isEqualTo("Достигнуто максимальное количество попыток. На почту отправлен новый код.")
 
             verify {
                 emailVerificationCodeVerifier.verify(

@@ -142,7 +142,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
                     dto.mobileNumber
                 )
             } returns Unit
-            every { checkMobileNumberValid(dto.mobileNumber) } throws MobileNumberFormatException("Mobile number must be 12 characters long in format '+79991234567'")
+            every { checkMobileNumberValid(dto.mobileNumber) } throws MobileNumberFormatException("Номер телефона должен быть 12 символов в длину в формате '+79991234567'.")
             every { passwordEncoder.encode(any()) } returns "encodedPassword"
             every { usersMapper.usersFromCreateDto(any()) } returns user
             every { repository.save(user) } returns user
@@ -152,7 +152,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
                 serviceUnderTest.create(dto)
             }
 
-            assertThat(exception.message).isEqualTo("Mobile number must be 12 characters long in format '+79991234567'")
+            assertThat(exception.message).isEqualTo("Номер телефона должен быть 12 символов в длину в формате '+79991234567'.")
 
             verify {
                 serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
