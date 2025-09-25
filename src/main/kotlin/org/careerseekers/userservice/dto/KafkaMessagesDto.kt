@@ -24,3 +24,11 @@ class TgLinkNotificationDto(
     val user: UsersCacheDto,
     val eventType: MailEventTypes = MailEventTypes.TG_LINK_CREATION,
 ) : KafkaMessagesDto()
+
+@Serializable
+@SerialName("UniversalEmailMessage")
+data class UniversalEmailMessageDto(
+    val email: String,
+    val subject: String,
+    val body: String,
+) : KafkaMessagesDto()
