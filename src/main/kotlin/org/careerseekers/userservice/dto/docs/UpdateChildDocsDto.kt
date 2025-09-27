@@ -3,7 +3,7 @@ package org.careerseekers.userservice.dto.docs
 import org.careerseekers.userservice.dto.DtoClass
 import org.springframework.web.multipart.MultipartFile
 
-data class UpdateUserDocsDto(
+data class UpdateChildDocsDto(
     val id: Long,
     val snilsNumber: String?,
     val snilsFile: MultipartFile?,
