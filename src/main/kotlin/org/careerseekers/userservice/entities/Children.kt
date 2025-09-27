@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import java.sql.Date
 
@@ -31,12 +33,16 @@ data class Children(
     @Column(nullable = false)
     var dateOfBirth: Date,
 
-    @JsonIgnoreProperties(value = ["password", "userDocuments", "expertDocuments", "tutorDocuments", "mentorDocuments", "menteeChildren", "children"])
+    @OneToOne(mappedBy = "child", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    @JsonIgnoreProperties("child")
+    var childDocuments: ChildDocuments? = null,
+
+    @JsonIgnoreProperties(value = ["password", "childDocuments", "expertDocuments", "tutorDocuments", "mentorDocuments", "menteeChildren", "children"])
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     var user: Users,
 
-    @JsonIgnoreProperties(value = ["password", "userDocuments", "expertDocuments", "tutorDocuments", "mentorDocuments", "menteeChildren", "children"])
+    @JsonIgnoreProperties(value = ["password", "childDocuments", "expertDocuments", "tutorDocuments", "mentorDocuments", "menteeChildren", "children"])
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mentor_id")
     var mentor: Users? = null,

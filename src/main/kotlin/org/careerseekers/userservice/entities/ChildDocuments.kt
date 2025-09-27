@@ -14,16 +14,16 @@ import jakarta.validation.constraints.Min
 import org.careerseekers.userservice.io.converters.ConvertableToHttpResponse
 
 @Entity
-@Table(name = "user_documents")
-data class UserDocuments(
+@Table(name = "child_documents")
+data class ChildDocuments(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    @JsonIgnoreProperties(value = ["password", "userDocuments", "expertDocuments", "tutorDocuments", "mentorDocuments"])
-    var user: Users,
+    @JoinColumn(name = "child_id", nullable = false, unique = true)
+    @JsonIgnoreProperties(value = ["childDocuments"])
+    var child: Children,
 
     @Column(nullable = false, unique = true)
     var snilsNumber: String,
@@ -38,7 +38,7 @@ data class UserDocuments(
     var studyingCertificateId: Long,
 
     @Column(nullable = false)
-    @field:Min(1)
+    @field:Min(0)
     @field:Max(11)
     var learningClass: Short,
 
@@ -56,4 +56,4 @@ data class UserDocuments(
 
     @Column(nullable = false, unique = true)
     var birthCertificateId: Long,
-) : ConvertableToHttpResponse<UserDocuments>
+) : ConvertableToHttpResponse<ChildDocuments>
