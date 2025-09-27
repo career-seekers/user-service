@@ -36,6 +36,7 @@ data class Children(
     @JoinColumn(name = "user_id")
     var user: Users,
 
+    @JsonIgnoreProperties(value = ["password", "userDocuments", "expertDocuments", "tutorDocuments", "mentorDocuments", "menteeChildren", "children"])
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mentor_id")
     var mentor: Users? = null,
