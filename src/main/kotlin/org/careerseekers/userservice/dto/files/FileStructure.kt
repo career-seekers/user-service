@@ -10,4 +10,5 @@ data class FileStructure(
     val contentType: String,
     val fileType: FileTypes,
     val filePath: String,
+    val verified: Boolean,
 ) : DtoClass
