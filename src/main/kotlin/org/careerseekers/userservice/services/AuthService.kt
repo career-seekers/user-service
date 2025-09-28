@@ -149,6 +149,15 @@ class AuthService(
     }
 
     fun resetPassword(item: ResetPasswordDto): String {
+        val user = usersService.getByEmail(item.email)!!
+
+        emailVerificationCodeVerifier.verify(
+            email = user.email,
+            verificationCode = item.code,
+            user = user.toCache(),
+            mailEventTypes = MailEventTypes.PASSWORD_RESET,
+        )
+
         if (item.newPassword != item.confirmPassword) {
             throw BadRequestException("Введенные пароли не совпадают, попробуйте еще раз.")
         }
