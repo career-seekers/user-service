@@ -13,10 +13,10 @@ import org.careerseekers.userservice.repositories.ChildDocsRepository
  * 2. Uniqueness validation: Checks against the [ChildDocsRepository] to prevent duplicate SNILS numbers
  *    from being registered if they already exist in the system.
  *
- * @param userDocsRepository The repository used to check for existing SNILS numbers.
+ * @param childDocsRepository The repository used to check for existing SNILS numbers.
  */
 @Utility
-class SnilsValidator(private val userDocsRepository: ChildDocsRepository) {
+class SnilsValidator(private val childDocsRepository: ChildDocsRepository) {
 
     /**
      * Local version of the `require` function.
@@ -70,7 +70,7 @@ class SnilsValidator(private val userDocsRepository: ChildDocsRepository) {
     fun checkSnilsValid(snilsNumber: String) {
         validateSnilsNumber(snilsNumber)
 
-        userDocsRepository.findBySnilsNumber(snilsNumber)?.let {
+        childDocsRepository.findBySnilsNumber(snilsNumber)?.let {
             throw DoubleRecordException("Документ с номером СНИЛС $snilsNumber уже существует.")
         }
     }
