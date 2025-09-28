@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import org.careerseekers.userservice.io.converters.ConvertableToHttpResponse
 import java.sql.Date
 
 @Entity
@@ -38,12 +39,12 @@ data class Children(
     var childDocuments: ChildDocuments? = null,
 
     @JsonIgnoreProperties(value = ["password", "childDocuments", "expertDocuments", "tutorDocuments", "mentorDocuments", "menteeChildren", "children"])
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     var user: Users,
 
     @JsonIgnoreProperties(value = ["password", "childDocuments", "expertDocuments", "tutorDocuments", "mentorDocuments", "menteeChildren", "children"])
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mentor_id")
     var mentor: Users? = null,
-)
+) : ConvertableToHttpResponse<Children>
