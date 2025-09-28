@@ -15,6 +15,7 @@ object FileStructureGenerator {
             contentType = randomString(10),
             fileType = fileType,
             filePath = randomString(10),
+            verified = true,
         )
     }
 }
