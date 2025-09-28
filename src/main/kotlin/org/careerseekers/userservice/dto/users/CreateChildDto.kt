@@ -9,6 +9,8 @@ data class CreateChildDto(
     val firstName: String,
     val patronymic: String,
     val dateOfBirth: Date,
-    val user: Users,
-    val mentor: Users?,
+    val userId: Long,
+    val mentorId: Long?,
+    var user: Users? = null,
+    var mentor: Users? = null,
 ) : DtoClass
