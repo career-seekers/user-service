@@ -132,6 +132,7 @@ protobuf {
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
+        freeCompilerArgs.add("-Xwhen-guards")
     }
 }
 
