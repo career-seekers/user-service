@@ -3,8 +3,10 @@ package org.careerseekers.userservice.services
 import org.careerseekers.userservice.dto.docs.CreateChildDocsDto
 import org.careerseekers.userservice.dto.docs.UpdateChildDocsDto
 import org.careerseekers.userservice.entities.ChildDocuments
+import org.careerseekers.userservice.enums.DirectionAgeCategory
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.NotFoundException
+import org.careerseekers.userservice.io.converters.convertDateToLocalDate
 import org.careerseekers.userservice.mappers.ChildDocsMapper
 import org.careerseekers.userservice.repositories.ChildDocsRepository
 import org.careerseekers.userservice.repositories.ChildrenRepository
@@ -12,11 +14,13 @@ import org.careerseekers.userservice.services.interfaces.crud.ICreateService
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
 import org.careerseekers.userservice.services.interfaces.crud.IUpdateService
+import org.careerseekers.userservice.utils.AgeCalculator.calculateAge
 import org.careerseekers.userservice.utils.DocumentsApiResolver
 import org.careerseekers.userservice.utils.SnilsValidator
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.time.LocalDate
 
 @Service
 class ChildDocumentsService(
@@ -57,6 +61,13 @@ class ChildDocumentsService(
         snilsValidator.checkSnilsValid(item.snilsNumber)
 
         item.apply {
+            ageCategory = DirectionAgeCategory.getAgeCategory(
+                calculateAge(
+                    convertDateToLocalDate(child!!.dateOfBirth),
+                    LocalDate.of(2026, 2, 14)
+                ), learningClass
+            )
+
             snilsId = documentsApiResolver.loadDocId("uploadSnils", snilsFile)
             studyingCertificateId = documentsApiResolver.loadDocId("uploadStudyingCertificate", studyingCertificateFile)
             additionalStudyingCertificateId =
@@ -125,7 +136,7 @@ class ChildDocumentsService(
 
     @Transactional
     override fun deleteById(id: Long): String {
-        getById(id, message = "Документы с ID $id не найдены.")!!.let {docs ->
+        getById(id, message = "Документы с ID $id не найдены.")!!.let { docs ->
             docs.child.childDocuments = null
             childrenRepository.save(docs.child)
 

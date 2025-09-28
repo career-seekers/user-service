@@ -1,7 +1,7 @@
 package org.careerseekers.userservice.dto.users
 
 import org.careerseekers.userservice.dto.DtoClass
-import java.sql.Date
+import java.util.Date
 
 data class UpdateChildDto(
     val id: Long,

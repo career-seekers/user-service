@@ -55,8 +55,9 @@ class ChildService(
             item.patronymic?.let { patronymic = it }
             item.dateOfBirth?.let { dateOfBirth = it }
             item.mentorId?.let {
-                val user = usersService.getById(item.mentorId, message = "Пользователь с ID ${item.mentorId} не найден.")!!
-                if (user.role != UsersRoles.MENTOR && !user.isMentor) {
+                val user =
+                    usersService.getById(item.mentorId, message = "Пользователь с ID ${item.mentorId} не найден.")!!
+                if (user.role != UsersRoles.MENTOR && user.role != UsersRoles.USER && !user.isMentor) {
                     throw BadRequestException("Пользователь с ID $it не является Наставником Чемпионата.")
                 }
 
