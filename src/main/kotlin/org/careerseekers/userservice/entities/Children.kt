@@ -13,7 +13,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.careerseekers.userservice.io.converters.ConvertableToHttpResponse
-import java.sql.Date
+import java.util.Date
 
 @Entity
 @Table(name = "children")
