@@ -7,10 +7,9 @@ import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.careerseekers.userservice.mocks.generators.FileStructureGenerator.createFileStructure
 import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUser
 import org.careerseekers.userservice.mocks.generators.UsersGenerator.createUserDto
-import org.careerseekers.userservice.enums.FileTypes
+import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.MobileNumberFormatException
 import org.careerseekers.userservice.mocks.UsersServiceMocks
@@ -50,7 +49,7 @@ class UsersServiceCreateTests : UsersServiceMocks() {
 
         @Test
         fun `create should save user when avatarId is null`() {
-            val user = createUser()
+            val user = createUser().copy(role = UsersRoles.USER)
             val dto = createUserDto(user).copy(avatarId = null, password = "encodedPassword")
 
             every {
@@ -77,7 +76,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
         fun `create should throw DoubleRecordException if email already exists`() {
             val user = createUser()
             val dto = createUserDto(user).copy(password = "encodedPassword", avatarId = 1)
-            val fileStructure = createFileStructure(FileTypes.AVATAR)
 
             every {
                 serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
@@ -104,7 +102,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
         fun `create should throw DoubleRecordException if mobile number already exists`() {
             val user = createUser()
             val dto = createUserDto(user).copy(password = "encodedPassword", avatarId = 1)
-            val fileStructure = createFileStructure(FileTypes.AVATAR)
 
             every {
                 serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
@@ -134,7 +131,6 @@ class UsersServiceCreateTests : UsersServiceMocks() {
                 mobileNumber = "Wrong mobile number",
                 avatarId = 1
             )
-            val fileStructure = createFileStructure(FileTypes.AVATAR)
 
             every {
                 serviceUnderTest invoke "checkIfUserExistsByEmailOrMobile" withArguments listOf(
