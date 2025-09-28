@@ -14,4 +14,5 @@ data class UpdateChildDocsDto(
     val additionalStudyingCertificateFile: MultipartFile?,
     val parentRole: String?,
     val consentToChildPdpFile: MultipartFile?,
+    val birthCertificate: MultipartFile?
 ) : DtoClass
