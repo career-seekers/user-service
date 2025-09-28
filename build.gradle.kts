@@ -1,11 +1,11 @@
 import com.google.protobuf.gradle.id
 
 plugins {
-    kotlin("jvm") version "1.9.25"
-    kotlin("kapt") version "1.9.25"
-    kotlin("plugin.jpa") version "1.9.25"
-    kotlin("plugin.spring") version "1.9.25"
-    kotlin("plugin.serialization") version "1.9.25"
+    kotlin("jvm") version "2.2.0"
+    kotlin("kapt") version "2.2.0"
+    kotlin("plugin.jpa") version "2.2.0"
+    kotlin("plugin.spring") version "2.2.0"
+    kotlin("plugin.serialization") version "2.2.0"
     id("com.google.protobuf") version "0.9.4"
     id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
@@ -132,7 +132,6 @@ protobuf {
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
-        freeCompilerArgs.add("-Xwhen-guards")
     }
 }
 
