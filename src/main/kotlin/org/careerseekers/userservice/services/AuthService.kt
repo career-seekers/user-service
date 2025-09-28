@@ -2,18 +2,24 @@ package org.careerseekers.userservice.services
 
 import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
+import org.careerseekers.userservice.dto.auth.CodeVerificationDto
+import org.careerseekers.userservice.dto.auth.ForgotPasswordDto
 import org.careerseekers.userservice.dto.auth.LoginUserDto
 import org.careerseekers.userservice.dto.auth.PreRegisterUserDto
 import org.careerseekers.userservice.dto.auth.RegistrationDto
+import org.careerseekers.userservice.dto.auth.ResetPasswordDto
 import org.careerseekers.userservice.dto.auth.UpdateUserTokensDto
 import org.careerseekers.userservice.dto.jwt.CreateJwtToken
 import org.careerseekers.userservice.dto.jwt.UserTokensDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.enums.ReviewStatus
+import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
+import org.careerseekers.userservice.io.converters.extensions.toCache
+import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
 import org.careerseekers.userservice.services.processors.IUsersRegistrationProcessor
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
@@ -33,6 +39,7 @@ class AuthService(
     private val emailSendingProducer: KafkaEmailSendingProducer,
     private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
     private val verificationCodesCacheClient: VerificationCodesCacheClient,
+    private val usersRepository: UsersRepository,
 ) {
     fun preRegister(item: PreRegisterUserDto): BasicSuccessfulResponse<String> {
         item.email = item.email.lowercase()
@@ -113,5 +120,45 @@ class AuthService(
                 jwtUtil.generateRefreshToken(CreateJwtToken(this, data.uuid))
             )
         } ?: throw JwtAuthenticationException("Неверный refresh-токен.")
+    }
+
+    fun forgotPassword(item: ForgotPasswordDto): String {
+        emailSendingProducer.sendMessage(
+            EmailSendingTaskDto(
+                email = item.email,
+                user = usersService.getByEmail(item.email)?.toCache(),
+                eventType = MailEventTypes.PASSWORD_RESET
+            )
+        )
+
+        return "Электронное письмо успешно отправлено."
+    }
+
+    fun verifyCode(item: CodeVerificationDto): String {
+        val user = usersService.getByEmail(item.email)!!
+
+        emailVerificationCodeVerifier.verify(
+            email = user.email,
+            verificationCode = item.code,
+            user = user.toCache(),
+            mailEventTypes = MailEventTypes.PASSWORD_RESET,
+        )
+
+
+        return "Код подтверждён."
+    }
+
+    fun resetPassword(item: ResetPasswordDto): String {
+        if (item.newPassword != item.confirmPassword) {
+            throw BadRequestException("Введенные пароли не совпадают, попробуйте еще раз.")
+        }
+
+        usersService.getByEmail(item.email)!!.apply {
+            password = passwordEncoder.encode(item.newPassword)
+        }.also(usersRepository::save)
+
+        verificationCodesCacheClient.deleteItemFromCache(item.email)
+
+        return "Пароль обновлён успешно."
     }
 }
