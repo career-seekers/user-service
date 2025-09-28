@@ -44,7 +44,7 @@ data class ChildDocuments(
     var learningClass: Short,
 
     @Column(nullable = true)
-    var ageCategory: DirectionAgeCategory,
+    var ageCategory: DirectionAgeCategory?,
 
     @Column(nullable = false)
     var trainingGround: String,
