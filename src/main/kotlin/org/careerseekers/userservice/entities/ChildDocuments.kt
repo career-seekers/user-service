@@ -11,6 +11,7 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
+import org.careerseekers.userservice.enums.DirectionAgeCategory
 import org.careerseekers.userservice.io.converters.ConvertableToHttpResponse
 
 @Entity
@@ -41,6 +42,9 @@ data class ChildDocuments(
     @field:Min(0)
     @field:Max(11)
     var learningClass: Short,
+
+    @Column(nullable = true)
+    var ageCategory: DirectionAgeCategory,
 
     @Column(nullable = false)
     var trainingGround: String,
