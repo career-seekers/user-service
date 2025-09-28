@@ -1,10 +1,8 @@
 package org.careerseekers.userservice.services
 
 import org.careerseekers.userservice.cache.TemporaryPasswordsCache
-import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
 import org.careerseekers.userservice.dto.TemporaryPasswordDto
-import org.careerseekers.userservice.dto.users.ChangePasswordSecondStepDto
 import org.careerseekers.userservice.dto.users.ChangeUserRoleDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
 import org.careerseekers.userservice.dto.users.UpdateUserDto
@@ -21,8 +19,6 @@ import org.careerseekers.userservice.mappers.UsersMapper
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.interfaces.CrudService
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
-import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
-import org.careerseekers.userservice.utils.JwtUtil
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
 import org.careerseekers.userservice.utils.PasswordGenerator
 import org.careerseekers.userservice.utils.Tested
@@ -36,13 +32,10 @@ import org.springframework.transaction.annotation.Transactional
 @Tested(testedBy = "scobca", createdOn = "21.08.2025", reviewStatus = ReviewStatus.APPROVED)
 class UsersService(
     override val repository: UsersRepository,
-    private val jwtUtil: JwtUtil,
     private val usersMapper: UsersMapper,
     private val passwordEncoder: PasswordEncoder,
     private val emailSendingProducer: KafkaEmailSendingProducer,
     private val temporaryPasswordsCache: TemporaryPasswordsCache,
-    private val verificationCodesCacheClient: VerificationCodesCacheClient,
-    private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
     @param:Lazy private val usersService: UsersService?,
 ) : CrudService<Users, Long, CreateUserDto, UpdateUserDto> {
 
@@ -146,7 +139,7 @@ class UsersService(
                 getByMobileNumber(
                     it.trim(),
                     throwable = false
-                )?.let { user -> throw DoubleRecordException("Пользователь с номером мобильного телефона $it уже существует.") }
+                )?.let { throw DoubleRecordException("Пользователь с номером мобильного телефона $it уже существует.") }
                 user.mobileNumber = it
             }
         }
@@ -156,17 +149,6 @@ class UsersService(
         return "Информация о пользователе обновлена успешно."
     }
 
-    fun changePasswordFirstStep(jwtToken: String): String {
-        emailSendingProducer.sendMessage(
-            EmailSendingTaskDto(
-                token = jwtToken,
-                eventType = MailEventTypes.PASSWORD_RESET
-            )
-        )
-
-        return "Электронное письмо успешно отправлено."
-    }
-
     @Transactional
     fun updateRole(item: ChangeUserRoleDto): String {
         getById(item.id, message = "Пользователь с ID ${item.id} не найден.")!!.apply {
@@ -174,25 +156,6 @@ class UsersService(
         }.also(repository::save)
 
         return "Роль пользователя была успешно обновлена до ${item.role}."
-    }
-
-    @Transactional
-    fun changePasswordSecondStep(item: ChangePasswordSecondStepDto, jwtToken: String): String {
-        val user = jwtUtil.getUserFromToken(jwtToken) ?: throw NotFoundException("User not found")
-
-        emailVerificationCodeVerifier.verify(
-            email = user.email,
-            verificationCode = item.verificationCode,
-            token = jwtToken,
-            mailEventTypes = MailEventTypes.PASSWORD_RESET,
-        )
-
-        user.password = passwordEncoder.encode(item.newPassword)
-        repository.save(user)
-
-        verificationCodesCacheClient.deleteItemFromCache(user.id)
-
-        return "Информация о пользователе обновлена успешно."
     }
 
     @Transactional
