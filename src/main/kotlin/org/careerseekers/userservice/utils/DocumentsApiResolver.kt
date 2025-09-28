@@ -32,7 +32,7 @@ class DocumentsApiResolver(
     fun loadDocId(url: String, file: MultipartFile?): Long? =
         file?.let {
             val id = loadDocument(url, it)?.id
-            id?.let { registerFileForRollback(it) }
+            id?.let { id -> registerFileForRollback(id) }
             id
         }
 
