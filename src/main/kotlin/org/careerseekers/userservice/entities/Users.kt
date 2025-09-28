@@ -65,10 +65,6 @@ data class Users(
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnoreProperties("user")
-    var userDocuments: UserDocuments?,
-
-    @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
-    @JsonIgnoreProperties("user")
     var expertDocuments: ExpertDocuments?,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)

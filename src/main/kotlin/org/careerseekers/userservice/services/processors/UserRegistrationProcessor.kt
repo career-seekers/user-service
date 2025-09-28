@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserRegistrationProcessor(
-    private val childrenRepository: ChildrenRepository,
-    private val childrenMapper: ChildrenMapper,
     private val usersService: UsersService,
     private val usersRepository: UsersRepository,
     private val emailSendingProducer: KafkaEmailSendingProducer,
@@ -40,25 +38,11 @@ class UserRegistrationProcessor(
 
     private fun processUserWithChildRegistration(item: UserWithChildRegistrationDto) {
         val user = usersService.getByEmail(item.email)!!
-        val mentor = item.mentorId?.let { usersService.getById(it) }
-
-        val child = CreateChildDto(
-            lastName = item.childLastName,
-            firstName = item.childFirstName,
-            patronymic = item.childPatronymic,
-            dateOfBirth = item.childDateOfBirth,
-            user = user,
-            mentor = mentor
-        ).let(childrenMapper::childFromDto)
-            .run(childrenRepository::save)
 
         if (item.mentorEqualsUser) {
             user.isMentor = true
-            child.mentor = user
 
             usersRepository.save(user)
-            childrenRepository.save(child)
-
             notifyUser(user)
         }
     }

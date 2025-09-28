@@ -2,7 +2,7 @@ package org.careerseekers.userservice.utils
 
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
-import org.careerseekers.userservice.repositories.UserDocsRepository
+import org.careerseekers.userservice.repositories.ChildDocsRepository
 
 
 /**
@@ -10,13 +10,13 @@ import org.careerseekers.userservice.repositories.UserDocsRepository
  *
  * This validator performs two main checks:
  * 1. Structural validation: Ensures the SNILS number adheres to basic format rules (length and digit-only characters).
- * 2. Uniqueness validation: Checks against the [UserDocsRepository] to prevent duplicate SNILS numbers
+ * 2. Uniqueness validation: Checks against the [ChildDocsRepository] to prevent duplicate SNILS numbers
  *    from being registered if they already exist in the system.
  *
- * @param userDocsRepository The repository used to check for existing SNILS numbers.
+ * @param childDocsRepository The repository used to check for existing SNILS numbers.
  */
 @Utility
-class SnilsValidator(private val userDocsRepository: UserDocsRepository) {
+class SnilsValidator(private val childDocsRepository: ChildDocsRepository) {
 
     /**
      * Local version of the `require` function.
@@ -60,7 +60,7 @@ class SnilsValidator(private val userDocsRepository: UserDocsRepository) {
      * Performs a comprehensive validation of a SNILS number, including structural and uniqueness checks.
      *
      * First, it calls [validateSnilsNumber] to ensure the SNILS format is correct.
-     * Second, it queries the [UserDocsRepository] to check if a document with the
+     * Second, it queries the [ChildDocsRepository] to check if a document with the
      * provided SNILS number already exists in the system.
      *
      * @param snilsNumber The SNILS number string to be checked.
@@ -70,7 +70,7 @@ class SnilsValidator(private val userDocsRepository: UserDocsRepository) {
     fun checkSnilsValid(snilsNumber: String) {
         validateSnilsNumber(snilsNumber)
 
-        userDocsRepository.findBySnilsNumber(snilsNumber)?.let {
+        childDocsRepository.findBySnilsNumber(snilsNumber)?.let {
             throw DoubleRecordException("Документ с номером СНИЛС $snilsNumber уже существует.")
         }
     }
