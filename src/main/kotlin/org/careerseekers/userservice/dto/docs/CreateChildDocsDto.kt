@@ -2,6 +2,7 @@ package org.careerseekers.userservice.dto.docs
 
 import org.careerseekers.userservice.dto.DtoClass
 import org.careerseekers.userservice.entities.Children
+import org.careerseekers.userservice.enums.DirectionAgeCategory
 import org.springframework.web.multipart.MultipartFile
 
 data class CreateChildDocsDto(
@@ -12,6 +13,7 @@ data class CreateChildDocsDto(
     val studyingPlace: String,
     val studyingCertificateFile: MultipartFile,
     val learningClass: Short,
+    var ageCategory: DirectionAgeCategory? = null,
     val trainingGround: String,
     val additionalStudyingCertificateFile: MultipartFile,
     val parentRole: String,

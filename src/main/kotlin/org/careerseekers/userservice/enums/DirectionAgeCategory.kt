@@ -1,7 +1,6 @@
 package org.careerseekers.userservice.enums
 
 import org.careerseekers.userservice.exceptions.BadRequestException
-import kotlin.ranges.contains
 
 enum class DirectionAgeCategory(private val ageAlias: String) {
     PRESCHOOL_1("4-5 лет"),
@@ -11,7 +10,7 @@ enum class DirectionAgeCategory(private val ageAlias: String) {
     SCHOOL_3("12-13 лет");
 
     companion object {
-        fun getAgeCategory(age: Short, learningClass: Short): DirectionAgeCategory {
+        fun getAgeCategory(age: Int, learningClass: Short): DirectionAgeCategory {
             return when (age) {
                 in 4..5 -> PRESCHOOL_1
                 in 6..7 if learningClass == 0.toShort() -> PRESCHOOL_2
