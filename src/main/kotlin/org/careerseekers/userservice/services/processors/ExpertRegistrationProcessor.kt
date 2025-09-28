@@ -1,7 +1,7 @@
 package org.careerseekers.userservice.services.processors
 
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
-import org.careerseekers.userservice.dto.auth.RegistrationDto
+import org.careerseekers.userservice.dto.auth.UserRegistrationDto
 import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.io.converters.extensions.toCache
@@ -16,7 +16,7 @@ class ExpertRegistrationProcessor(
 ) : IUsersRegistrationProcessor {
     override val userRole = UsersRoles.EXPERT
 
-    override fun <T : RegistrationDto> processRegistration(item: T) {
+    override fun processRegistration(item: UserRegistrationDto) {
         usersService.getByEmail(item.email)?.let { user ->
             emailSendingProducer.sendMessage(EmailSendingTaskDto(
                 user = user.toCache(),

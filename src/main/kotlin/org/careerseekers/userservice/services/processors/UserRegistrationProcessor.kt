@@ -2,16 +2,10 @@ package org.careerseekers.userservice.services.processors
 
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
 import org.careerseekers.userservice.dto.auth.UserRegistrationDto
-import org.careerseekers.userservice.dto.auth.UserWithChildRegistrationDto
-import org.careerseekers.userservice.dto.auth.RegistrationDto
-import org.careerseekers.userservice.dto.users.CreateChildDto
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.MailEventTypes
 import org.careerseekers.userservice.enums.UsersRoles
-import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.io.converters.extensions.toCache
-import org.careerseekers.userservice.mappers.ChildrenMapper
-import org.careerseekers.userservice.repositories.ChildrenRepository
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.UsersService
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
@@ -25,21 +19,10 @@ class UserRegistrationProcessor(
 ) : IUsersRegistrationProcessor, IUserNotificationProcessor {
     override val userRole = UsersRoles.USER
 
-    override fun <T : RegistrationDto> processRegistration(item: T) {
-        when (item) {
-            is UserRegistrationDto -> processUserRegistration()
-            is UserWithChildRegistrationDto -> processUserWithChildRegistration(item)
-        }
-    }
-
-    private fun processUserRegistration(): Nothing =
-        throw BadRequestException("Неверный пакет данных для регистрации пользователя.")
-
-
-    private fun processUserWithChildRegistration(item: UserWithChildRegistrationDto) {
+    override fun processRegistration(item: UserRegistrationDto) {
         val user = usersService.getByEmail(item.email)!!
 
-        if (item.mentorEqualsUser) {
+        if (item.mentorEqualsUser == true) {
             user.isMentor = true
 
             usersRepository.save(user)

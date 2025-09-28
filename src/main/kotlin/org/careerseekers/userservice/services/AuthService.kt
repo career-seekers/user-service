@@ -6,9 +6,9 @@ import org.careerseekers.userservice.dto.auth.CodeVerificationDto
 import org.careerseekers.userservice.dto.auth.ForgotPasswordDto
 import org.careerseekers.userservice.dto.auth.LoginUserDto
 import org.careerseekers.userservice.dto.auth.PreRegisterUserDto
-import org.careerseekers.userservice.dto.auth.RegistrationDto
 import org.careerseekers.userservice.dto.auth.ResetPasswordDto
 import org.careerseekers.userservice.dto.auth.UpdateUserTokensDto
+import org.careerseekers.userservice.dto.auth.UserRegistrationDto
 import org.careerseekers.userservice.dto.jwt.CreateJwtToken
 import org.careerseekers.userservice.dto.jwt.UserTokensDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
@@ -60,7 +60,7 @@ class AuthService(
     }
 
     @Transactional
-    fun register(data: RegistrationDto): UserTokensDto {
+    fun register(data: UserRegistrationDto): UserTokensDto {
         emailVerificationCodeVerifier.verify(
             email = data.email.lowercase(),
             verificationCode = data.verificationCode,
