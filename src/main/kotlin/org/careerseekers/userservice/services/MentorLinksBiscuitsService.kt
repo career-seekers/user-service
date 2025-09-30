@@ -34,8 +34,9 @@ class MentorLinksBiscuitsService(
 
     @Transactional
     override fun create(item: CreateMentorLinkDto): MentorLinkBiscuits {
-        getByUserId(item.userId, false)
-            ?: throw DoubleRecordException("У данного пользователя уже есть своя личная ссылка.")
+        getByUserId(item.userId, false)?.let {
+            throw DoubleRecordException("У данного пользователя уже есть своя личная ссылка.")
+        }
 
         var newBiscuit: String
         do {
