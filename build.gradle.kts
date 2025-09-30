@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.spring") version "2.2.0"
     kotlin("plugin.serialization") version "2.2.0"
     id("com.google.protobuf") version "0.9.4"
+    id("org.flywaydb.flyway") version "11.13.2"
     id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("it.nicolasfarabegoli.conventional-commits") version "3.1.3"
@@ -113,6 +114,23 @@ dependencies {
         runtimeOnly("io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-x86_64")
     }
 
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.flywaydb:flyway-database-postgresql:11.13.2")
+    }
+}
+
+flyway {
+    url = ""
+    user = ""
+    password = ""
+    locations = arrayOf("classpath:db/migration")
+    schemas = arrayOf("public")
 }
 
 protobuf {

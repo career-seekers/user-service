@@ -85,5 +85,9 @@ data class Users(
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnoreProperties(value = ["user"])
-    var telegramLink: TelegramLinks? = null
+    var telegramLink: TelegramLinks? = null,
+
+    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIgnoreProperties(value = ["user"])
+    var linkBiscuits: MentorLinkBiscuits? = null,
 ) : ConvertableToHttpResponse<Users>
