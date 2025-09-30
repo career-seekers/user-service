@@ -53,14 +53,21 @@ class MentorLinksBiscuitsService(
 
     @Transactional
     override fun deleteById(id: Long): String {
-        getById(id, message = "Ссылка с ID $id не найдена.")!!.also(repository::delete)
+        getById(id, message = "Ссылка с ID $id не найдена.")!!.apply {
+            user.linkBiscuits = null
+            repository.delete(this)
+        }
 
         return "Ссылка удалена успешно."
     }
 
     @Transactional
     override fun deleteAll(): String {
-        super.deleteAll()
+        usersService.getAll()
+            .filter { it.linkBiscuits != null }
+            .forEach { it.linkBiscuits = null }
+
+        repository.deleteAll()
 
         return "Все ссылки удалены успешно."
     }
