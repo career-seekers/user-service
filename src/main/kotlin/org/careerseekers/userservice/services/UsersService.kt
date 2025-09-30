@@ -181,9 +181,6 @@ class UsersService(
         if (usersService?.getByEmail(email, false) != null) {
             throw DoubleRecordException("Пользователь с адресом электронной почты $email уже существует.")
         }
-        if (usersService?.getByMobileNumber(mobile, false) != null) {
-            throw DoubleRecordException("Пользователь с номером мобильного телефона $mobile уже существует.")
-        }
     }
 
     private fun generatePassword(email: String): String {
