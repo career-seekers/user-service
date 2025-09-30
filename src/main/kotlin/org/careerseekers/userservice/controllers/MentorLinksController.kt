@@ -34,9 +34,11 @@ class MentorLinksController(
     @GetMapping("/getByUserId/{id}")
     fun getByUserId(@PathVariable id: Long) = service.getByUserId(id)!!.toHttpResponse()
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping("/getByBiscuit/{biscuit}")
     fun getByBiscuit(@PathVariable biscuit: String) = service.getByBiscuit(biscuit)!!.toHttpResponse()
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MENTOR')")
     @PostMapping("/")
     override fun create(@RequestBody item: CreateMentorLinkDto) = service.create(item).toHttpResponse()
 
