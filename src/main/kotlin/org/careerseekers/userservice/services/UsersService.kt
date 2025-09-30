@@ -60,7 +60,7 @@ class UsersService(
     override fun create(item: CreateUserDto): Users {
         item.email = item.email.lowercase()
 
-        checkIfUserExistsByEmailOrMobile(item.email, item.mobileNumber)
+        checkIfUserExistsByEmailOrMobile(item.email)
         checkMobileNumberValid(item.mobileNumber)
 
         if (item.role == UsersRoles.EXPERT) {
@@ -90,7 +90,7 @@ class UsersService(
 
     @Transactional
     override fun createAll(items: List<CreateUserDto>) {
-        items.forEach { checkIfUserExistsByEmailOrMobile(it.email, it.mobileNumber) }
+        items.forEach { checkIfUserExistsByEmailOrMobile(it.email) }
         items.forEach { checkMobileNumberValid(it.mobileNumber) }
 
         val usersToSave = items.map {
@@ -177,7 +177,7 @@ class UsersService(
         return "Все пользователи удалены успешно."
     }
 
-    private fun checkIfUserExistsByEmailOrMobile(email: String, mobile: String) {
+    private fun checkIfUserExistsByEmailOrMobile(email: String) {
         if (usersService?.getByEmail(email, false) != null) {
             throw DoubleRecordException("Пользователь с адресом электронной почты $email уже существует.")
         }
