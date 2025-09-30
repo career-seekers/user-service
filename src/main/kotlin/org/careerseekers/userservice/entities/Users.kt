@@ -38,7 +38,7 @@ data class Users(
     @Column(nullable = false, unique = true)
     var email: String,
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     var mobileNumber: String,
 
     @Column(nullable = false)
