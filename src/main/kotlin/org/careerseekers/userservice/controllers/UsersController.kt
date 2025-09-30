@@ -44,8 +44,8 @@ class UsersController(
         service.getByEmail(email)!!.toHttpResponse()
 
     @GetMapping("/getByMobileNumber/{mobileNumber}")
-    fun getByMobileNumber(@PathVariable mobileNumber: String): BasicSuccessfulResponse<Users> =
-        service.getByMobileNumber(mobileNumber)!!.toHttpResponse()
+    fun getByMobileNumber(@PathVariable mobileNumber: String): BasicSuccessfulResponse<List<Users?>> =
+        service.getByMobileNumber(mobileNumber).toHttpResponse()
 
     @GetMapping("/getByRole/{role}")
     fun getByRole(@PathVariable role: String): BasicSuccessfulResponse<List<Users>> =

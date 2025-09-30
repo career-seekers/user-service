@@ -47,9 +47,8 @@ class UsersService(
             ?: if (throwable) throw NotFoundException("Пользователь с адресом электронной почты $email не найден.") else null
     }
 
-    fun getByMobileNumber(mobileNumber: String, throwable: Boolean = true): Users? {
+    fun getByMobileNumber(mobileNumber: String, throwable: Boolean = true): List<Users?> {
         return repository.getByMobileNumber(mobileNumber)
-            ?: if (throwable) throw NotFoundException("Пользователь с номером мобильного телефона $mobileNumber не найден.") else null
     }
 
     fun getByRole(role: UsersRoles): List<Users> = repository.getByRole(role)
@@ -136,10 +135,6 @@ class UsersService(
         item.mobileNumber?.let {
             require(it.isNotBlank()) { "Номер мобильного телефона не должен быть пустым." }
             if (item.mobileNumber != user.mobileNumber) {
-                getByMobileNumber(
-                    it.trim(),
-                    throwable = false
-                )?.let { throw DoubleRecordException("Пользователь с номером мобильного телефона $it уже существует.") }
                 user.mobileNumber = it
             }
         }
