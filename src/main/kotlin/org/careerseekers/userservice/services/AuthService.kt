@@ -47,10 +47,6 @@ class AuthService(
             throw DoubleRecordException("Пользователь с адресом электронной почты ${item.email} уже существует.")
         }
 
-        usersService.getByMobileNumber(item.mobileNumber, throwable = false)?.let {
-            throw DoubleRecordException("Пользователь с номером мобильного телефона ${item.mobileNumber} уже существует.")
-        }
-
         emailSendingProducer.sendMessage(EmailSendingTaskDto(
             email = item.email,
             eventType = MailEventTypes.PRE_REGISTRATION,
