@@ -44,7 +44,9 @@ class ChildPackController(private val childPackService: ChildPackService) {
             patronymic = patronymic,
             dateOfBirth = stringToDate(dateOfBirth)!!,
             userId = userId.toLongOrThrow(),
-            mentorId = mentorId?.let { mentorId.toLongOrThrow() },
+            mentorId = mentorId?.let {
+                if (mentorId == "null") null else mentorId.toLong()
+            },
             snilsNumber = snilsNumber,
             snilsFile = snilsFile,
             studyingPlace = studyingPlace,
