@@ -9,7 +9,7 @@ data class UserRegistrationDto(
     val verificationCode: String,
     val firstName: String,
     val lastName: String,
-    val patronymic: String,
+    val patronymic: String? = null,
     val dateOfBirth: Date? = null,
     val email: String,
     val mobileNumber: String,
