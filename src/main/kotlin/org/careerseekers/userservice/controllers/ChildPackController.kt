@@ -16,7 +16,7 @@ import java.util.Date
 import java.util.Locale
 
 @RestController
-@RequestMapping("/users-service/v1/children")
+@RequestMapping("/users-service/v2/children")
 class ChildPackController(private val childPackService: ChildPackService) {
 
     @PostMapping("/createChildPack")
