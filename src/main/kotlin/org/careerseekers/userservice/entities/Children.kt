@@ -34,6 +34,9 @@ data class Children(
     @Column(nullable = false)
     var dateOfBirth: Date,
 
+    @Column(nullable = true)
+    var createdAt: Date?,
+
     @OneToOne(mappedBy = "child", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     @JsonIgnoreProperties("child")
     var childDocuments: ChildDocuments? = null,

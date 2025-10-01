@@ -1,0 +1,2 @@
+ALTER TABLE children
+    ADD created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now();
