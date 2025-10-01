@@ -26,8 +26,8 @@ class UserRegistrationProcessor(
             user.isMentor = true
 
             usersRepository.save(user)
-            notifyUser(user)
         }
+        notifyUser(user)
     }
 
     override fun notifyUser(user: Users) {
