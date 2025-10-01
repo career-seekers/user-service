@@ -63,7 +63,7 @@ class UsersService(
         checkIfUserExistsByEmailOrMobile(item.email)
         checkMobileNumberValid(item.mobileNumber)
 
-        item.patronymic = item.patronymic ?: "—"
+        item.patronymic = item.patronymic ?: ""
 
         if (item.role == UsersRoles.EXPERT) {
             item.password = generatePassword(item.email)
@@ -120,7 +120,6 @@ class UsersService(
             user.lastName = it
         }
         item.patronymic?.let {
-            require(it.isNotBlank()) { "Отчество не должно быть пустым." }
             user.patronymic = it
         }
         item.email?.let {
