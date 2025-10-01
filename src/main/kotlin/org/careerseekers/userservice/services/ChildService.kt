@@ -23,10 +23,8 @@ class ChildService(
     @Transactional
     override fun create(item: CreateChildDto): Children {
         item.user = usersService.getById(item.userId, message = "Пользователь с ID ${item.userId} не найден.")!!
-        item.mentorId?.let {
-            item.mentor =
-                usersService.getById(item.mentorId, message = "Пользователь с ID ${item.mentorId} не найден.")!!
-        }
+        item.mentor =
+            usersService.getById(item.userId, message = "Пользователь с ID ${item.userId} не найден.")!!
 
         return repository.save(childrenMapper.childFromDto(item))
     }
