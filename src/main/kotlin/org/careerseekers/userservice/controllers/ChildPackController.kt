@@ -26,7 +26,7 @@ class ChildPackController(private val childPackService: ChildPackService) {
         @RequestPart("patronymic") patronymic: String,
         @RequestPart("dateOfBirth") dateOfBirth: String,
         @RequestPart("userId") userId: String,
-        @RequestPart("mentorId") mentorId: String,
+        @RequestPart("mentorId", required = false) mentorId: String,
         @RequestPart("snilsNumber") snilsNumber: String,
         @RequestPart("snilsFile") snilsFile: MultipartFile,
         @RequestPart("studyingPlace") studyingPlace: String,
