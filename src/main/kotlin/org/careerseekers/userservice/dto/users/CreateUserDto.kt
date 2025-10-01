@@ -7,7 +7,7 @@ import java.util.Date
 data class CreateUserDto(
     val firstName: String,
     val lastName: String,
-    val patronymic: String,
+    var patronymic: String? = null,
     val dateOfBirth: Date? = null,
     var email: String,
     val mobileNumber: String,

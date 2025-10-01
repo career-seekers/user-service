@@ -63,6 +63,8 @@ class UsersService(
         checkIfUserExistsByEmailOrMobile(item.email)
         checkMobileNumberValid(item.mobileNumber)
 
+        item.patronymic = item.patronymic ?: "—"
+
         if (item.role == UsersRoles.EXPERT) {
             item.password = generatePassword(item.email)
             if (item.tutorId == null) throw BadRequestException("Эксперт должен быть связан с куратором.")
