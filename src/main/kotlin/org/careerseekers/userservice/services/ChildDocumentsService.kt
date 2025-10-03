@@ -110,17 +110,25 @@ class ChildDocumentsService(
                 parentRole = it.trim()
             }
 
-            item.snilsFile?.let { updateDoc(snilsId, it, "uploadSnils") }
-            item.studyingCertificateFile?.let { updateDoc(studyingCertificateId, it, "uploadStudyingCertificate") }
+            item.snilsFile?.let {
+                snilsId = updateDoc(snilsId, it, "uploadSnils")
+            }
+            item.studyingCertificateFile?.let {
+                studyingCertificateId = updateDoc(studyingCertificateId, it, "uploadStudyingCertificate")
+            }
             item.additionalStudyingCertificateFile?.let {
-                updateDoc(
+                additionalStudyingCertificateId = updateDoc(
                     additionalStudyingCertificateId,
                     it,
                     "uploadAdditionalStudyingCertificate"
                 )
             }
-            item.consentToChildPdpFile?.let { updateDoc(consentToChildPdpId, it, "uploadConsentToChildPDP") }
-            item.birthCertificate?.let { updateDoc(birthCertificateId, it, "uploadBirthCertificate") }
+            item.consentToChildPdpFile?.let {
+                consentToChildPdpId = updateDoc(consentToChildPdpId, it, "uploadConsentToChildPDP")
+            }
+            item.birthCertificate?.let {
+                birthCertificateId = updateDoc(birthCertificateId, it, "uploadBirthCertificate")
+            }
         }.also(repository::save)
 
         return "Информация о документах участника обновлена успешно."
