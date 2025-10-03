@@ -64,7 +64,7 @@ class ChildDocumentsService(
             ageCategory = DirectionAgeCategory.getAgeCategory(
                 calculateAge(
                     convertDateToLocalDate(child!!.dateOfBirth),
-                    LocalDate.of(2026, 2, 14)
+                    if (learningClass == 0.toShort()) LocalDate.of(2025, 12, 7) else LocalDate.of(2026, 2, 14)
                 ), learningClass
             )
 

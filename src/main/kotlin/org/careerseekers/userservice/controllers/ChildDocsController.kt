@@ -7,6 +7,7 @@ import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.careerseekers.userservice.io.converters.extensions.toHttpResponse
 import org.careerseekers.userservice.io.converters.extensions.toLongOrThrow
 import org.careerseekers.userservice.io.converters.extensions.toShortOrThrow
+import org.careerseekers.userservice.services.ChildDocsFixService
 import org.careerseekers.userservice.services.ChildDocumentsService
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -20,7 +21,10 @@ import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/users-service/v1/child-docs")
-class ChildDocsController(private val service: ChildDocumentsService) {
+class ChildDocsController(
+    private val service: ChildDocumentsService,
+    private val childDocsFixService: ChildDocsFixService
+) {
 
     @GetMapping("/")
     fun getAll() = service.getAll().toHttpResponse()
@@ -75,7 +79,10 @@ class ChildDocsController(private val service: ChildDocumentsService) {
         @RequestPart("studyingCertificateFile", required = false) studyingCertificateFile: MultipartFile?,
         @RequestPart("learningClass", required = false) learningClass: String?,
         @RequestPart("trainingGround", required = false) trainingGround: String?,
-        @RequestPart("additionalStudyingCertificateFile", required = false) additionalStudyingCertificateFile: MultipartFile?,
+        @RequestPart(
+            "additionalStudyingCertificateFile",
+            required = false
+        ) additionalStudyingCertificateFile: MultipartFile?,
         @RequestPart("parentRole", required = false) parentRole: String?,
         @RequestPart("consentToChildPdpFile", required = false) consentToChildPdpFile: MultipartFile?,
         @RequestPart("birthCertificate", required = false) birthCertificate: MultipartFile?,
@@ -96,6 +103,9 @@ class ChildDocsController(private val service: ChildDocumentsService) {
 
         return service.update(dto).toHttpResponse()
     }
+
+    @PatchMapping("/fixDocs")
+    fun fixDocs() = childDocsFixService.fixChildDocs()
 
     @DeleteMapping("/{id}")
     fun deleteById(@PathVariable id: Long) = service.deleteById(id).toHttpResponse()
