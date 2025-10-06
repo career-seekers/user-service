@@ -60,7 +60,7 @@ data class Users(
     var tutorId: Long? = null,
 
     @Column(nullable = true)
-    var linkId: Long,
+    var linkId: Long?,
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
