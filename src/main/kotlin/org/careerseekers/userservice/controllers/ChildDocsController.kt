@@ -85,7 +85,7 @@ class ChildDocsController(
         ) additionalStudyingCertificateFile: MultipartFile?,
         @RequestPart("parentRole", required = false) parentRole: String?,
         @RequestPart("consentToChildPdpFile", required = false) consentToChildPdpFile: MultipartFile?,
-        @RequestPart("birthCertificate", required = false) birthCertificate: MultipartFile?,
+        @RequestPart("birthCertificateFile", required = false) birthCertificate: MultipartFile?,
     ): BasicSuccessfulResponse<String> {
         val dto = UpdateChildDocsDto(
             id = id.toLongOrThrow(),
