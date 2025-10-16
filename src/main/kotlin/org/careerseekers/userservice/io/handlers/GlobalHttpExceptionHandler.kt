@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.io.handlers
 
 import io.jsonwebtoken.security.SignatureException
+import org.careerseekers.userservice.exceptions.AccessBlockedException
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.ConnectionRefusedException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
@@ -25,7 +26,7 @@ class GlobalHttpExceptionHandler {
     @ExceptionHandler(Exception::class)
     fun handleAllExceptions(ex: Exception): ResponseEntity<BasicErrorResponse> {
         val errorResponse = BasicErrorResponse(
-            status = HttpStatus.BAD_REQUEST.value(),
+            status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
             message = "${ex::class}; ${ex.message}",
         )
 
@@ -84,6 +85,16 @@ class GlobalHttpExceptionHandler {
         )
 
         return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(AccessBlockedException::class)
+    fun handleInvalidNumberFormatException(ex: AccessBlockedException): ResponseEntity<BasicErrorResponse> {
+        val errorResponse = BasicErrorResponse(
+            status = HttpStatus.FORBIDDEN.value(),
+            message = ex.message
+        )
+
+        return ResponseEntity(errorResponse, HttpStatus.FORBIDDEN)
     }
 
 
