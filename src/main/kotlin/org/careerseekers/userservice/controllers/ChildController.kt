@@ -1,5 +1,6 @@
 package org.careerseekers.userservice.controllers
 
+import org.careerseekers.userservice.annotations.AccessUntil
 import org.careerseekers.userservice.controllers.interfaces.CrudController
 import org.careerseekers.userservice.dto.users.CreateChildDto
 import org.careerseekers.userservice.dto.users.UpdateChildDto
@@ -33,12 +34,15 @@ class ChildController(
     fun getByUserId(@PathVariable userId: Long) = service.getByUserId(userId).toHttpResponse()
 
     @PostMapping("/")
+    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок регистрации закончился 15.10.2025 в 23:59.")
     override fun create(@RequestBody item: CreateChildDto) = service.create(item).toHttpResponse()
 
     @PostMapping("/createAll")
+    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок регистрации закончился 15.10.2025 в 23:59.")
     override fun createAll(@RequestBody items: List<CreateChildDto>) = service.createAll(items).toHttpResponse()
 
     @PatchMapping("/")
+    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.")
     override fun update(@RequestBody item: UpdateChildDto) = service.update(item).toHttpResponse()
 
     @DeleteMapping("/{id}")

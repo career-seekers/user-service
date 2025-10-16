@@ -1,5 +1,6 @@
 package org.careerseekers.userservice.controllers
 
+import org.careerseekers.userservice.annotations.AccessUntil
 import org.careerseekers.userservice.dto.users.CreateChildPackDto
 import org.careerseekers.userservice.entities.Children
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
@@ -19,6 +20,7 @@ import java.util.Locale
 @RequestMapping("/users-service/v2/children")
 class ChildPackController(private val childPackService: ChildPackService) {
 
+    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.")
     @PostMapping("/createChildPack")
     fun createChildPack(
         @RequestPart("lastName") lastName: String,

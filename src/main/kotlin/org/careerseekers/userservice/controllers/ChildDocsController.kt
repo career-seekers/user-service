@@ -1,5 +1,6 @@
 package org.careerseekers.userservice.controllers
 
+import org.careerseekers.userservice.annotations.AccessUntil
 import org.careerseekers.userservice.dto.docs.CreateChildDocsDto
 import org.careerseekers.userservice.dto.docs.UpdateChildDocsDto
 import org.careerseekers.userservice.entities.ChildDocuments
@@ -39,6 +40,7 @@ class ChildDocsController(
     @GetMapping("/getBySnilsNumber/{snilsNumber}")
     fun getBySnilsNumber(@PathVariable snilsNumber: String) = service.getBySnilsNumber(snilsNumber)!!.toHttpResponse()
 
+    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.")
     @PostMapping("/")
     fun create(
         @RequestPart("childId") childId: String,
@@ -70,6 +72,7 @@ class ChildDocsController(
         return service.create(dto).toHttpResponse()
     }
 
+    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.")
     @PatchMapping("/")
     fun update(
         @RequestPart("id") id: String,
