@@ -35,6 +35,7 @@ repositories {
 dependencies {
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -90,6 +91,7 @@ dependencies {
     // Utilities
     implementation("one.stayfocused.spring:dotenv-spring-boot:1.0.0")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
+    implementation("org.aspectj:aspectjweaver")
 
     // Tests
     testImplementation("org.springframework.boot:spring-boot-starter-test")
