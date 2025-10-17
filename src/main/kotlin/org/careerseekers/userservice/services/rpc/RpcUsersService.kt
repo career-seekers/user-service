@@ -41,6 +41,7 @@ class RpcUsersService(
                 .setAvatarId(user.avatarId)
                 .setVerified(user.verified)
                 .setIsMentor(user.isMentor)
+                .setTgLink(user.telegramLink?.tgLink.toString())
                 .build()
         }
 

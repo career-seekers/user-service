@@ -34,6 +34,7 @@ message User {
   int64 avatarId = 10;
   bool verified = 11;
   bool isMentor = 12;
+  string tgLink = 13;
 }
 
 message ChildWithUser {
