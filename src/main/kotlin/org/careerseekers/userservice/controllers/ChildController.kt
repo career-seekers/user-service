@@ -53,14 +53,16 @@ class ChildController(
     @PatchMapping("/")
     @AccessUntil(
         until = "2025-10-15T23:59:59+03:00",
-        errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59."
+        errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.",
+        allowedRoles = [UsersRoles.ADMIN]
     )
     override fun update(@RequestBody item: UpdateChildDto) = service.update(item).toHttpResponse()
 
     @DeleteMapping("/{id}")
     @AccessUntil(
         until = "2025-10-15T23:59:59+03:00",
-        errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59."
+        errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.",
+        allowedRoles = [UsersRoles.ADMIN]
     )
     override fun deleteById(@PathVariable id: Long) = service.deleteById(id).toHttpResponse()
 
@@ -68,7 +70,8 @@ class ChildController(
     @DeleteMapping("/")
     @AccessUntil(
         until = "2025-10-15T23:59:59+03:00",
-        errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59."
+        errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.",
+        allowedRoles = [UsersRoles.ADMIN]
     )
     override fun deleteAll() = service.deleteAll().toHttpResponse()
 }
