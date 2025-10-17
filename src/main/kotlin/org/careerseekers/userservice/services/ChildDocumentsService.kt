@@ -99,7 +99,16 @@ class ChildDocumentsService(
                 require(it.isNotBlank()) { "Место обучение не может быть пустой строкой" }
                 studyingPlace = it.trim()
             }
-            item.learningClass?.let { learningClass = it }
+            item.learningClass?.let {
+                learningClass = it
+
+                ageCategory = DirectionAgeCategory.getAgeCategory(
+                    calculateAge(
+                        convertDateToLocalDate(child.dateOfBirth),
+                        if (learningClass == 0.toShort()) LocalDate.of(2025, 12, 7) else LocalDate.of(2026, 2, 14)
+                    ), learningClass
+                )
+            }
             item.trainingGround?.let {
                 require(it.isNotBlank()) { "Площадка тренировки не может быть пустой строкой" }
 
