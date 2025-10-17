@@ -4,6 +4,7 @@ import org.careerseekers.userservice.annotations.AccessUntil
 import org.careerseekers.userservice.dto.docs.CreateChildDocsDto
 import org.careerseekers.userservice.dto.docs.UpdateChildDocsDto
 import org.careerseekers.userservice.entities.ChildDocuments
+import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.careerseekers.userservice.io.converters.extensions.toHttpResponse
 import org.careerseekers.userservice.io.converters.extensions.toLongOrThrow
@@ -40,7 +41,11 @@ class ChildDocsController(
     @GetMapping("/getBySnilsNumber/{snilsNumber}")
     fun getBySnilsNumber(@PathVariable snilsNumber: String) = service.getBySnilsNumber(snilsNumber)!!.toHttpResponse()
 
-    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.")
+    @AccessUntil(
+        until = "2025-10-15T23:59:59+03:00",
+        errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.",
+        allowedRoles = [UsersRoles.ADMIN]
+    )
     @PostMapping("/")
     fun create(
         @RequestPart("childId") childId: String,
@@ -72,7 +77,11 @@ class ChildDocsController(
         return service.create(dto).toHttpResponse()
     }
 
-    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.")
+    @AccessUntil(
+        until = "2025-10-15T23:59:59+03:00",
+        errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.",
+        allowedRoles = [UsersRoles.ADMIN]
+    )
     @PatchMapping("/")
     fun update(
         @RequestPart("id") id: String,
