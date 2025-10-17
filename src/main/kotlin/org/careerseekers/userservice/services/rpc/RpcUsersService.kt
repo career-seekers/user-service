@@ -77,6 +77,8 @@ class RpcUsersService(
                 .setFirstName(child.firstName)
                 .setPatronymic(child.patronymic)
                 .setDateOfBirth(child.dateOfBirth.toTimestamp())
+                .setSchoolName(child.childDocuments?.studyingPlace)
+                .setTrainingGroundName(child.childDocuments?.trainingGround)
                 .setUser(rpcUser)
                 .build()
         }

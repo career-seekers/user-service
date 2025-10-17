@@ -42,6 +42,8 @@ message ChildWithUser {
   string lastName = 2;
   string firstName = 3;
   string patronymic = 4;
-  google.protobuf.Timestamp dateOfBirth = 5;
-  User user = 6;
+  string schoolName = 5;
+  string trainingGroundName = 6;
+  google.protobuf.Timestamp dateOfBirth = 7;
+  User user = 8;
 }
