@@ -5,6 +5,7 @@ import org.careerseekers.userservice.controllers.interfaces.CrudController
 import org.careerseekers.userservice.dto.users.CreateChildDto
 import org.careerseekers.userservice.dto.users.UpdateChildDto
 import org.careerseekers.userservice.entities.Children
+import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.io.converters.extensions.toHttpResponse
 import org.careerseekers.userservice.services.ChildService
 import org.springframework.security.access.prepost.PreAuthorize
@@ -34,21 +35,40 @@ class ChildController(
     fun getByUserId(@PathVariable userId: Long) = service.getByUserId(userId).toHttpResponse()
 
     @PostMapping("/")
-    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок регистрации закончился 15.10.2025 в 23:59.")
+    @AccessUntil(
+        until = "2025-10-15T23:59:59+03:00",
+        errorMessage = "Срок регистрации закончился 15.10.2025 в 23:59.",
+        allowedRoles = [UsersRoles.ADMIN]
+    )
     override fun create(@RequestBody item: CreateChildDto) = service.create(item).toHttpResponse()
 
     @PostMapping("/createAll")
-    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок регистрации закончился 15.10.2025 в 23:59.")
+    @AccessUntil(
+        until = "2025-10-15T23:59:59+03:00",
+        errorMessage = "Срок регистрации закончился 15.10.2025 в 23:59.",
+        allowedRoles = [UsersRoles.ADMIN]
+    )
     override fun createAll(@RequestBody items: List<CreateChildDto>) = service.createAll(items).toHttpResponse()
 
     @PatchMapping("/")
-    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59.")
+    @AccessUntil(
+        until = "2025-10-15T23:59:59+03:00",
+        errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59."
+    )
     override fun update(@RequestBody item: UpdateChildDto) = service.update(item).toHttpResponse()
 
     @DeleteMapping("/{id}")
+    @AccessUntil(
+        until = "2025-10-15T23:59:59+03:00",
+        errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59."
+    )
     override fun deleteById(@PathVariable id: Long) = service.deleteById(id).toHttpResponse()
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/")
+    @AccessUntil(
+        until = "2025-10-15T23:59:59+03:00",
+        errorMessage = "Срок изменения данных о ребенке закончился 15.10.2025 в 23:59."
+    )
     override fun deleteAll() = service.deleteAll().toHttpResponse()
 }
