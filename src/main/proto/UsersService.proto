@@ -10,10 +10,14 @@ import "google/protobuf/timestamp.proto";
 
 service UsersService {
   rpc GetById (UserId) returns (User);
-  rpc GetUserWithChildren (UserId) returns (UserWithChildren);
+  rpc GetChildWithUser (ChildId) returns (ChildWithUser);
 }
 
 message UserId {
+  int64 id = 1;
+}
+
+message ChildId {
   int64 id = 1;
 }
 
@@ -32,30 +36,11 @@ message User {
   bool isMentor = 12;
 }
 
-message Child {
+message ChildWithUser {
   int64 id = 1;
   string lastName = 2;
   string firstName = 3;
   string patronymic = 4;
   google.protobuf.Timestamp dateOfBirth = 5;
-}
-
-message ChildList {
-  repeated Child children = 1;
-}
-
-message UserWithChildren {
-  int64 id = 1;
-  string firstName = 2;
-  string lastName = 3;
-  string patronymic = 4;
-  google.protobuf.Timestamp dateOfBirth = 5;
-  string email = 6;
-  string mobileNumber = 7;
-  string password = 8;
-  string role = 9;
-  int64 avatarId = 10;
-  bool verified = 11;
-  bool isMentor = 12;
-  ChildList children = 13;
+  User user = 6;
 }
