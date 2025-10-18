@@ -1,24 +1,26 @@
 package org.careerseekers.userservice.utils
 
+import org.careerseekers.userservice.dto.statistics.UsersStatisticPairDto
+
 object StatisticsStorage {
-    var tutorsInfo: Pair<Int, Int> = Pair(0, 0)
+    var tutorsInfo: UsersStatisticPairDto = UsersStatisticPairDto(0, 0)
         private set
 
-    var expertsInfo: Pair<Int, Int> = Pair(0, 0)
+    var expertsInfo: UsersStatisticPairDto = UsersStatisticPairDto(0, 0)
         private set
 
-    var mentorsInfo: Pair<Int, Int> = Pair(0, 0)
+    var mentorsInfo: UsersStatisticPairDto = UsersStatisticPairDto(0, 0)
         private set
 
-    var usersInfo: Pair<Int, Int> = Pair(0, 0)
+    var usersInfo: UsersStatisticPairDto = UsersStatisticPairDto(0, 0)
         private set
 
     var childrenCount: Int = 0
         private set
 
-    fun setTutorsInfo(info: Pair<Int, Int>) = apply { tutorsInfo = info }
-    fun setExpertsInfo(info: Pair<Int, Int>) = apply { expertsInfo = info }
-    fun setMentorsInfo(info: Pair<Int, Int>) = apply { mentorsInfo = info }
-    fun setUsersInfo(info: Pair<Int, Int>) = apply { usersInfo = info }
+    fun setTutorsInfo(info: UsersStatisticPairDto) = apply { tutorsInfo = info }
+    fun setExpertsInfo(info: UsersStatisticPairDto) = apply { expertsInfo = info }
+    fun setMentorsInfo(info: UsersStatisticPairDto) = apply { mentorsInfo = info }
+    fun setUsersInfo(info: UsersStatisticPairDto) = apply { usersInfo = info }
     fun setChildrenCount(count: Int) = apply { childrenCount = count }
 }

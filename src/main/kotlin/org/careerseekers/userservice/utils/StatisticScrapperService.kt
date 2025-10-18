@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.utils
 
 import org.careerseekers.userservice.annotations.Utility
+import org.careerseekers.userservice.dto.statistics.UsersStatisticPairDto
 import org.careerseekers.userservice.entities.Children
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.UsersRoles
@@ -20,22 +21,22 @@ class StatisticScrapperService(
 
         setTutorsInfo(allUsers.filter { it.role == UsersRoles.TUTOR })
         setExpertsInfo(allUsers.filter { it.role == UsersRoles.EXPERT })
-        setMentorInfo(allUsers.filter { it.role == UsersRoles.TUTOR })
-        setUsersInfo(allUsers.filter { it.role == UsersRoles.TUTOR })
+        setMentorInfo(allUsers.filter { it.role == UsersRoles.MENTOR })
+        setUsersInfo(allUsers.filter { it.role == UsersRoles.USER })
         setChildrenCount(allChildren)
     }
 
     fun setTutorsInfo(users: List<Users>) =
-        StatisticsStorage.setTutorsInfo(Pair(users.size, users.filter { it.verified }.size))
+        StatisticsStorage.setTutorsInfo(UsersStatisticPairDto(users.size, users.filter { it.verified }.size))
 
     fun setExpertsInfo(users: List<Users>) =
-        StatisticsStorage.setExpertsInfo(Pair(users.size, users.filter { it.verified }.size))
+        StatisticsStorage.setExpertsInfo(UsersStatisticPairDto(users.size, users.filter { it.verified }.size))
 
     fun setMentorInfo(users: List<Users>) =
-        StatisticsStorage.setMentorsInfo(Pair(users.size, users.filter { it.verified }.size))
+        StatisticsStorage.setMentorsInfo(UsersStatisticPairDto(users.size, users.filter { it.verified }.size))
 
     fun setUsersInfo(users: List<Users>) =
-        StatisticsStorage.setUsersInfo(Pair(users.size, users.filter { it.verified }.size))
+        StatisticsStorage.setUsersInfo(UsersStatisticPairDto(users.size, users.filter { it.verified }.size))
 
     fun setChildrenCount(children: List<Children>) =
         StatisticsStorage.setChildrenCount(children.size)
