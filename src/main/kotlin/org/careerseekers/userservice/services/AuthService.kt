@@ -24,7 +24,7 @@ import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingP
 import org.careerseekers.userservice.services.processors.IUsersRegistrationProcessor
 import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
 import org.careerseekers.userservice.utils.JwtUtil
-import org.careerseekers.userservice.utils.Tested
+import org.careerseekers.userservice.annotations.Tested
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

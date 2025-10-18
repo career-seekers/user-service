@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.annotations
 
 import org.careerseekers.userservice.enums.ReviewStatus
 

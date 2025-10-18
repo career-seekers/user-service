@@ -1,5 +1,6 @@
 package org.careerseekers.userservice.utils
 
+import org.careerseekers.userservice.annotations.Utility
 import org.careerseekers.userservice.entities.Children
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.UsersRoles

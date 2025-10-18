@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import org.careerseekers.userservice.annotations.Utility
 import org.careerseekers.userservice.dto.files.FileStructure
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.NotFoundException

@@ -22,7 +22,7 @@ import org.careerseekers.userservice.services.interfaces.CrudService
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
 import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
 import org.careerseekers.userservice.utils.PasswordGenerator
-import org.careerseekers.userservice.utils.Tested
+import org.careerseekers.userservice.annotations.Tested
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.crypto.password.PasswordEncoder

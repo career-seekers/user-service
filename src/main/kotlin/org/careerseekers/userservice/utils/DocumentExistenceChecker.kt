@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.utils
 
 import kotlinx.serialization.json.Json
+import org.careerseekers.userservice.annotations.Utility
 import org.careerseekers.userservice.dto.files.FileStructure
 import org.careerseekers.userservice.enums.FileTypes
 import org.careerseekers.userservice.exceptions.BadRequestException
@@ -12,7 +13,7 @@ import reactor.core.publisher.Mono
 
 @Utility
 class DocumentExistenceChecker(
-    @Qualifier("file-service") private val httpClient: WebClient
+    @param:Qualifier("file-service") private val httpClient: WebClient
 ) {
     fun checkFileExistence(fileId: Long, fileType: FileTypes?): FileStructure? {
         return httpClient.get()

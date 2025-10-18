@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.annotations
 
 import org.springframework.core.annotation.AliasFor
 import org.springframework.stereotype.Component
