@@ -1,5 +1,6 @@
 package org.careerseekers.userservice.services
 
+import org.careerseekers.userservice.annotations.UsersUpdate
 import org.careerseekers.userservice.cache.TemporaryPasswordsCache
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
 import org.careerseekers.userservice.dto.TemporaryPasswordDto
@@ -56,6 +57,7 @@ class UsersService(
     fun getByTutorId(tutorId: Long): List<Users> = repository.getByTutorId(tutorId)
 
 
+    @UsersUpdate
     @Transactional
     override fun create(item: CreateUserDto): Users {
         item.email = item.email.lowercase()
@@ -90,6 +92,7 @@ class UsersService(
         }
     }
 
+    @UsersUpdate
     @Transactional
     override fun createAll(items: List<CreateUserDto>) {
         items.forEach { checkIfUserExistsByEmailOrMobile(it.email) }
@@ -154,6 +157,7 @@ class UsersService(
         return "Роль пользователя была успешно обновлена до ${item.role}."
     }
 
+    @UsersUpdate
     @Transactional
     fun verifyUser(item: VerifyUserDto): String {
         usersService?.getById(item.userId, message = "Пользователь с ID ${item.userId} не найден.").let {
@@ -162,6 +166,7 @@ class UsersService(
         return "Подтверждение пользователя успешно обновлено."
     }
 
+    @UsersUpdate
     @Transactional
     override fun deleteById(id: Long): String {
         usersService?.getById(id, message = "Пользователь с ID $id не найден.")?.let { user ->
@@ -171,6 +176,7 @@ class UsersService(
         return "Пользователь удалён успешно."
     }
 
+    @UsersUpdate
     @Transactional
     override fun deleteAll(): String {
         super.deleteAll()
