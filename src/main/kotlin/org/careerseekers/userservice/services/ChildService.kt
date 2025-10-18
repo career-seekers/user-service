@@ -1,5 +1,6 @@
 package org.careerseekers.userservice.services
 
+import org.careerseekers.userservice.annotations.ChildrenUpdate
 import org.careerseekers.userservice.dto.users.CreateChildDto
 import org.careerseekers.userservice.dto.users.UpdateChildDto
 import org.careerseekers.userservice.entities.Children
@@ -20,6 +21,7 @@ class ChildService(
 
     fun getByUserId(userId: Long) = repository.findByUserId(userId)
 
+    @ChildrenUpdate
     @Transactional
     override fun create(item: CreateChildDto): Children {
         item.user = usersService.getById(item.userId, message = "Пользователь с ID ${item.userId} не найден.")!!
@@ -30,6 +32,7 @@ class ChildService(
         return repository.save(childrenMapper.childFromDto(item))
     }
 
+    @ChildrenUpdate
     @Transactional
     override fun createAll(items: List<CreateChildDto>): MutableList<Children> {
         val children = mutableListOf<Children>()
@@ -67,6 +70,7 @@ class ChildService(
         return "Данные о ребёнке обновлены успешно."
     }
 
+    @ChildrenUpdate
     @Transactional
     override fun deleteById(id: Long): String {
         getById(id, message = "Ребёнок с ID $id не найден.")!!.let {
@@ -75,6 +79,7 @@ class ChildService(
         return "Данные о ребёнке удалены успешно."
     }
 
+    @ChildrenUpdate
     @Transactional
     override fun deleteAll(): String {
         repository.deleteAll()
