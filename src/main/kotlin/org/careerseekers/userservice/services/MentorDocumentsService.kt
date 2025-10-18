@@ -18,7 +18,7 @@ import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
 import org.careerseekers.userservice.services.interfaces.crud.IUpdateService
 import org.careerseekers.userservice.utils.DocumentsApiResolver
-import org.careerseekers.userservice.utils.Tested
+import org.careerseekers.userservice.annotations.Tested
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional

@@ -1,5 +1,6 @@
 package org.careerseekers.userservice.utils
 
+import org.careerseekers.userservice.annotations.Utility
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.repositories.ChildDocsRepository

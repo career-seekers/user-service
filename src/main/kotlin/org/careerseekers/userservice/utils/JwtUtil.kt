@@ -5,6 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.Jwts.SIG
 import io.jsonwebtoken.security.Keys
+import org.careerseekers.userservice.annotations.Utility
 import org.careerseekers.userservice.config.JwtProperties
 import org.careerseekers.userservice.dto.jwt.CreateJwtToken
 import org.careerseekers.userservice.dto.jwt.SaveRefreshTokenDto
