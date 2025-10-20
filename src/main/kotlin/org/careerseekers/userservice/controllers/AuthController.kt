@@ -21,11 +21,11 @@ class AuthController(
     private val authService: AuthService,
 ) {
     @PostMapping("/preRegister")
-    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок регистрации закончился 15.10.2025 в 23:59.")
+//    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок регистрации закончился 15.10.2025 в 23:59.")
     fun preRegister(@RequestBody data: PreRegisterUserDto) = authService.preRegister(data)
 
     @PostMapping("/register")
-    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок регистрации закончился 15.10.2025 в 23:59.")
+//    @AccessUntil(until = "2025-10-15T23:59:59+03:00", errorMessage = "Срок регистрации закончился 15.10.2025 в 23:59.")
     fun register(@RequestBody data: UserRegistrationDto) = authService.register(data).toHttpResponse()
 
     @PostMapping("/login")
