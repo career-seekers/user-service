@@ -46,5 +46,5 @@ message ChildWithUser {
   string trainingGroundName = 6;
   google.protobuf.Timestamp dateOfBirth = 7;
   User user = 8;
-  User mentor = 9;
+  optional User mentor = 9;
 }
