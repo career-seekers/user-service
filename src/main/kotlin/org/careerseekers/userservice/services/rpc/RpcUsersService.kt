@@ -56,6 +56,8 @@ class RpcUsersService(
             message = "Ребёнок с ID ${request.id} не найден."
         )!!.let { child ->
             val user = child.user
+            val mentor = child.mentor
+
             val rpcUser = User.newBuilder()
                 .setId(user.id)
                 .setFirstName(user.firstName)
@@ -71,6 +73,21 @@ class RpcUsersService(
                 .setIsMentor(user.isMentor)
                 .build()
 
+            val rpcMentor = User.newBuilder()
+                .setId(mentor?.id ?: 0)
+                .setFirstName(mentor?.firstName ?: "Наставник не установлен")
+                .setLastName(mentor?.lastName)
+                .setPatronymic(mentor?.patronymic)
+                .setDateOfBirth(mentor?.dateOfBirth?.toTimestamp())
+                .setEmail(mentor?.email)
+                .setMobileNumber(mentor?.mobileNumber)
+                .setPassword(mentor?.password)
+                .setRole(mentor?.role.toString())
+                .setAvatarId(mentor?.avatarId ?: 0)
+                .setVerified(mentor?.verified ?: false)
+                .setIsMentor(mentor?.isMentor ?: true)
+                .build()
+
             ChildWithUser.newBuilder()
                 .setId(child.id)
                 .setLastName(child.lastName)
@@ -80,6 +97,7 @@ class RpcUsersService(
                 .setSchoolName(child.childDocuments?.studyingPlace)
                 .setTrainingGroundName(child.childDocuments?.trainingGround)
                 .setUser(rpcUser)
+                .setMentor(rpcMentor)
                 .build()
         }
 
