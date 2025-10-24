@@ -56,7 +56,7 @@ class RpcUsersService(
             message = "Ребёнок с ID ${request.id} не найден."
         )!!.let { child ->
             val user = child.user
-            val mentor = child.mentor
+            val mentor = child.mentor ?: user
 
             val rpcUser = User.newBuilder()
                 .setId(user.id)
@@ -74,18 +74,18 @@ class RpcUsersService(
                 .build()
 
             val rpcMentor = User.newBuilder()
-                .setId(mentor?.id ?: 0)
-                .setFirstName(mentor?.firstName ?: "Наставник не установлен")
-                .setLastName(mentor?.lastName)
-                .setPatronymic(mentor?.patronymic)
-                .setDateOfBirth(mentor?.dateOfBirth?.toTimestamp())
-                .setEmail(mentor?.email)
-                .setMobileNumber(mentor?.mobileNumber)
-                .setPassword(mentor?.password)
-                .setRole(mentor?.role.toString())
-                .setAvatarId(mentor?.avatarId ?: 0)
-                .setVerified(mentor?.verified ?: false)
-                .setIsMentor(mentor?.isMentor ?: true)
+                .setId(mentor.id)
+                .setFirstName(mentor.firstName)
+                .setLastName(mentor.lastName)
+                .setPatronymic(mentor.patronymic)
+                .setDateOfBirth(mentor.dateOfBirth?.toTimestamp())
+                .setEmail(mentor.email)
+                .setMobileNumber(mentor.mobileNumber)
+                .setPassword(mentor.password)
+                .setRole(mentor.role.toString())
+                .setAvatarId(mentor.avatarId)
+                .setVerified(mentor.verified)
+                .setIsMentor(mentor.isMentor)
                 .build()
 
             ChildWithUser.newBuilder()
