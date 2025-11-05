@@ -7,22 +7,19 @@ import com.careerseekers.grpc.users.UserId
 import com.careerseekers.grpc.users.UsersServiceGrpc
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
-import org.careerseekers.userservice.cache.UsersCacheLoader
-import org.careerseekers.userservice.io.converters.extensions.toCache
 import org.careerseekers.userservice.io.converters.extensions.toTimestamp
 import org.careerseekers.userservice.services.ChildService
-import org.careerseekers.userservice.services.UsersService
+import org.careerseekers.userservice.utils.builders.RpcUserBuilder
 import org.springframework.transaction.annotation.Transactional
 
 @GrpcService
 class RpcUsersService(
-    private val usersService: UsersService,
     private val childService: ChildService,
-    private val usersCacheLoader: UsersCacheLoader,
+    private val rpcUserBuilder: RpcUserBuilder
 ) : UsersServiceGrpc.UsersServiceImplBase() {
 
     override fun getById(request: UserId, responseObserver: StreamObserver<User>) {
-        val response = buildRpcUser(request.id)
+        val response = rpcUserBuilder.buildRpcUser(request.id)
 
         responseObserver.onNext(response)
         responseObserver.onCompleted()
@@ -34,8 +31,8 @@ class RpcUsersService(
             request.id,
             message = "Ребёнок с ID ${request.id} не найден."
         )!!.let { child ->
-            val rpcUser = buildRpcUser(child.user.id)
-            val rpcMentor = buildRpcUser(child.mentor?.id ?: child.user.id)
+            val rpcUser = rpcUserBuilder.buildRpcUser(child.user.id)
+            val rpcMentor = rpcUserBuilder.buildRpcUser(child.mentor?.id ?: child.user.id)
 
             ChildWithUser.newBuilder()
                 .setId(child.id)
@@ -52,34 +49,5 @@ class RpcUsersService(
 
         responseObserver.onNext(response)
         responseObserver.onCompleted()
-    }
-
-
-    /**
-     * Auxiliary functions to speed up development and reduce the amount of code.
-     */
-    fun buildRpcUser(id: Long): User {
-        return usersService.getById(
-            id,
-            message = "Пользователь с ID $id не найден."
-        )!!.let { user ->
-            usersCacheLoader.loadItemToCache(user.toCache())
-
-            User.newBuilder()
-                .setId(user.id)
-                .setFirstName(user.firstName)
-                .setLastName(user.lastName)
-                .setPatronymic(user.patronymic)
-                .setDateOfBirth(user.dateOfBirth?.toTimestamp())
-                .setEmail(user.email)
-                .setMobileNumber(user.mobileNumber)
-                .setPassword(user.password)
-                .setRole(user.role.toString())
-                .setAvatarId(user.avatarId)
-                .setVerified(user.verified)
-                .setIsMentor(user.isMentor)
-                .setTgLink(user.telegramLink?.tgLink.toString())
-                .build()
-        }
     }
 }
