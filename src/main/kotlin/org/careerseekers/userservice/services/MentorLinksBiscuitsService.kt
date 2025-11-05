@@ -9,7 +9,7 @@ import org.careerseekers.userservice.repositories.MentorLinkBiscuitsRepository
 import org.careerseekers.userservice.services.interfaces.crud.ICreateService
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
-import org.careerseekers.userservice.utils.BiscuitGenerator
+import org.careerseekers.userservice.utils.generators.BiscuitGenerator
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

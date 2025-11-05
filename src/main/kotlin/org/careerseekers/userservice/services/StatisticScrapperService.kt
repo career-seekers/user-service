@@ -1,15 +1,14 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.services
 
-import org.careerseekers.userservice.annotations.Utility
 import org.careerseekers.userservice.dto.statistics.UsersStatisticPairDto
 import org.careerseekers.userservice.entities.Children
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.UsersRoles
-import org.careerseekers.userservice.services.ChildService
-import org.careerseekers.userservice.services.UsersService
+import org.careerseekers.userservice.utils.storages.StatisticsStorage
 import org.springframework.beans.factory.SmartInitializingSingleton
+import org.springframework.stereotype.Service
 
-@Utility
+@Service
 class StatisticScrapperService(
     private val usersService: UsersService,
     private val childService: ChildService

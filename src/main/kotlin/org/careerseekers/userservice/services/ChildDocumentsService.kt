@@ -14,9 +14,9 @@ import org.careerseekers.userservice.services.interfaces.crud.ICreateService
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
 import org.careerseekers.userservice.services.interfaces.crud.IUpdateService
-import org.careerseekers.userservice.utils.AgeCalculator.calculateAge
-import org.careerseekers.userservice.utils.DocumentsApiResolver
-import org.careerseekers.userservice.utils.SnilsValidator
+import org.careerseekers.userservice.utils.math.AgeCalculator.calculateAge
+import org.careerseekers.userservice.utils.api.DocumentsApiResolver
+import org.careerseekers.userservice.utils.validators.SnilsValidator
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile

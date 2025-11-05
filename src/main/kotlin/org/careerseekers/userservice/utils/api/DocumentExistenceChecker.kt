@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.utils.api
 
 import kotlinx.serialization.json.Json
 import org.careerseekers.userservice.annotations.Utility

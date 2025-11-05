@@ -1,17 +1,16 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.utils.validators
 
 import org.careerseekers.userservice.annotations.Utility
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.exceptions.DoubleRecordException
 import org.careerseekers.userservice.repositories.ChildDocsRepository
 
-
 /**
  * Component for validating SNILS.
  *
  * This validator performs two main checks:
  * 1. Structural validation: Ensures the SNILS number adheres to basic format rules (length and digit-only characters).
- * 2. Uniqueness validation: Checks against the [ChildDocsRepository] to prevent duplicate SNILS numbers
+ * 2. Uniqueness validation: Checks against the [org.careerseekers.userservice.repositories.ChildDocsRepository] to prevent duplicate SNILS numbers
  *    from being registered if they already exist in the system.
  *
  * @param childDocsRepository The repository used to check for existing SNILS numbers.
@@ -23,14 +22,14 @@ class SnilsValidator(private val childDocsRepository: ChildDocsRepository) {
      * Local version of the `require` function.
      *
      * This utility function checks a given condition. If the condition evaluates to `false`,
-     * it throws a [BadRequestException] with a provided lazy message. This allows
+     * it throws a [org.careerseekers.userservice.exceptions.BadRequestException] with a provided lazy message. This allows
      * custom exception types to be thrown instead of the default `IllegalArgumentException`
      * used by Kotlin's standard `require`.
      *
      * @param value the boolean condition to check.
      * @param lazyMessage a lambda function that returns the error message to be used if the condition is false.
      *                    This message is only evaluated if the condition fails.
-     * @throws BadRequestException if `value` is `false`.
+     * @throws org.careerseekers.userservice.exceptions.BadRequestException if `value` is `false`.
      */
     private fun require(value: Boolean, lazyMessage: () -> Any) {
         if (!value) {
@@ -66,7 +65,7 @@ class SnilsValidator(private val childDocsRepository: ChildDocsRepository) {
      *
      * @param snilsNumber The SNILS number string to be checked.
      * @throws BadRequestException if the SNILS number's format is invalid (from [validateSnilsNumber]).
-     * @throws DoubleRecordException if a document with the given SNILS number already exists in the database.
+     * @throws org.careerseekers.userservice.exceptions.DoubleRecordException if a document with the given SNILS number already exists in the database.
      */
     fun checkSnilsValid(snilsNumber: String) {
         validateSnilsNumber(snilsNumber)

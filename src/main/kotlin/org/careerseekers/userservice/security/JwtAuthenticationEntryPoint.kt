@@ -3,7 +3,6 @@ package org.careerseekers.userservice.security
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.careerseekers.userservice.exceptions.JwtAuthenticationException
-import org.careerseekers.userservice.utils.JwtUtil
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint

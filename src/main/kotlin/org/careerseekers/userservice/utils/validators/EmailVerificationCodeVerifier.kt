@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.utils.validators
 
 import org.careerseekers.userservice.annotations.Utility
 import org.careerseekers.userservice.cache.VerificationCodesCacheClient
@@ -39,7 +39,8 @@ class EmailVerificationCodeVerifier(
                         email = email,
                         token = token,
                         eventType = mailEventTypes,
-                        user = user)
+                        user = user
+                    )
                 )
                 throw BadRequestException("Достигнуто максимальное количество попыток. На почту отправлен новый код.")
             }

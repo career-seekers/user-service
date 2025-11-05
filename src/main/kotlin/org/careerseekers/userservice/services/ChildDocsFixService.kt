@@ -5,7 +5,7 @@ import org.careerseekers.userservice.enums.DirectionAgeCategory
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.careerseekers.userservice.io.converters.convertDateToLocalDate
 import org.careerseekers.userservice.repositories.ChildDocsRepository
-import org.careerseekers.userservice.utils.AgeCalculator.calculateAge
+import org.careerseekers.userservice.utils.math.AgeCalculator.calculateAge
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
