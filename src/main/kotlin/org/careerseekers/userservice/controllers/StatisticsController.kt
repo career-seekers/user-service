@@ -1,7 +1,7 @@
 package org.careerseekers.userservice.controllers
 
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
-import org.careerseekers.userservice.utils.StatisticsStorage
+import org.careerseekers.userservice.utils.storages.StatisticsStorage
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController

@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.utils.api
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,9 +1,8 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.security
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.Jwts.SIG
 import io.jsonwebtoken.security.Keys
 import org.careerseekers.userservice.annotations.Utility
 import org.careerseekers.userservice.config.JwtProperties
@@ -53,7 +52,7 @@ class JwtUtil(
             .claims(claims)
             .issuedAt(Date())
             .expiration(Date.from(Instant.now().plusSeconds(expiration.toLong())))
-            .signWith(Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray()), SIG.HS512)
+            .signWith(Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray()), Jwts.SIG.HS512)
             .compact()
     }
 

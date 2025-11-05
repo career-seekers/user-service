@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.utils.math
 
 import java.time.LocalDate
 import java.time.Period

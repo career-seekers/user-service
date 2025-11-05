@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.utils.generators
 
 import kotlin.random.Random
 

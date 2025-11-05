@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.utils.storages
 
 import org.careerseekers.userservice.dto.statistics.UsersStatisticPairDto
 

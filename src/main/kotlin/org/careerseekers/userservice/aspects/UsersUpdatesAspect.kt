@@ -5,7 +5,7 @@ import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect
 import org.careerseekers.userservice.aspects.interfaces.IEntityUpdatesAspect
 import org.careerseekers.userservice.repositories.UsersRepository
-import org.careerseekers.userservice.utils.StatisticScrapperService
+import org.careerseekers.userservice.services.StatisticScrapperService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 

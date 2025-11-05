@@ -22,8 +22,8 @@ import org.careerseekers.userservice.io.converters.extensions.toCache
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
 import org.careerseekers.userservice.services.processors.IUsersRegistrationProcessor
-import org.careerseekers.userservice.utils.EmailVerificationCodeVerifier
-import org.careerseekers.userservice.utils.JwtUtil
+import org.careerseekers.userservice.utils.validators.EmailVerificationCodeVerifier
+import org.careerseekers.userservice.security.JwtUtil
 import org.careerseekers.userservice.annotations.Tested
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service

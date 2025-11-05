@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.utils.generators
 
 /**
  * Object for generating unique token strings ("biscuits") for public invitation links.

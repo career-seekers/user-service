@@ -20,8 +20,8 @@ import org.careerseekers.userservice.mappers.UsersMapper
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.interfaces.CrudService
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
-import org.careerseekers.userservice.utils.MobileNumberFormatter.checkMobileNumberValid
-import org.careerseekers.userservice.utils.PasswordGenerator
+import org.careerseekers.userservice.utils.validators.MobileNumberFormatter.checkMobileNumberValid
+import org.careerseekers.userservice.utils.generators.PasswordGenerator
 import org.careerseekers.userservice.annotations.Tested
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy

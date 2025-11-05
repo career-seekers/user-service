@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.utils
+package org.careerseekers.userservice.utils.validators
 
 import org.careerseekers.userservice.exceptions.MobileNumberFormatException
 

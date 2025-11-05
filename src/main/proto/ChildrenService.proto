@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package children;
+
+option java_multiple_files = true;
+option java_package = "com.careerseekers.grpc.children";
+option java_outer_classname = "ChildrenServiceProto";
+
+import "google/protobuf/timestamp.proto";
+import "UsersService.proto";
+
+service ChildrenService {
+  rpc GetById (Id) returns (ShortChild);
+  rpc GetByIdFull (Id) returns (FullChild);
+
+  rpc GetAll (Empty) returns (ChildrenList);
+  rpc GetAllFull (Empty) returns (FullChildrenList);
+}
+
+message Id {
+  int64 id = 1;
+}
+
+message Empty {}
+
+message ShortChild {
+  int64 id = 1;
+  string lastName = 2;
+  string firstName = 3;
+  string patronymic = 4;
+  google.protobuf.Timestamp dateOfBirth = 5;
+  google.protobuf.Timestamp createdAt = 6;
+}
+
+message FullChild {
+  int64 id = 1;
+  string lastName = 2;
+  string firstName = 3;
+  string patronymic = 4;
+  google.protobuf.Timestamp dateOfBirth = 5;
+  google.protobuf.Timestamp createdAt = 6;
+  users.User user = 7;
+  optional users.User mentor = 8;
+}
+
+message ChildrenList {
+  repeated ShortChild children = 1;
+}
+
+message FullChildrenList {
+  repeated FullChild children = 1;
+}
