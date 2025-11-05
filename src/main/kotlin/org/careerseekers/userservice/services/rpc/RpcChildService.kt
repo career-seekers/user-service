@@ -48,6 +48,10 @@ class RpcChildService(
         responseObserver.onCompleted()
     }
 
+
+    /**
+     * Auxiliary functions to speed up development and reduce the amount of code.
+     */
     fun buildRpcChild(id: Long): ShortChild? {
         return childService.getById(id, message = "Ребенок с id $id не найден.")?.let { child ->
             ShortChild.newBuilder()

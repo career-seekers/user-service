@@ -54,6 +54,10 @@ class RpcUsersService(
         responseObserver.onCompleted()
     }
 
+
+    /**
+     * Auxiliary functions to speed up development and reduce the amount of code.
+     */
     fun buildRpcUser(id: Long): User {
         return usersService.getById(
             id,
