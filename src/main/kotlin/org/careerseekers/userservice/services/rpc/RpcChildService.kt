@@ -12,7 +12,7 @@ class RpcChildService(
     private val rpcChildBuilder: RpcChildBuilder
 ) : ChildrenServiceGrpc.ChildrenServiceImplBase() {
 
-    override fun getById(request: Id, responseObserver: StreamObserver<ShortChild?>) {
+    override fun getById(request: Id, responseObserver: StreamObserver<ShortChild>) {
         val response = rpcChildBuilder.buildRpcChild(request.id)
 
         responseObserver.onNext(response)

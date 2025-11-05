@@ -13,7 +13,7 @@ class RpcChildBuilder(
 ) {
 
     fun buildRpcChild(id: Long): ShortChild? {
-        return childService.getById(id, message = "Ребенок с id $id не найден.")?.let { child ->
+        return childService.getById(id, message = "Ребёнок с ID $id не найден.")?.let { child ->
             ShortChild.newBuilder()
                 .setId(child.id)
                 .setLastName(child.lastName)
@@ -26,7 +26,7 @@ class RpcChildBuilder(
     }
 
     fun buildRpcFullChild(id: Long): FullChild? {
-        return childService.getById(id, message = "Ребенок с id $id не найден.")?.let { child ->
+        return childService.getById(id, message = "Ребёнок с ID $id не найден.")?.let { child ->
             FullChild.newBuilder()
                 .setId(child.id)
                 .setLastName(child.lastName)
