@@ -14,7 +14,7 @@ service ChildrenService {
   rpc GetByIdFull (Id) returns (FullChild);
 
   rpc GetAll (Empty) returns (ChildrenList);
-  rpc GetAllFull (Empty) returns (ChildrenListFull);
+  rpc GetAllFull (Empty) returns (FullChildrenList);
 }
 
 message Id {
@@ -47,6 +47,6 @@ message ChildrenList {
   repeated ShortChild children = 1;
 }
 
-message ChildrenListFull {
+message FullChildrenList {
   repeated FullChild children = 1;
 }

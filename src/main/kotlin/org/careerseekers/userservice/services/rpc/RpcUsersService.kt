@@ -22,9 +22,42 @@ class RpcUsersService(
 ) : UsersServiceGrpc.UsersServiceImplBase() {
 
     override fun getById(request: UserId, responseObserver: StreamObserver<User>) {
-        val response = usersService.getById(
+        val response = buildRpcUser(request.id)
+
+        responseObserver.onNext(response)
+        responseObserver.onCompleted()
+    }
+
+    @Transactional
+    override fun getChildWithUser(request: ChildId, responseObserver: StreamObserver<ChildWithUser>) {
+        val response = childService.getById(
             request.id,
-            message = "Пользователь с ID ${request.id} не найден."
+            message = "Ребёнок с ID ${request.id} не найден."
+        )!!.let { child ->
+            val rpcUser = buildRpcUser(child.user.id)
+            val rpcMentor = buildRpcUser(child.mentor?.id ?: child.user.id)
+
+            ChildWithUser.newBuilder()
+                .setId(child.id)
+                .setLastName(child.lastName)
+                .setFirstName(child.firstName)
+                .setPatronymic(child.patronymic)
+                .setDateOfBirth(child.dateOfBirth.toTimestamp())
+                .setSchoolName(child.childDocuments?.studyingPlace)
+                .setTrainingGroundName(child.childDocuments?.trainingGround)
+                .setUser(rpcUser)
+                .setMentor(rpcMentor)
+                .build()
+        }
+
+        responseObserver.onNext(response)
+        responseObserver.onCompleted()
+    }
+
+    fun buildRpcUser(id: Long): User {
+        return usersService.getById(
+            id,
+            message = "Пользователь с ID $id не найден."
         )!!.let { user ->
             usersCacheLoader.loadItemToCache(user.toCache())
 
@@ -44,64 +77,5 @@ class RpcUsersService(
                 .setTgLink(user.telegramLink?.tgLink.toString())
                 .build()
         }
-
-        responseObserver.onNext(response)
-        responseObserver.onCompleted()
-    }
-
-    @Transactional
-    override fun getChildWithUser(request: ChildId, responseObserver: StreamObserver<ChildWithUser>) {
-        val response = childService.getById(
-            request.id,
-            message = "Ребёнок с ID ${request.id} не найден."
-        )!!.let { child ->
-            val user = child.user
-            val mentor = child.mentor ?: user
-
-            val rpcUser = User.newBuilder()
-                .setId(user.id)
-                .setFirstName(user.firstName)
-                .setLastName(user.lastName)
-                .setPatronymic(user.patronymic)
-                .setDateOfBirth(user.dateOfBirth?.toTimestamp())
-                .setEmail(user.email)
-                .setMobileNumber(user.mobileNumber)
-                .setPassword(user.password)
-                .setRole(user.role.toString())
-                .setAvatarId(user.avatarId)
-                .setVerified(user.verified)
-                .setIsMentor(user.isMentor)
-                .build()
-
-            val rpcMentor = User.newBuilder()
-                .setId(mentor.id)
-                .setFirstName(mentor.firstName)
-                .setLastName(mentor.lastName)
-                .setPatronymic(mentor.patronymic)
-                .setDateOfBirth(mentor.dateOfBirth?.toTimestamp())
-                .setEmail(mentor.email)
-                .setMobileNumber(mentor.mobileNumber)
-                .setPassword(mentor.password)
-                .setRole(mentor.role.toString())
-                .setAvatarId(mentor.avatarId)
-                .setVerified(mentor.verified)
-                .setIsMentor(mentor.isMentor)
-                .build()
-
-            ChildWithUser.newBuilder()
-                .setId(child.id)
-                .setLastName(child.lastName)
-                .setFirstName(child.firstName)
-                .setPatronymic(child.patronymic)
-                .setDateOfBirth(child.dateOfBirth.toTimestamp())
-                .setSchoolName(child.childDocuments?.studyingPlace)
-                .setTrainingGroundName(child.childDocuments?.trainingGround)
-                .setUser(rpcUser)
-                .setMentor(rpcMentor)
-                .build()
-        }
-
-        responseObserver.onNext(response)
-        responseObserver.onCompleted()
     }
 }
