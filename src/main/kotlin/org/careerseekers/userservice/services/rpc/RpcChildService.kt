@@ -30,7 +30,7 @@ class RpcChildService(
         val childrenList = ChildrenList.newBuilder()
 
         childService.getAll()
-            .map { child -> rpcChildBuilder.buildRpcChild(child.id) }
+            .map { child -> rpcChildBuilder.buildRpcChild(child) }
             .run { childrenList.addAllChildren(this) }
 
         responseObserver.onNext(childrenList.build())
@@ -41,7 +41,9 @@ class RpcChildService(
         val childrenList = FullChildrenList.newBuilder()
 
         childService.getAll()
-            .map { child -> rpcChildBuilder.buildRpcFullChild(child.id) }
+            .sortedBy { child -> child.id }
+            .map { child ->
+                rpcChildBuilder.buildRpcFullChild(child) }
             .run { childrenList.addAllChildren(this) }
 
         responseObserver.onNext(childrenList.build())
