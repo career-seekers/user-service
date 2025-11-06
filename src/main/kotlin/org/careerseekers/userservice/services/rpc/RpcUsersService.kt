@@ -31,9 +31,6 @@ class RpcUsersService(
             request.id,
             message = "Ребёнок с ID ${request.id} не найден."
         )!!.let { child ->
-            val rpcUser = rpcUserBuilder.buildRpcUser(child.user.id)
-            val rpcMentor = rpcUserBuilder.buildRpcUser(child.mentor?.id ?: child.user.id)
-
             ChildWithUser.newBuilder()
                 .setId(child.id)
                 .setLastName(child.lastName)
@@ -42,8 +39,8 @@ class RpcUsersService(
                 .setDateOfBirth(child.dateOfBirth.toTimestamp())
                 .setSchoolName(child.childDocuments?.studyingPlace)
                 .setTrainingGroundName(child.childDocuments?.trainingGround)
-                .setUser(rpcUser)
-                .setMentor(rpcMentor)
+                .setUser(rpcUserBuilder.buildRpcUser(child.user))
+                .setMentor(rpcUserBuilder.buildRpcUser(child.mentor ?: child.user))
                 .build()
         }
 
