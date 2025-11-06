@@ -38,8 +38,6 @@ class RpcUserBuilder(
     }
 
     fun buildRpcUser(user: Users): User {
-        usersCacheLoader.loadItemToCache(user.toCache())
-
         return User.newBuilder()
             .setId(user.id)
             .setFirstName(user.firstName)
