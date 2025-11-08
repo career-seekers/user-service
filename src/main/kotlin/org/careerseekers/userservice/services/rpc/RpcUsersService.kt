@@ -1,10 +1,6 @@
 package org.careerseekers.userservice.services.rpc
 
-import com.careerseekers.grpc.users.ChildId
-import com.careerseekers.grpc.users.ChildWithUser
-import com.careerseekers.grpc.users.User
-import com.careerseekers.grpc.users.UserId
-import com.careerseekers.grpc.users.UsersServiceGrpc
+import com.careerseekers.grpc.users.*
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
 import org.careerseekers.userservice.io.converters.extensions.toTimestamp
@@ -25,6 +21,7 @@ class RpcUsersService(
         responseObserver.onCompleted()
     }
 
+    @Deprecated(message = "Use org.careerseekers.userservice.services.rpc.RpcChildService.getAllFull() or org.careerseekers.userservice.services.rpc.RpcChildService.getByIdFull()")
     @Transactional
     override fun getChildWithUser(request: ChildId, responseObserver: StreamObserver<ChildWithUser>) {
         val response = childService.getById(
