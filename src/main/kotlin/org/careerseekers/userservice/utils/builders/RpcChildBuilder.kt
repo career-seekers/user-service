@@ -58,6 +58,8 @@ class RpcChildBuilder(
             .setLastName(child.lastName)
             .setFirstName(child.firstName)
             .setPatronymic(child.patronymic)
+            .setSchoolName(child.childDocuments?.studyingPlace ?: "—")
+            .setTrainingGroundName(child.childDocuments?.trainingGround ?: "—")
             .setDateOfBirth(child.dateOfBirth.toTimestamp())
             .setCreatedAt(child.createdAt?.toTimestamp())
             .setUser(rpcUserBuilder.buildRpcUser(child.user))
