@@ -24,6 +24,7 @@ class WebSecurityConfig(
             .authorizeHttpRequests { auth ->
                 auth.requestMatchers("/actuator/prometheus").permitAll()
                 auth.requestMatchers("/users-service/*/auth/**").permitAll()
+                auth.requestMatchers("/users-service/websocket").permitAll()
                 auth.anyRequest().authenticated()
             }
             .csrf { csrf -> csrf.disable() }
