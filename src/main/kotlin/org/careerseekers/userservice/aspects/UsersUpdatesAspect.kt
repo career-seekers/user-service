@@ -4,6 +4,7 @@ import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect
 import org.careerseekers.userservice.aspects.interfaces.IEntityUpdatesAspect
+import org.careerseekers.userservice.controllers.WebSocketStatisticController
 import org.careerseekers.userservice.repositories.UsersRepository
 import org.careerseekers.userservice.services.StatisticScrapperService
 import org.slf4j.LoggerFactory
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component
 class UsersUpdatesAspect(
     private val scrapperService: StatisticScrapperService,
     private val usersRepository: UsersRepository,
+    private val webSocketStatisticController: WebSocketStatisticController,
 ) : IEntityUpdatesAspect {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
@@ -27,6 +29,7 @@ class UsersUpdatesAspect(
         scrapperService.setMentorInfo(users)
         scrapperService.setUsersInfo(users)
 
+        webSocketStatisticController.sendStatisticsManually()
         logger.info("Users statistics updated")
     }
 }
