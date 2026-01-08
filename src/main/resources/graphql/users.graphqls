@@ -1,0 +1,13 @@
+type Query {
+    user(id: ID!): User
+    users: [User]!
+    usersByChildIds(ids: [ID!]!): [User]!
+}
+
+type User {
+    id: ID!,
+    firstName: String,
+    lastName: String,
+    patronymic: String,
+    email: String,
+}
