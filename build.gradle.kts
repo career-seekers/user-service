@@ -51,6 +51,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.webjars:stomp-websocket:2.3.3")
 
+    // Spring GraphQL
+    implementation("org.springframework.boot:spring-boot-starter-graphql")
+    implementation("com.netflix.graphql.dgs.codegen:graphql-dgs-codegen-gradle:8.3.0")
+    testImplementation("org.springframework.graphql:spring-graphql-test")
+
     // JWT Auth
     implementation("io.jsonwebtoken:jjwt:0.12.6")
     implementation("javax.xml.bind:jaxb-api:2.3.0")
