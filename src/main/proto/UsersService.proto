@@ -21,6 +21,12 @@ message ChildId {
   int64 id = 1;
 }
 
+enum VerificationStatus {
+  ACCEPTED = 0;
+  REJECTED = 1;
+  UNCHECKED = 2;
+}
+
 message User {
   int64 id = 1;
   string firstName = 2;
@@ -32,7 +38,7 @@ message User {
   string password = 8;
   string role = 9;
   int64 avatarId = 10;
-  bool verified = 11;
+  VerificationStatus verified = 11;
   bool isMentor = 12;
   string tgLink = 13;
 }

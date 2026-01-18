@@ -4,6 +4,7 @@ import org.careerseekers.userservice.dto.statistics.UsersStatisticPairDto
 import org.careerseekers.userservice.entities.Children
 import org.careerseekers.userservice.entities.Users
 import org.careerseekers.userservice.enums.UsersRoles
+import org.careerseekers.userservice.enums.VerificationStatuses
 import org.careerseekers.userservice.utils.storages.StatisticsStorage
 import org.springframework.beans.factory.SmartInitializingSingleton
 import org.springframework.stereotype.Service
@@ -26,16 +27,16 @@ class StatisticScrapperService(
     }
 
     fun setTutorsInfo(users: List<Users>) =
-        StatisticsStorage.setTutorsInfo(UsersStatisticPairDto(users.size, users.filter { it.verified }.size))
+        StatisticsStorage.setTutorsInfo(UsersStatisticPairDto(users.size, users.filter { it.verified == VerificationStatuses.ACCEPTED }.size))
 
     fun setExpertsInfo(users: List<Users>) =
-        StatisticsStorage.setExpertsInfo(UsersStatisticPairDto(users.size, users.filter { it.verified }.size))
+        StatisticsStorage.setExpertsInfo(UsersStatisticPairDto(users.size, users.filter { it.verified == VerificationStatuses.ACCEPTED }.size))
 
     fun setMentorInfo(users: List<Users>) =
-        StatisticsStorage.setMentorsInfo(UsersStatisticPairDto(users.size, users.filter { it.verified }.size))
+        StatisticsStorage.setMentorsInfo(UsersStatisticPairDto(users.size, users.filter { it.verified == VerificationStatuses.ACCEPTED }.size))
 
     fun setUsersInfo(users: List<Users>) =
-        StatisticsStorage.setUsersInfo(UsersStatisticPairDto(users.size, users.filter { it.verified }.size))
+        StatisticsStorage.setUsersInfo(UsersStatisticPairDto(users.size, users.filter { it.verified == VerificationStatuses.ACCEPTED }.size))
 
     fun setChildrenCount(children: List<Children>) =
         StatisticsStorage.setChildrenCount(children.size)
