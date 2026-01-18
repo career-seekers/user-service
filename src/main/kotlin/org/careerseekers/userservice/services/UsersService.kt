@@ -23,8 +23,14 @@ import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingP
 import org.careerseekers.userservice.utils.validators.MobileNumberFormatter.checkMobileNumberValid
 import org.careerseekers.userservice.utils.generators.PasswordGenerator
 import org.careerseekers.userservice.annotations.Tested
+import org.careerseekers.userservice.dto.filters.UsersFilterDto
+import org.careerseekers.userservice.repositories.spec.UsersSpecifications.hasAnyRole
+import org.careerseekers.userservice.repositories.spec.UsersSpecifications.hasVerified
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -43,6 +49,14 @@ class UsersService(
     @Value("\${file-service.default-avatar-id}")
     private lateinit var defaultAvatarId: String
 
+    fun getAll(filters: UsersFilterDto, pageable: Pageable): Page<Users> {
+        val specs = listOfNotNull(
+            hasAnyRole(filters.roles),
+            hasVerified(filters.verified),
+        )
+
+        return repository.findAll(Specification.allOf(specs), pageable)
+    }
     fun getByEmail(email: String, throwable: Boolean = true): Users? {
         return repository.getByEmail(email)
             ?: if (throwable) throw NotFoundException("Пользователь с адресом электронной почты $email не найден.") else null
