@@ -13,6 +13,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.careerseekers.userservice.enums.UsersRoles
+import org.careerseekers.userservice.enums.VerificationStatuses
 import org.careerseekers.userservice.io.converters.ConvertableToHttpResponse
 import java.util.Date
 
@@ -51,7 +52,7 @@ data class Users(
     var avatarId: Long,
 
     @Column(nullable = false)
-    var verified: Boolean = false,
+    var verified: VerificationStatuses = VerificationStatuses.UNCHECKED,
 
     @Column(nullable = false)
     var isMentor: Boolean = false,

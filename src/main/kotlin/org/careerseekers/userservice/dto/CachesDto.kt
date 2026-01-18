@@ -4,6 +4,7 @@ import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.careerseekers.userservice.enums.UsersRoles
+import org.careerseekers.userservice.enums.VerificationStatuses
 import org.careerseekers.userservice.serializers.DateSerializer
 import java.util.Date
 
@@ -25,7 +26,7 @@ data class UsersCacheDto(
     val password: String,
     val role: UsersRoles,
     val avatarId: Long,
-    val verified: Boolean,
+    val verified: VerificationStatuses,
     val isMentor: Boolean,
 ) : CachesDto()
 

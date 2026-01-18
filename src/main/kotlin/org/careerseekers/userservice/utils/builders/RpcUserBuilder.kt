@@ -1,9 +1,11 @@
 package org.careerseekers.userservice.utils.builders
 
 import com.careerseekers.grpc.users.User
+import com.careerseekers.grpc.users.VerificationStatus
 import org.careerseekers.userservice.annotations.Utility
 import org.careerseekers.userservice.cache.UsersCacheLoader
 import org.careerseekers.userservice.entities.Users
+import org.careerseekers.userservice.enums.VerificationStatuses
 import org.careerseekers.userservice.io.converters.extensions.toCache
 import org.careerseekers.userservice.io.converters.extensions.toTimestamp
 import org.careerseekers.userservice.services.UsersService
@@ -30,7 +32,7 @@ class RpcUserBuilder(
                 .setPassword(user.password)
                 .setRole(user.role.toString())
                 .setAvatarId(user.avatarId)
-                .setVerified(user.verified)
+                .setVerified(VerificationStatus.valueOf(user.verified.name))
                 .setIsMentor(user.isMentor)
                 .setTgLink(user.telegramLink?.tgLink.toString())
                 .build()
@@ -49,7 +51,7 @@ class RpcUserBuilder(
             .setPassword(user.password)
             .setRole(user.role.toString())
             .setAvatarId(user.avatarId)
-            .setVerified(user.verified)
+            .setVerified(VerificationStatus.valueOf(user.verified.name))
             .setIsMentor(user.isMentor)
             .setTgLink(user.telegramLink?.tgLink.toString())
             .build()
