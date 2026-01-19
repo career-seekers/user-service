@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.services
 
 import org.careerseekers.userservice.annotations.ChildrenUpdate
+import org.careerseekers.userservice.dto.filters.ChildrenFilterDto
 import org.careerseekers.userservice.dto.users.CreateChildDto
 import org.careerseekers.userservice.dto.users.UpdateChildDto
 import org.careerseekers.userservice.entities.Children
@@ -8,7 +9,12 @@ import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.mappers.ChildrenMapper
 import org.careerseekers.userservice.repositories.ChildrenRepository
+import org.careerseekers.userservice.repositories.spec.ChildrenSpecifications.hasDateOfBirth
+import org.careerseekers.userservice.repositories.spec.ChildrenSpecifications.hasName
 import org.careerseekers.userservice.services.interfaces.CrudService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,6 +24,15 @@ class ChildService(
     private val usersService: UsersService,
     private val childrenMapper: ChildrenMapper,
 ) : CrudService<Children, Long, CreateChildDto, UpdateChildDto> {
+
+    fun getAll(filters: ChildrenFilterDto, pageable: Pageable): Page<Children> {
+        val specs = listOfNotNull(
+            hasName(filters.name),
+            hasDateOfBirth(filters.dateOfBirth),
+        )
+
+        return repository.findAll(Specification.allOf(specs), pageable)
+    }
 
     fun getByUserId(userId: Long) = repository.findByUserId(userId)
 
