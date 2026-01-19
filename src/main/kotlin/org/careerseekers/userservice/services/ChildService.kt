@@ -9,7 +9,6 @@ import org.careerseekers.userservice.enums.UsersRoles
 import org.careerseekers.userservice.exceptions.BadRequestException
 import org.careerseekers.userservice.mappers.ChildrenMapper
 import org.careerseekers.userservice.repositories.ChildrenRepository
-import org.careerseekers.userservice.repositories.spec.ChildrenSpecifications.hasDateOfBirth
 import org.careerseekers.userservice.repositories.spec.ChildrenSpecifications.hasName
 import org.careerseekers.userservice.services.interfaces.CrudService
 import org.springframework.data.domain.Page
@@ -28,7 +27,6 @@ class ChildService(
     fun getAll(filters: ChildrenFilterDto, pageable: Pageable): Page<Children> {
         val specs = listOfNotNull(
             hasName(filters.name),
-            hasDateOfBirth(filters.dateOfBirth),
         )
 
         return repository.findAll(Specification.allOf(specs), pageable)

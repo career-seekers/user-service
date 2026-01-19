@@ -3,7 +3,6 @@ package org.careerseekers.userservice.repositories.spec
 import jakarta.persistence.criteria.Path
 import org.careerseekers.userservice.entities.Children
 import org.springframework.data.jpa.domain.Specification
-import java.util.*
 
 object ChildrenSpecifications {
 
@@ -18,14 +17,6 @@ object ChildrenSpecifications {
                 criteriaBuilder.like(lastName, input),
                 criteriaBuilder.like(patronymic, input)
             )
-        }
-    }
-
-
-    fun hasDateOfBirth(date: Date?): Specification<Children>? = date?.let {
-        Specification { root, _, criteriaBuilder ->
-            val verifiedPath: Path<Date> = root["dateOfBirth"]
-            criteriaBuilder.equal(verifiedPath, it)
         }
     }
 }
