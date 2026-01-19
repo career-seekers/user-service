@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.controllers
+package org.careerseekers.userservice.controllers.pageable
 
 import org.careerseekers.userservice.dto.filters.UsersFilterDto
 import org.careerseekers.userservice.io.converters.extensions.toHttpResponse
