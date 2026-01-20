@@ -2,6 +2,7 @@ package org.careerseekers.userservice.services
 
 import org.careerseekers.userservice.dto.docs.CreateChildDocsDto
 import org.careerseekers.userservice.dto.docs.UpdateChildDocsDto
+import org.careerseekers.userservice.dto.filters.ChildDocumentsFilterDto
 import org.careerseekers.userservice.entities.ChildDocuments
 import org.careerseekers.userservice.enums.DirectionAgeCategory
 import org.careerseekers.userservice.exceptions.BadRequestException
@@ -10,6 +11,9 @@ import org.careerseekers.userservice.io.converters.convertDateToLocalDate
 import org.careerseekers.userservice.mappers.ChildDocsMapper
 import org.careerseekers.userservice.repositories.ChildDocsRepository
 import org.careerseekers.userservice.repositories.ChildrenRepository
+import org.careerseekers.userservice.repositories.spec.ChildDocumentsSpecifications.hasAgeCategory
+import org.careerseekers.userservice.repositories.spec.ChildDocumentsSpecifications.hasChildId
+import org.careerseekers.userservice.repositories.spec.ChildDocumentsSpecifications.hasUserId
 import org.careerseekers.userservice.services.interfaces.crud.ICreateService
 import org.careerseekers.userservice.services.interfaces.crud.IDeleteService
 import org.careerseekers.userservice.services.interfaces.crud.IReadService
@@ -17,6 +21,9 @@ import org.careerseekers.userservice.services.interfaces.crud.IUpdateService
 import org.careerseekers.userservice.utils.math.AgeCalculator.calculateAge
 import org.careerseekers.userservice.utils.api.DocumentsApiResolver
 import org.careerseekers.userservice.utils.validators.SnilsValidator
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -34,6 +41,16 @@ class ChildDocumentsService(
     ICreateService<ChildDocuments, Long, CreateChildDocsDto>,
     IUpdateService<ChildDocuments, Long, UpdateChildDocsDto>,
     IDeleteService<ChildDocuments, Long> {
+
+    fun getAll(filter: ChildDocumentsFilterDto, pageable: Pageable): Page<ChildDocuments> {
+        val specs = listOfNotNull(
+            hasChildId(filter.childId),
+            hasUserId(filter.userId),
+            hasAgeCategory(filter.ageCategory),
+        )
+
+        return repository.findAll(Specification.allOf(specs), pageable)
+    }
 
     fun getByChildId(childId: Long, throwable: Boolean = true): ChildDocuments? {
         val docs = repository.findByChildId(childId)

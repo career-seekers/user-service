@@ -1,0 +1,21 @@
+package org.careerseekers.userservice.controllers.pageable
+
+import org.careerseekers.userservice.dto.filters.ChildDocumentsFilterDto
+import org.careerseekers.userservice.io.converters.extensions.toHttpResponse
+import org.careerseekers.userservice.services.ChildDocumentsService
+import org.springframework.data.domain.Pageable
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+@RequestMapping("/users-service/v2/child-docs")
+class PageableChildDocumentsController(private val service: ChildDocumentsService) {
+
+    @GetMapping
+    fun getAll(
+        @ModelAttribute filters: ChildDocumentsFilterDto,
+        pageable: Pageable
+    ) = service.getAll(filters, pageable).toHttpResponse()
+}
