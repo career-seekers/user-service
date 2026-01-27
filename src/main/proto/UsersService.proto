@@ -11,10 +11,15 @@ import "google/protobuf/timestamp.proto";
 service UsersService {
   rpc GetById (UserId) returns (User);
   rpc GetChildWithUser (ChildId) returns (ChildWithUser);
+  rpc GetUsersByIds (UserIds) returns (Users);
 }
 
 message UserId {
   int64 id = 1;
+}
+
+message UserIds {
+  repeated UserId ids = 1;
 }
 
 message ChildId {
@@ -41,6 +46,10 @@ message User {
   VerificationStatus verified = 11;
   bool isMentor = 12;
   string tgLink = 13;
+}
+
+message Users {
+  repeated User users = 1;
 }
 
 message ChildWithUser {
