@@ -4,13 +4,13 @@ import com.careerseekers.grpc.children.FullChild
 import com.careerseekers.grpc.children.ShortChild
 import org.careerseekers.userservice.annotations.Utility
 import org.careerseekers.userservice.entities.Children
+import org.careerseekers.userservice.io.converters.extensions.rpc.toRpcUser
 import org.careerseekers.userservice.io.converters.extensions.toTimestamp
 import org.careerseekers.userservice.services.ChildService
 
 @Utility
 class RpcChildBuilder(
     private val childService: ChildService,
-    private val rpcUserBuilder: RpcUserBuilder
 ) {
 
     fun buildRpcChild(id: Long): ShortChild? {
@@ -46,8 +46,8 @@ class RpcChildBuilder(
                 .setPatronymic(child.patronymic)
                 .setDateOfBirth(child.dateOfBirth.toTimestamp())
                 .setCreatedAt(child.createdAt?.toTimestamp())
-                .setUser(rpcUserBuilder.buildRpcUser(child.user))
-                .setMentor(rpcUserBuilder.buildRpcUser(child.mentor ?: child.user))
+                .setUser(child.user.toRpcUser())
+                .setMentor((child.mentor ?: child.user).toRpcUser())
                 .build()
         }
     }
@@ -62,8 +62,8 @@ class RpcChildBuilder(
             .setTrainingGroundName(child.childDocuments?.trainingGround ?: "—")
             .setDateOfBirth(child.dateOfBirth.toTimestamp())
             .setCreatedAt(child.createdAt?.toTimestamp())
-            .setUser(rpcUserBuilder.buildRpcUser(child.user))
-            .setMentor(rpcUserBuilder.buildRpcUser(child.mentor ?: child.user))
+            .setUser(child.user.toRpcUser())
+            .setMentor((child.mentor ?: child.user).toRpcUser())
             .build()
     }
 }
