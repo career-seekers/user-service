@@ -10,7 +10,6 @@ import "google/protobuf/timestamp.proto";
 
 service UsersService {
   rpc GetById (UserId) returns (User);
-  rpc GetChildWithUser (ChildId) returns (ChildWithUser);
   rpc GetUsersByIds (UserIds) returns (Users);
 }
 
@@ -20,10 +19,6 @@ message UserId {
 
 message UserIds {
   repeated UserId ids = 1;
-}
-
-message ChildId {
-  int64 id = 1;
 }
 
 enum VerificationStatus {
@@ -50,16 +45,4 @@ message User {
 
 message Users {
   repeated User users = 1;
-}
-
-message ChildWithUser {
-  int64 id = 1;
-  string lastName = 2;
-  string firstName = 3;
-  string patronymic = 4;
-  string schoolName = 5;
-  string trainingGroundName = 6;
-  google.protobuf.Timestamp dateOfBirth = 7;
-  User user = 8;
-  optional User mentor = 9;
 }
