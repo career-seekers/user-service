@@ -48,6 +48,6 @@ data class TemporaryPasswordDto(
 @Serializable
 @SerialName("UserAuthAttempts")
 data class UserAuthAttemptsDto(
-    val userId: Long,
-    val attempt: Int,
+    val email: String,
+    var attempt: Int,
 ) : CachesDto()
