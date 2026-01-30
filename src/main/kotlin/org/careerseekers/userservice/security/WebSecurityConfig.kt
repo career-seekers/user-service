@@ -1,6 +1,6 @@
 package org.careerseekers.userservice.security
 
-import org.careerseekers.userservice.io.filters.JwtRequestFilter
+import org.careerseekers.userservice.filters.JwtRequestFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity

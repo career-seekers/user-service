@@ -1,4 +1,4 @@
-package org.careerseekers.userservice.io.filters
+package org.careerseekers.userservice.filters
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
