@@ -27,7 +27,7 @@ class LoginRateLimitFilter(private val cacheClient: UserAuthAttemptsCacheClient)
         }
 
         val attempts = cacheClient.getItemFromCache(email)?.attempt ?: 0
-        if (attempts > 5) {
+        if (attempts >= 5) {
             sendError(response, 429, "Превышено количество попыток входа. Попробуйте позже.")
             return
         }
