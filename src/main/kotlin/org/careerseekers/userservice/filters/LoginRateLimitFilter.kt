@@ -5,8 +5,6 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.careerseekers.userservice.cache.UserAuthAttemptsCacheClient
 import org.careerseekers.userservice.dto.UserAuthAttemptsDto
-import org.careerseekers.userservice.exceptions.BadRequestException
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -23,27 +21,26 @@ class LoginRateLimitFilter(private val cacheClient: UserAuthAttemptsCacheClient)
             return
         }
 
-        try {
-            val email = request.getHeader("User-Email") ?: throw BadRequestException("User-Email is missing.")
-
-            cacheClient.getItemFromCache(email)?.let { cacheItem ->
-                if (cacheItem.attempt > 5) {
-                    response.status = HttpStatus.TOO_MANY_REQUESTS.value()
-                    response.contentType = "application/json"
-                    response.characterEncoding = "UTF-8"
-                    response.writer.write("""{"status":429,"message":"Превышено количество попыток входа. Попробуйте позже."}""")
-                    return
-                }
-            } ?: run {
-                cacheClient.loadItemToCache(UserAuthAttemptsDto(email, 0))
-                filterChain.doFilter(request, response)
-            }
-        } catch (e: BadRequestException) {
-            response.status = HttpStatus.BAD_REQUEST.value()
-            response.contentType = "application/json"
-            response.characterEncoding = "UTF-8"
-            response.writer.write("""{"status":400,"message":"${e.message}"}""")
+        val email = request.getHeader("User-Email") ?: run {
+            sendError(response, 400, "User-Email is missing.")
             return
         }
+
+        val attempts = cacheClient.getItemFromCache(email)?.attempt ?: 0
+        if (attempts > 5) {
+            sendError(response, 429, "Превышено количество попыток входа. Попробуйте позже.")
+            return
+        }
+
+        cacheClient.loadItemToCache(UserAuthAttemptsDto(email, attempts + 1))
+
+        filterChain.doFilter(request, response)
+    }
+
+    private fun sendError(response: HttpServletResponse, status: Int, message: String) {
+        response.status = status
+        response.contentType = "application/json; charset=UTF-8"
+        response.characterEncoding = "UTF-8"
+        response.writer.write("""{"status":$status,"message":"$message"}""")
     }
 }

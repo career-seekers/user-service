@@ -1,7 +1,6 @@
 package org.careerseekers.userservice.services
 
 import org.careerseekers.userservice.annotations.Tested
-import org.careerseekers.userservice.cache.UserAuthAttemptsCacheClient
 import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
 import org.careerseekers.userservice.dto.auth.*
@@ -32,7 +31,6 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder,
     private val usersRepository: UsersRepository,
     private val emailSendingProducer: KafkaEmailSendingProducer,
-    private val usersAuthAttemptsCacheClient: UserAuthAttemptsCacheClient,
     private val verificationCodesCacheClient: VerificationCodesCacheClient,
     private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
     private val registrationPostProcessors: List<IUsersRegistrationProcessor>,
@@ -98,10 +96,8 @@ class AuthService(
                 jwtUtil.generateAccessToken(CreateJwtToken(user, data.uuid)),
                 jwtUtil.generateRefreshToken(CreateJwtToken(user, data.uuid))
             )
-        } else {
-            usersAuthAttemptsCacheClient.incrementAttempts(data.email)
-            throw JwtAuthenticationException("Неверный адрес электронной почты или пароль.")
-        }
+        } else throw JwtAuthenticationException("Неверный адрес электронной почты или пароль.")
+
     }
 
     @Transactional
