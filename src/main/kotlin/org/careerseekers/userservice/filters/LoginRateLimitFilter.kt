@@ -38,8 +38,6 @@ class LoginRateLimitFilter(private val cacheClient: UserAuthAttemptsCacheClient)
                 cacheClient.loadItemToCache(UserAuthAttemptsDto(email, 0))
                 filterChain.doFilter(request, response)
             }
-
-            filterChain.doFilter(request, response)
         } catch (e: BadRequestException) {
             response.status = HttpStatus.BAD_REQUEST.value()
             response.contentType = "application/json"
