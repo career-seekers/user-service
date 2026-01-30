@@ -17,8 +17,7 @@ class CacheConfig(
 ) {
 
     @Bean
-    fun cacheConfiguration(): RedisCacheConfiguration {
-
+    fun cacheConfiguration30Min(): RedisCacheConfiguration {
         return RedisCacheConfiguration.defaultCacheConfig()
             .entryTtl(Duration.ofMinutes(30))
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
@@ -26,9 +25,18 @@ class CacheConfig(
     }
 
     @Bean
+    fun cacheConfiguration15Min(): RedisCacheConfiguration {
+        return RedisCacheConfiguration.defaultCacheConfig()
+            .entryTtl(Duration.ofMinutes(15))
+            .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
+            .disableCachingNullValues()
+    }
+
+    @Bean
     fun cacheManager(connectionFactory: RedisConnectionFactory): CacheManager {
         return RedisCacheManager.builder(connectionFactory)
-            .cacheDefaults(cacheConfiguration())
+            .withCacheConfiguration("userAuthAttempts", cacheConfiguration15Min())
+            .cacheDefaults(cacheConfiguration30Min())
             .build()
     }
 }

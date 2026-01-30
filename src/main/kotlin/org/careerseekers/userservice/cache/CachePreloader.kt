@@ -1,5 +1,5 @@
 package org.careerseekers.userservice.cache
 
-interface CachePreloader {
+fun interface CachePreloader {
     fun preloadCache(): Any
 }

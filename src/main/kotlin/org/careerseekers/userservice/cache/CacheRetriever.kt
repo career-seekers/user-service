@@ -10,7 +10,7 @@ interface CacheRetriever<T> {
         val keys = redisTemplate.keys("$cacheKey::*")
         val ops = redisTemplate.opsForValue()
 
-        return keys.mapNotNull { ops.get(it) }
+        return keys?.mapNotNull { ops[it] } ?: emptyList()
     }
     fun getItemFromCache(key: Any): T?
 }

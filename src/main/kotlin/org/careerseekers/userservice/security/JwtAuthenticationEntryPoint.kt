@@ -30,9 +30,11 @@ class JwtAuthenticationEntryPoint(private val jwtUtil: JwtUtil) : Authentication
 
                 if (e.message!!.contains("Невалидное содержание токена.") || e.message!!.contains("Invalid token!")) {
                     response?.status = HttpServletResponse.SC_UNAUTHORIZED
+                    response?.characterEncoding = "UTF-8"
                     body = """{"status": ${HttpStatus.UNAUTHORIZED.value()}, "message": ${e.message}}"""
                 } else {
                     response?.status = HttpServletResponse.SC_FORBIDDEN
+                    response?.characterEncoding = "UTF-8"
                     body = """{"status": ${HttpStatus.FORBIDDEN.value()}, "message": "Срок жизни токена истёк."}"""
                 }
 
@@ -40,6 +42,7 @@ class JwtAuthenticationEntryPoint(private val jwtUtil: JwtUtil) : Authentication
             }
         } else {
             response?.status = HttpServletResponse.SC_UNAUTHORIZED
+            response?.characterEncoding = "UTF-8"
             val body =
                 """{"status": ${HttpStatus.UNAUTHORIZED.value()}, "message": "You'll be authorized to access this resource"}"""
 

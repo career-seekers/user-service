@@ -15,6 +15,7 @@ class CustomAccessDeniedHandler : AccessDeniedHandler {
     ) {
         response.status = HttpServletResponse.SC_FORBIDDEN
         response.contentType = "application/json"
+        response.characterEncoding = "UTF-8"
         response.writer.write("""{"status":403,"message":"Access denied"}""")
     }
 }

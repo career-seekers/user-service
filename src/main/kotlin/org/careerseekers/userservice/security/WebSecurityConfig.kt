@@ -1,6 +1,7 @@
 package org.careerseekers.userservice.security
 
-import org.careerseekers.userservice.io.filters.JwtRequestFilter
+import org.careerseekers.userservice.filters.JwtRequestFilter
+import org.careerseekers.userservice.filters.LoginRateLimitFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -14,8 +15,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 class WebSecurityConfig(
     private val jwtFilter: JwtRequestFilter,
+    private val loginRateLimitFilter: LoginRateLimitFilter,
+    private val customAccessDeniedHandler: CustomAccessDeniedHandler,
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
-    private val customAccessDeniedHandler: CustomAccessDeniedHandler
 ) {
 
     @Bean
@@ -35,7 +37,7 @@ class WebSecurityConfig(
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                     .accessDeniedHandler(customAccessDeniedHandler)
             }
-
+            .addFilterBefore(loginRateLimitFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
