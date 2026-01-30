@@ -1,14 +1,10 @@
 package org.careerseekers.userservice.services
 
+import org.careerseekers.userservice.annotations.Tested
+import org.careerseekers.userservice.cache.UserAuthAttemptsCacheClient
 import org.careerseekers.userservice.cache.VerificationCodesCacheClient
 import org.careerseekers.userservice.dto.EmailSendingTaskDto
-import org.careerseekers.userservice.dto.auth.CodeVerificationDto
-import org.careerseekers.userservice.dto.auth.ForgotPasswordDto
-import org.careerseekers.userservice.dto.auth.LoginUserDto
-import org.careerseekers.userservice.dto.auth.PreRegisterUserDto
-import org.careerseekers.userservice.dto.auth.ResetPasswordDto
-import org.careerseekers.userservice.dto.auth.UpdateUserTokensDto
-import org.careerseekers.userservice.dto.auth.UserRegistrationDto
+import org.careerseekers.userservice.dto.auth.*
 import org.careerseekers.userservice.dto.jwt.CreateJwtToken
 import org.careerseekers.userservice.dto.jwt.UserTokensDto
 import org.careerseekers.userservice.dto.users.CreateUserDto
@@ -20,11 +16,10 @@ import org.careerseekers.userservice.exceptions.JwtAuthenticationException
 import org.careerseekers.userservice.io.BasicSuccessfulResponse
 import org.careerseekers.userservice.io.converters.extensions.toCache
 import org.careerseekers.userservice.repositories.UsersRepository
+import org.careerseekers.userservice.security.JwtUtil
 import org.careerseekers.userservice.services.kafka.producers.KafkaEmailSendingProducer
 import org.careerseekers.userservice.services.processors.IUsersRegistrationProcessor
 import org.careerseekers.userservice.utils.validators.EmailVerificationCodeVerifier
-import org.careerseekers.userservice.security.JwtUtil
-import org.careerseekers.userservice.annotations.Tested
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -35,11 +30,12 @@ class AuthService(
     private val jwtUtil: JwtUtil,
     private val usersService: UsersService,
     private val passwordEncoder: PasswordEncoder,
-    private val registrationPostProcessors: List<IUsersRegistrationProcessor>,
-    private val emailSendingProducer: KafkaEmailSendingProducer,
-    private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
-    private val verificationCodesCacheClient: VerificationCodesCacheClient,
     private val usersRepository: UsersRepository,
+    private val emailSendingProducer: KafkaEmailSendingProducer,
+    private val usersAuthAttemptsCacheClient: UserAuthAttemptsCacheClient,
+    private val verificationCodesCacheClient: VerificationCodesCacheClient,
+    private val emailVerificationCodeVerifier: EmailVerificationCodeVerifier,
+    private val registrationPostProcessors: List<IUsersRegistrationProcessor>,
 ) {
     fun preRegister(item: PreRegisterUserDto): BasicSuccessfulResponse<String> {
         item.email = item.email.lowercase()
@@ -47,10 +43,12 @@ class AuthService(
             throw DoubleRecordException("Пользователь с адресом электронной почты ${item.email} уже существует.")
         }
 
-        emailSendingProducer.sendMessage(EmailSendingTaskDto(
-            email = item.email,
-            eventType = MailEventTypes.PRE_REGISTRATION,
-        ))
+        emailSendingProducer.sendMessage(
+            EmailSendingTaskDto(
+                email = item.email,
+                eventType = MailEventTypes.PRE_REGISTRATION,
+            )
+        )
 
         return BasicSuccessfulResponse("Проверочный код успешно отправлен.")
     }
@@ -92,16 +90,18 @@ class AuthService(
 
     @Transactional
     fun login(data: LoginUserDto): UserTokensDto {
-        data.email = data.email.lowercase()
-        return usersService.getByEmail(data.email, throwable = false)?.let {
-            jwtUtil.removeOldRefreshTokenByUUID(data.uuid)
-            if (passwordEncoder.matches(data.password, it.password)) {
-                UserTokensDto(
-                    jwtUtil.generateAccessToken(CreateJwtToken(it, data.uuid)),
-                    jwtUtil.generateRefreshToken(CreateJwtToken(it, data.uuid))
-                )
-            } else throw JwtAuthenticationException("Неверный адрес электронной почты или пароль.")
-        } ?: throw JwtAuthenticationException("Неверный адрес электронной почты или пароль.")
+        val user = usersService.getByEmail(data.email.lowercase())!!
+        jwtUtil.removeOldRefreshTokenByUUID(data.uuid)
+
+        return if (passwordEncoder.matches(data.password, user.password)) {
+            UserTokensDto(
+                jwtUtil.generateAccessToken(CreateJwtToken(user, data.uuid)),
+                jwtUtil.generateRefreshToken(CreateJwtToken(user, data.uuid))
+            )
+        } else {
+            usersAuthAttemptsCacheClient.incrementAttempts(data.email)
+            throw JwtAuthenticationException("Неверный адрес электронной почты или пароль.")
+        }
     }
 
     @Transactional
