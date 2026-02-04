@@ -4,7 +4,6 @@ import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
 import org.careerseekers.userservice.dto.KafkaMessagesDto
 import org.careerseekers.userservice.serializers.PolymorphicKafkaSerializer
-import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
@@ -12,11 +11,7 @@ import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.core.ProducerFactory
 
 @Configuration
-@ConfigurationProperties(prefix = "spring.kafka")
-class KafkaProducerFactoryConfig<T : KafkaMessagesDto> {
-
-    lateinit var bootstrapServers: String
-
+class KafkaProducerFactoryConfig<T : KafkaMessagesDto> (private val kafkaProperties: KafkaProperties) {
     @Bean
     fun producerFactory(): ProducerFactory<String, T> {
         val configProps = mapOf(
@@ -25,7 +20,7 @@ class KafkaProducerFactoryConfig<T : KafkaMessagesDto> {
              * Kafka cluster connection settings
              * Connecting to Kafka and serializing keys and values
              */
-            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
+            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to kafkaProperties.bootstrapServers,
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java,
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to PolymorphicKafkaSerializer::class.java,
 
