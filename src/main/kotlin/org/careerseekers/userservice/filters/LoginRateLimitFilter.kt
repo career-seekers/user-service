@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.careerseekers.userservice.cache.UserAuthAttemptsCacheClient
 import org.careerseekers.userservice.dto.UserAuthAttemptsDto
+import org.careerseekers.userservice.functions.sendError
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -35,12 +36,5 @@ class LoginRateLimitFilter(private val cacheClient: UserAuthAttemptsCacheClient)
         cacheClient.loadItemToCache(UserAuthAttemptsDto(email, attempts + 1))
 
         filterChain.doFilter(request, response)
-    }
-
-    private fun sendError(response: HttpServletResponse, status: Int, message: String) {
-        response.status = status
-        response.contentType = "application/json; charset=UTF-8"
-        response.characterEncoding = "UTF-8"
-        response.writer.write("""{"status":$status,"message":"$message"}""")
     }
 }
