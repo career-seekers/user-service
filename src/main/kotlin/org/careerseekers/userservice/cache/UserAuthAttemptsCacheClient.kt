@@ -21,10 +21,4 @@ class UserAuthAttemptsCacheClient(
     override fun getItemFromCache(key: Any): UserAuthAttemptsDto? {
         return cache?.get(key)?.let { it.get() as? UserAuthAttemptsDto }
     }
-
-    fun incrementAttempts(key: String) {
-        getItemFromCache(key)?.let { item ->
-            loadItemToCache(item.copy(attempt = item.attempt + 1))
-        }
-    }
 }
