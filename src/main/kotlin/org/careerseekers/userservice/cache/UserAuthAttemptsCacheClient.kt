@@ -22,9 +22,7 @@ class UserAuthAttemptsCacheClient(
         return cache?.get(key)?.let { it.get() as? UserAuthAttemptsDto }
     }
 
-    fun incrementAttempts(key: String) {
-        getItemFromCache(key)?.let { item ->
-            loadItemToCache(item.copy(attempt = item.attempt + 1))
-        }
+    fun deleteCacheItem(key: String) {
+        cache?.evict(key)
     }
 }
