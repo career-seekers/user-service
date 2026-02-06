@@ -21,4 +21,8 @@ class UserAuthAttemptsCacheClient(
     override fun getItemFromCache(key: Any): UserAuthAttemptsDto? {
         return cache?.get(key)?.let { it.get() as? UserAuthAttemptsDto }
     }
+
+    fun deleteCacheItem(key: String) {
+        cache?.evict(key)
+    }
 }
