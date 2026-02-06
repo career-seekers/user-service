@@ -31,10 +31,6 @@ class UsersStatisticsClient(
         )
     }
 
-    fun getDau(): Long = setOps.size("$prefix:dau:${LocalDate.now()}") ?: 0
-    fun getWau(): Long = setOps.size("$prefix:wau:${weekKey()}") ?: 0
-    fun getMau(): Long = setOps.size("$prefix:mau:${monthKey()}") ?: 0
-
     private fun weekKey(): String {
         val now = LocalDate.now()
         val weekNumber = now[WeekFields.ISO.weekOfWeekBasedYear()]
