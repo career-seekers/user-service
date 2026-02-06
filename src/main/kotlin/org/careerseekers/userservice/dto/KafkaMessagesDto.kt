@@ -32,3 +32,9 @@ data class UniversalEmailMessageDto(
     val subject: String,
     val body: String,
 ) : KafkaMessagesDto()
+
+@Serializable
+@SerialName("UserLoginMessage")
+data class UserLoginMessageDto(
+    val email: String,
+) : KafkaMessagesDto()

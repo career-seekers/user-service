@@ -33,9 +33,20 @@ class CacheConfig(
     }
 
     @Bean
+    fun usersStatisticsCacheConfiguration(): RedisCacheConfiguration {
+        return RedisCacheConfiguration.defaultCacheConfig()
+            .entryTtl(Duration.ofDays(32))
+            .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
+            .disableCachingNullValues()
+    }
+
+    @Bean
     fun cacheManager(connectionFactory: RedisConnectionFactory): CacheManager {
         return RedisCacheManager.builder(connectionFactory)
             .withCacheConfiguration("userAuthAttempts", cacheConfiguration15Min())
+            .withCacheConfiguration("usersStatistics:dau:*", usersStatisticsCacheConfiguration())
+            .withCacheConfiguration("usersStatistics:wau:*", usersStatisticsCacheConfiguration())
+            .withCacheConfiguration("usersStatistics:mau:*", usersStatisticsCacheConfiguration())
             .cacheDefaults(cacheConfiguration30Min())
             .build()
     }

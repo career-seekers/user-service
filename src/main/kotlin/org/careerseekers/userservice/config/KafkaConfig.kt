@@ -35,4 +35,13 @@ class KafkaConfig {
             .replicas(3)
             .build()
     }
+
+    @Bean
+    fun systemTopic(): NewTopic {
+        return TopicBuilder
+            .name(KafkaTopics.USER_LOGIN_TOPIC.name)
+            .partitions(12)
+            .replicas(3)
+            .build()
+    }
 }

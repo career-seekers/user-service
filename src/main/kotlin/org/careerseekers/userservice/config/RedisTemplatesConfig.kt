@@ -89,4 +89,19 @@ class RedisTemplatesConfig(
         template.afterPropertiesSet()
         return template
     }
+
+    @Bean
+    @Qualifier("usersStatistics")
+    fun userStatisticsRedisTemplate(
+        connectionFactory: RedisConnectionFactory
+    ): RedisTemplate<String, String> {
+        val template = RedisTemplate<String, String>()
+        template.connectionFactory = connectionFactory
+        template.keySerializer = StringRedisSerializer()
+        template.valueSerializer = StringRedisSerializer()
+        template.hashKeySerializer = StringRedisSerializer()
+        template.hashValueSerializer = serializer
+        template.afterPropertiesSet()
+        return template
+    }
 }
